@@ -1,12 +1,17 @@
 package com.bryan.system.service;
 
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bryan.system.common.exception.BusinessException;
 import com.bryan.system.common.exception.ResourceNotFoundException;
+import com.bryan.system.model.request.PageRequest;
+import com.bryan.system.model.request.UserSearchRequest;
 import com.bryan.system.model.request.UserUpdateRequest;
 import com.bryan.system.model.entity.User;
 import com.bryan.system.mapper.UserMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,8 +23,8 @@ import java.util.*;
  * 用户服务实现类，处理用户注册、登录、信息管理、导出等业务逻辑。
  *
  * @author Bryan
- * @since 2025/6/19
  * @version 2.0
+ * @since 2025/6/19
  */
 @Slf4j
 @Service
@@ -76,6 +81,45 @@ public class UserService {
     }
 
     /**
+     * 通用用户搜索，支持多条件模糊查询和分页。
+     *
+     * @param searchRequest 搜索请求
+     * @param pageRequest 分页请求
+     * @return 符合查询条件的分页对象（Page）
+     */
+    public Page<User> searchUsers(UserSearchRequest searchRequest, PageRequest pageRequest) {
+        // 1. 构造查询条件
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+
+        // 2. 添加用户名模糊查询
+        if (searchRequest.getUsername() != null && !searchRequest.getUsername().trim().isEmpty()) {
+            queryWrapper.like("username", searchRequest.getUsername());
+        }
+        // 3. 添加手机号模糊查询
+        if (searchRequest.getPhoneNumber() != null && !searchRequest.getPhoneNumber().trim().isEmpty()) {
+            queryWrapper.like("phone_number", searchRequest.getPhoneNumber());
+        }
+        // 4. 添加邮箱模糊查询
+        if (searchRequest.getEmail() != null && !searchRequest.getEmail().trim().isEmpty()) {
+            queryWrapper.like("email", searchRequest.getEmail());
+        }
+        // 5. 添加性别精确查询
+        if (searchRequest.getGender() != null) {
+            queryWrapper.eq("gender", searchRequest.getGender());
+        }
+        // 6. 添加状态精确查询
+        if (searchRequest.getStatus() != null) {
+            queryWrapper.eq("status", searchRequest.getStatus());
+        }
+
+        // 7. 构造分页对象
+        Page<User> page = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
+
+        // 8. 执行查询并返回结果
+        return userMapper.selectPage(page, queryWrapper);
+    }
+
+    /**
      * 更新用户基础信息（用户名和邮箱）。
      *
      * @param userId            用户ID
@@ -100,19 +144,34 @@ public class UserService {
                         existingUser.setUsername(userUpdateRequest.getUsername());
                     }
 
-                    // 2. 更新邮箱信息
+                    // 2. 更新电话号码
+                    if (userUpdateRequest.getPhoneNumber() != null) {
+                        existingUser.setPhoneNumber(userUpdateRequest.getPhoneNumber());
+                    }
+
+                    // 3. 更新邮箱信息
                     if (userUpdateRequest.getEmail() != null) {
                         existingUser.setEmail(userUpdateRequest.getEmail());
                     }
 
-                    // 3. 更新操作员信息
+                    // 4. 更新性别
+                    if (userUpdateRequest.getGender() != null) {
+                        existingUser.setGender(userUpdateRequest.getGender());
+                    }
+
+                    // 5. 更新头像
+                    if (userUpdateRequest.getAvatar() != null) {
+                        existingUser.setAvatar(userUpdateRequest.getAvatar());
+                    }
+
+                    // 6. 更新操作员信息
                     String operator = authService.getCurrentUsername();
                     existingUser.setUpdateBy(operator);
 
-                    // 4. 执行数据库更新
+                    // 7. 执行数据库更新
                     userMapper.updateById(existingUser);
 
-                    // 5. 记录日志并返回
+                    // 8. 记录日志并返回
                     log.info("用户ID: {} 的信息更新成功", userId);
                     return existingUser;
                 })
@@ -261,5 +320,34 @@ public class UserService {
                     return existingUser;
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("用户ID: " + userId + " 不存在"));
+    }
+
+    /**
+     * 导出所有用户数据为 Excel 文件。
+     *
+     * @param response HttpServletResponse 用于写出 Excel 文件
+     */
+    public void exportAllUsers(HttpServletResponse response) {
+        // 1. 查询所有用户数据
+        List<User> userList = userMapper.selectList(new QueryWrapper<>());
+
+        // 2. 创建 ExcelWriter，默认写到内存
+        ExcelWriter writer = ExcelUtil.getWriter(true);
+
+        // 3. 写入数据（可自定义表头）
+        writer.write(userList, true);
+
+        // 4. 设置响应头，支持中文文件名
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
+        response.setHeader("Content-Disposition", "attachment;filename=users.xlsx");
+
+        // 5. 写出到前端
+        try (var out = response.getOutputStream()) {
+            writer.flush(out, true);
+        } catch (Exception e) {
+            throw new RuntimeException("导出用户数据失败", e);
+        } finally {
+            writer.close();
+        }
     }
 }

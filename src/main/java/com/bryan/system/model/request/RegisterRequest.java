@@ -3,10 +3,7 @@ package com.bryan.system.model.request;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 /**
  * 用户注册请求对象
@@ -15,10 +12,7 @@ import lombok.NoArgsConstructor;
  * @since 2025/6/19 - 19:54
  * @version 1.0
  */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
 public class RegisterRequest {
     @NotBlank(message = "用户名不能为空")
     private String username;

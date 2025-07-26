@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @TableName("\"user\"")
 @KeySequence(value = "user_id_seq") // 指定序列名称
 public class User implements Serializable, UserDetails {
-    @TableId(type = IdType.INPUT)
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     private String username;

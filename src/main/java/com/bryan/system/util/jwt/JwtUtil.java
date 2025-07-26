@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class JwtUtil {
 
     // 生产环境建议使用外部配置注入密钥，避免硬编码
-    private static final String SECRET_STRING = "BryanTaoLong";
+    private static final String SECRET_STRING = "BryanTaoLong2025!@#SuperSecretKeyJwtToken987";
 
     private static final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(SECRET_STRING.getBytes(StandardCharsets.UTF_8));
 

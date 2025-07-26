@@ -1,7 +1,7 @@
 package com.bryan.system.model.request;
 
 import jakarta.validation.constraints.Email;
-import lombok.Data;
+import lombok.Getter;
 
 /**
  * 用户更新请求对象
@@ -10,7 +10,7 @@ import lombok.Data;
  * @since 2025/6/21 - 19:37
  * @version 1.0
  */
-@Data
+@Getter
 public class UserUpdateRequest {
     /**
      * 用户名。
