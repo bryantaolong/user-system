@@ -1,7 +1,5 @@
 package com.bryan.system.service;
 
-import cn.hutool.poi.excel.ExcelUtil;
-import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bryan.system.common.exception.BusinessException;
@@ -11,7 +9,6 @@ import com.bryan.system.model.request.UserSearchRequest;
 import com.bryan.system.model.request.UserUpdateRequest;
 import com.bryan.system.model.entity.User;
 import com.bryan.system.mapper.UserMapper;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -320,34 +317,5 @@ public class UserService {
                     return existingUser;
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("用户ID: " + userId + " 不存在"));
-    }
-
-    /**
-     * 导出所有用户数据为 Excel 文件。
-     *
-     * @param response HttpServletResponse 用于写出 Excel 文件
-     */
-    public void exportAllUsers(HttpServletResponse response) {
-        // 1. 查询所有用户数据
-        List<User> userList = userMapper.selectList(new QueryWrapper<>());
-
-        // 2. 创建 ExcelWriter，默认写到内存
-        ExcelWriter writer = ExcelUtil.getWriter(true);
-
-        // 3. 写入数据（可自定义表头）
-        writer.write(userList, true);
-
-        // 4. 设置响应头，支持中文文件名
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
-        response.setHeader("Content-Disposition", "attachment;filename=users.xlsx");
-
-        // 5. 写出到前端
-        try (var out = response.getOutputStream()) {
-            writer.flush(out, true);
-        } catch (Exception e) {
-            throw new RuntimeException("导出用户数据失败", e);
-        } finally {
-            writer.close();
-        }
     }
 }

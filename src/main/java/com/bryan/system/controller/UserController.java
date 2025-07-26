@@ -7,9 +7,7 @@ import com.bryan.system.model.response.Result;
 import com.bryan.system.model.request.UserUpdateRequest;
 import com.bryan.system.model.entity.User;
 import com.bryan.system.model.request.ChangePasswordRequest;
-import com.bryan.system.service.UserExportService;
 import com.bryan.system.service.UserService;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,7 +30,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-    private final UserExportService userExportService;
 
     /**
      * 获取所有用户列表（不分页）。
@@ -188,24 +185,5 @@ public class UserController {
     public Result<User> deleteUser(@PathVariable Long userId) {
         // 1. 调用服务执行逻辑删除
         return Result.success(userService.deleteUser(userId));
-    }
-
-    /**
-     * 导出所有用户数据为 Excel 文件。
-     * <p>仅管理员可操作。</p>
-     *
-     * @param response HttpServletResponse
-     */
-    @GetMapping("/export/all")
-    @PreAuthorize("hasRole('ADMIN')")
-    public void exportAllUsers(HttpServletResponse response) {
-        userExportService.exportAllUsers(response);
-    }
-
-    @PostMapping("/export/condition")
-    @PreAuthorize("hasRole('ADMIN')")
-    public void exportUsersByCondition(@RequestBody UserSearchRequest searchRequest,
-                                       HttpServletResponse response) {
-        userExportService.exportUsersByCondition(searchRequest, response);
     }
 }
