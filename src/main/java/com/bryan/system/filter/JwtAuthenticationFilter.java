@@ -3,7 +3,7 @@ package com.bryan.system.filter;
 import com.bryan.system.model.response.Result;
 import com.bryan.system.common.enums.HttpStatus;
 import com.bryan.system.service.AuthService;
-import com.bryan.system.util.jwt.JwtUtil;
+import com.bryan.system.util.jwt.JwtUtils;
 import com.bryan.system.model.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -59,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             // 从 Token 的 Claims 中获取角色列表
-            List<String> roles = JwtUtil.getRolesFromTokenClaims(token);
+            List<String> roles = JwtUtils.getRolesFromTokenClaims(token);
             // 将角色字符串列表转换为 Spring Security 的 GrantedAuthority 列表
             Collection<? extends GrantedAuthority> authorities = roles.stream()
                     .map(SimpleGrantedAuthority::new)
