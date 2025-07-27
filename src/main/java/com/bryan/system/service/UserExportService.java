@@ -43,7 +43,7 @@ public class UserExportService {
     public void exportAllUsers(HttpServletResponse response) {
         try {
             // 设置响应头
-            setupResponse(response, "用户数据导出.xlsx");
+            setupResponse(response, "用户数据导出");
 
             // 使用EasyExcel导出
             ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), UserExportVO.class).build();
@@ -100,15 +100,15 @@ public class UserExportService {
     public void exportUsersByCondition(UserSearchRequest searchRequest, HttpServletResponse response) {
         try {
             // 设置响应头
-            setupResponse(response, "用户数据条件导出.xlsx");
+            setupResponse(response, "用户数据条件导出");
 
             // 使用EasyExcel导出
             ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), UserExportVO.class).build();
             WriteSheet writeSheet = EasyExcel.writerSheet("用户列表").build();
 
             // 分批查询写入
-            int pageSize = 10;
             int pageNum = 1;
+            int pageSize = 10;
             int totalRecords = 0;
             List<User> users;
 
