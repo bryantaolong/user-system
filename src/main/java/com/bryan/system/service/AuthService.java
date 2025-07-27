@@ -57,7 +57,6 @@ public class AuthService implements UserDetailsService {
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .phoneNumber(registerRequest.getPhoneNumber())
                 .email(registerRequest.getEmail())
-                .gender(registerRequest.getGender())
                 .roles("ROLE_USER")
                 .passwordResetTime(LocalDateTime.now())
                 .createBy(registerRequest.getUsername())
