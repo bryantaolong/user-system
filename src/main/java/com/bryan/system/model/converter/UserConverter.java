@@ -1,4 +1,4 @@
-package com.bryan.system.util;
+package com.bryan.system.model.converter;
 
 import com.bryan.system.model.entity.User;
 import com.bryan.system.model.vo.UserExportVO;
@@ -10,7 +10,7 @@ import com.bryan.system.model.vo.UserExportVO;
  * @version 1.0
  * @since 2025/7/26
  */
-public class UserConvert {
+public class UserConverter {
 
     public static UserExportVO toExportVO(User user) {
         if (user == null) {

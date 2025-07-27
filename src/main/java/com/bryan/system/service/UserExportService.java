@@ -11,7 +11,7 @@ import com.bryan.system.model.entity.User;
 import com.bryan.system.model.request.PageRequest;
 import com.bryan.system.model.request.UserSearchRequest;
 import com.bryan.system.model.vo.UserExportVO;
-import com.bryan.system.util.UserConvert;
+import com.bryan.system.model.converter.UserConverter;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,7 +70,7 @@ public class UserExportService {
 
                 if (CollUtil.isNotEmpty(users)) {
                     List<UserExportVO> exportData = users.stream()
-                            .map(UserConvert::toExportVO)
+                            .map(UserConverter::toExportVO)
                             .collect(Collectors.toList());
 
                     excelWriter.write(exportData, writeSheet);
@@ -125,7 +125,7 @@ public class UserExportService {
 
                 if (CollUtil.isNotEmpty(users)) {
                     List<UserExportVO> exportData = users.stream()
-                            .map(UserConvert::toExportVO)
+                            .map(UserConverter::toExportVO)
                             .collect(Collectors.toList());
 
                     excelWriter.write(exportData, writeSheet);
