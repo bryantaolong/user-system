@@ -1,5 +1,7 @@
 # User System
 
+*[中文说明请见 [README_zh-CN.md](README_zh-CN.md)]*
+
 ## Project Overview
 
 This project is a user management system based on Spring Boot 3, supporting user registration, login, information management, role-based access control, and data export. The backend uses PostgreSQL as the main database and Redis for caching and distributed scenarios. JWT is used for stateless authentication and role-based authorization.
@@ -29,7 +31,7 @@ src/
       filter/         # JWT authentication filter
       handler/        # MyBatis auto-fill, global exception handler
       mapper/         # MyBatis-Plus Mapper interfaces
-      model/          # Entities, request/response objects, VO, enums, exceptions
+      model/          # Entities, request/response objects, VO
       service/        # Service layer
       util/           # Utility classes (JWT, HTTP, etc.)
     resources/
@@ -69,6 +71,7 @@ src/
    ```
 
    Or run the packaged jar:
+
    ```sh
    mvn clean package
    java -jar target/user-system-0.0.1-SNAPSHOT.jar

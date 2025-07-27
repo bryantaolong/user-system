@@ -1,5 +1,7 @@
 # User System
 
+*[English  [README.md](README.md)]*
+
 ## 项目简介
 
 本项目为基于 Spring Boot 3 的用户管理系统，支持用户注册、登录、信息管理、权限控制、数据导出等功能。后端采用 PostgreSQL 作为主数据库，Redis 用于缓存和分布式场景，支持 JWT 无状态认证和基于角色的权限控制。
@@ -29,7 +31,7 @@ src/
       filter/         # JWT 认证过滤器
       handler/        # MyBatis 自动填充、全局异常处理
       mapper/         # MyBatis-Plus Mapper接口
-      model/          # 实体、请求/响应对象、VO、枚举、异常
+      model/          # 实体、请求/响应对象、VO
       service/        # 业务服务层
       util/           # 工具类（JWT、HTTP等）
     resources/
