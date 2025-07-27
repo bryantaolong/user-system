@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * ErrorCode
+ * HttpStatus
  * 统一错误码枚举，定义了系统中常见的业务错误代码和对应的消息。
  *
  * @author Bryan Long
