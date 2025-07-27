@@ -1,6 +1,6 @@
 package com.bryan.system.controller;
 
-import com.bryan.system.model.request.UserSearchRequest;
+import com.bryan.system.model.request.UserExportRequest;
 import com.bryan.system.service.UserExportService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,13 +30,13 @@ class UserExportController {
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
     public void exportAllUsers(HttpServletResponse response) {
-        userExportService.exportAllUsers(response);
+        userExportService.exportAllFields(new UserExportRequest(), response);
     }
 
-    @PostMapping("/condition")
+    @PostMapping("/field")
     @PreAuthorize("hasRole('ADMIN')")
-    public void exportUsersByCondition(@RequestBody UserSearchRequest searchRequest,
+    public void exportUsersByCondition(@RequestBody UserExportRequest exportRequest,
                                        HttpServletResponse response) {
-        userExportService.exportUsersByCondition(searchRequest, response);
+        userExportService.exportUsersByFields(exportRequest, response);
     }
 }
