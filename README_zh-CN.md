@@ -1,6 +1,6 @@
 # User System
 
-*[English  [README.md](README.md)]*
+[English README here (英文版说明)](./README.md)
 
 ## 项目简介
 
@@ -95,3 +95,10 @@ src/
 ## License
 
 本项目仅供学习交流，未设置开源协议
+
+
+## License
+
+本项目采用 MIT 协议。
+
+详见 [LICENSE](LICENSE) 。

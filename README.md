@@ -1,6 +1,6 @@
 # User System
 
-*[中文说明请见 [README_zh-CN.md](README_zh-CN.md)]*
+*[中文说明请见这里 (Chinese README here)](./README_zh-CN.md)*
 
 ## Project Overview
 
@@ -95,3 +95,9 @@ src/
 ## License
 
 For learning and communication only. No open source license specified.
+
+
+## License
+
+This project is licensed under the MIT License.
+See [LICENSE](LICENSE) for details.
