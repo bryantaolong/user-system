@@ -94,3 +94,9 @@ src/
 ## License
 
 For learning and communication only. No open source license specified.
+
+## License
+
+This project is licensed under the MIT License.
+See [LICENSE](LICENSE) for details.
+
