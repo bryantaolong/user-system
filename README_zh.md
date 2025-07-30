@@ -93,4 +93,5 @@ src/
 
 ## License
 
-本项目仅供学习交流，未设置开源协议
+本项目采用 MIT 协议。
+详见 [LICENSE](LICENSE) 。
