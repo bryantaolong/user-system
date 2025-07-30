@@ -53,14 +53,14 @@ src/
 
 - Update database and Redis settings in `src/main/resources/application-dev.yaml`.
 - General settings (logging, MyBatis-Plus logic delete, etc.) are in `src/main/resources/application.yaml`.
-- Database schema scripts are in [`sql/create_table.sql`](src/main/resources/sql/create_table.sql).
+- Database schema scripts are in [`src/main/resources/sql/create_table.sql`](src/main/resources/sql/create_table.sql).
 
 ## Getting Started
 
 1. Initialize the PostgreSQL database by running the schema script:
 
    ```sh
-   psql -U postgres -d postgres -f sql/create_table.sql
+   psql -U postgres -d postgres -f src/main/resources/sql/create_table.sql
    ```
 2. Start the Redis service.
 3. Build and run the project with Maven:
