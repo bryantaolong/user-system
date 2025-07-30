@@ -1,6 +1,6 @@
 # User System
 
-*[中文说明请见 [README_zh-CN.md](README_zh-CN.md)]*
+[中文说明请见这里 (Chinese README here)](./README_zh-CN.md)
 
 ## Project Overview
 
@@ -15,7 +15,6 @@ This project is a user management system based on Spring Boot 3, supporting user
 - Redis
 - Spring Security
 - EasyExcel (Alibaba Excel export)
-- Hutool (utility library)
 - Lombok
 - JJWT (JWT token)
 - Maven 3.9.x
@@ -54,7 +53,7 @@ src/
 
 - Update database and Redis settings in `src/main/resources/application-dev.yaml`.
 - General settings (logging, MyBatis-Plus logic delete, etc.) are in `src/main/resources/application.yaml`.
-- Database schema scripts are in [`sql/create_table.sql`](sql/create_table.sql).
+- Database schema scripts are in [`sql/create_table.sql`](src/main/resources/sql/create_table.sql).
 
 ## Getting Started
 

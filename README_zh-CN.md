@@ -1,6 +1,6 @@
 # User System
 
-*[English  [README.md](README.md)]*
+[English README here (英文版说明)](./README.md)
 
 ## 项目简介
 
@@ -15,7 +15,6 @@
 - Redis
 - Spring Security
 - EasyExcel (阿里巴巴 Excel 导出)
-- Hutool (工具库)
 - Lombok
 - JJWT (JWT 令牌)
 - Maven 3.9.x
@@ -54,7 +53,7 @@ src/
 
 - 数据库连接、Redis 配置请在 `src/main/resources/application-dev.yaml` 中修改。
 - 日志、MyBatis-Plus 逻辑删除等通用配置见 `src/main/resources/application.yaml`。
-- 数据库建表脚本见 [`sql/create_table.sql`](sql/create_table.sql)。
+- 数据库建表脚本见 [`sql/create_table.sql`](src/main/resources/sql/create_table.sql)。
 
 ## 启动方式
 
