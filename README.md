@@ -1,6 +1,6 @@
 # User System
 
-[中文说明请见这里 (Chinese README here)](./README_zh-CN.md)
+[中文说明请见这里 (Chinese README here)](./README_zh.md)
 
 ## Project Overview
 
