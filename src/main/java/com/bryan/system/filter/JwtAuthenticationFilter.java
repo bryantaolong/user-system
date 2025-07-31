@@ -3,6 +3,7 @@ package com.bryan.system.filter;
 import com.bryan.system.model.response.Result;
 import com.bryan.system.common.enums.HttpStatus;
 import com.bryan.system.service.AuthService;
+import com.bryan.system.service.redis.RedisStringService;
 import com.bryan.system.util.jwt.JwtUtils;
 import com.bryan.system.model.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,6 +11,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,23 +33,17 @@ import java.util.stream.Collectors; // 新增导入
  * @version 1.0
  */
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final AuthService authService;
     private final ObjectMapper objectMapper;
-
-    // 构造器注入
-    public JwtAuthenticationFilter(AuthService authService, ObjectMapper objectMapper) {
-        this.authService = authService;
-        this.objectMapper = objectMapper;
-    }
+    private final RedisStringService redisStringService;
 
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain
-    ) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader("Authorization");
         // 如果没有 Token 或者 Token 格式不正确，则直接放行，让后续的 Security 配置处理（例如匿名访问或认证失败）
         if (token == null || !token.startsWith("Bearer ")) {
@@ -58,6 +54,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         token = token.substring(7); // 截取掉 "Bearer " 前缀
 
         try {
+            // Redis Token 验证
+            String username = JwtUtils.getUsernameFromToken(token);
+            String redisToken = redisStringService.get(username);
+
+            if (redisToken == null || !redisToken.equals(token)) {
+                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write(
+                        objectMapper.writeValueAsString(
+                                Result.error(HttpStatus.UNAUTHORIZED, "Token已失效，请重新登录")
+                        )
+                );
+                return;
+            }
+
             // 从 Token 的 Claims 中获取角色列表
             List<String> roles = JwtUtils.getRolesFromToken(token);
             // 将角色字符串列表转换为 Spring Security 的 GrantedAuthority 列表
