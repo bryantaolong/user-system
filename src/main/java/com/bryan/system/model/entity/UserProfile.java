@@ -32,6 +32,8 @@ public class UserProfile {
 
     private LocalDateTime birthday;
 
+    private String avatar;
+
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
