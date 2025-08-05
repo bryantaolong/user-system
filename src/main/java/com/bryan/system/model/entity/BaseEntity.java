@@ -1,39 +1,22 @@
 package com.bryan.system.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.bryan.system.common.enums.GenderEnum;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * userProfile
+ * BaseEntity
  *
  * @author Bryan Long
  * @version 1.0
- * @since 2025/8/1
+ * @since 2025/8/5
  */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@TableName("\"user_profile\"")
-@KeySequence(value = "user_id_seq") // 指定序列名称
-public class UserProfile {
-    @TableId(type = IdType.ASSIGN_ID)
-    private Long userId;
-
-    private String realName;
-
-    @EnumValue
-    private GenderEnum gender;
-
-    private LocalDateTime birthday;
-
-    private String avatar;
+public class BaseEntity implements Serializable {
+    @TableId(type = IdType.AUTO)
+    private Long id;
 
     /** 逻辑删除 */
     @TableLogic
