@@ -1,6 +1,6 @@
 package com.bryan.system.model.converter;
 
-import com.bryan.system.common.enums.UserStatusEnum;
+import com.bryan.system.model.enums.UserStatusEnum;
 import com.bryan.system.model.entity.User;
 import com.bryan.system.model.vo.UserExportVO;
 
@@ -8,8 +8,6 @@ import com.bryan.system.model.vo.UserExportVO;
  * UserConvert
  *
  * @author Bryan Long
- * @version 1.0
- * @since 2025/7/26
  */
 public class UserConverter {
 

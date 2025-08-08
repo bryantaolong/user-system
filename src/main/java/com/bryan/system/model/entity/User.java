@@ -1,7 +1,7 @@
 package com.bryan.system.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.bryan.system.common.enums.UserStatusEnum;
+import com.bryan.system.model.enums.UserStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,8 +21,6 @@ import java.util.stream.Collectors;
  * User 用户实体类，实现 UserDetails 接口用于 Spring Security。
  *
  * @author Bryan Long
- * @version 1.0
- * @since 2025/6/19 - 19:45
  */
 @Data
 @Builder
