@@ -1,7 +1,7 @@
-package com.bryan.system.model.entity;
+package com.bryan.system.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.bryan.system.model.enums.UserStatusEnum;
+import com.bryan.system.domain.enums.UserStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

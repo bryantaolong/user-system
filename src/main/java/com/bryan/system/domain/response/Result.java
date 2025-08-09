@@ -1,6 +1,6 @@
-package com.bryan.system.model.response;
+package com.bryan.system.domain.response;
 
-import com.bryan.system.model.enums.HttpStatus;
+import com.bryan.system.domain.enums.HttpStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

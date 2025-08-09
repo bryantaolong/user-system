@@ -1,4 +1,4 @@
-package com.bryan.system.model.entity;
+package com.bryan.system.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;

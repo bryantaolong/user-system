@@ -1,4 +1,4 @@
-package com.bryan.system.model.enums;
+package com.bryan.system.domain.enums;
 
 import com.baomidou.mybatisplus.annotation.IEnum;
 import lombok.AllArgsConstructor;

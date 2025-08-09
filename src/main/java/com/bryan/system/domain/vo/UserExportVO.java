@@ -1,4 +1,4 @@
-package com.bryan.system.model.vo;
+package com.bryan.system.domain.vo;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;

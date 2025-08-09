@@ -1,6 +1,6 @@
-package com.bryan.system.model.request;
+package com.bryan.system.domain.request;
 
-import com.bryan.system.model.enums.UserStatusEnum;
+import com.bryan.system.domain.enums.UserStatusEnum;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 

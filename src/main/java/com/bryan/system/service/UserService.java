@@ -1,13 +1,13 @@
 package com.bryan.system.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.bryan.system.model.enums.UserStatusEnum;
+import com.bryan.system.domain.enums.UserStatusEnum;
 import com.bryan.system.exception.BusinessException;
 import com.bryan.system.exception.ResourceNotFoundException;
-import com.bryan.system.model.request.PageRequest;
-import com.bryan.system.model.request.UserSearchRequest;
-import com.bryan.system.model.request.UserUpdateRequest;
-import com.bryan.system.model.entity.User;
+import com.bryan.system.domain.request.PageRequest;
+import com.bryan.system.domain.request.UserSearchRequest;
+import com.bryan.system.domain.request.UserUpdateRequest;
+import com.bryan.system.domain.entity.User;
 import com.bryan.system.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

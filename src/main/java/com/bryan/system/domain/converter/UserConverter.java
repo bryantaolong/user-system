@@ -1,8 +1,8 @@
-package com.bryan.system.model.converter;
+package com.bryan.system.domain.converter;
 
-import com.bryan.system.model.enums.UserStatusEnum;
-import com.bryan.system.model.entity.User;
-import com.bryan.system.model.vo.UserExportVO;
+import com.bryan.system.domain.enums.UserStatusEnum;
+import com.bryan.system.domain.entity.User;
+import com.bryan.system.domain.vo.UserExportVO;
 
 /**
  * UserConvert

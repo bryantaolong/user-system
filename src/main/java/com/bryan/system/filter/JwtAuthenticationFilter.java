@@ -1,11 +1,11 @@
 package com.bryan.system.filter;
 
-import com.bryan.system.model.response.Result;
-import com.bryan.system.model.enums.HttpStatus;
+import com.bryan.system.domain.response.Result;
+import com.bryan.system.domain.enums.HttpStatus;
 import com.bryan.system.service.AuthService;
 import com.bryan.system.service.redis.RedisStringService;
 import com.bryan.system.util.jwt.JwtUtils;
-import com.bryan.system.model.entity.User;
+import com.bryan.system.domain.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

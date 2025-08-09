@@ -1,4 +1,4 @@
-package com.bryan.system.model.request;
+package com.bryan.system.domain.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
