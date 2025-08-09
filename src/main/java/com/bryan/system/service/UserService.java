@@ -1,9 +1,9 @@
 package com.bryan.system.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.bryan.system.common.enums.UserStatusEnum;
-import com.bryan.system.common.exception.BusinessException;
-import com.bryan.system.common.exception.ResourceNotFoundException;
+import com.bryan.system.model.enums.UserStatusEnum;
+import com.bryan.system.exception.BusinessException;
+import com.bryan.system.exception.ResourceNotFoundException;
 import com.bryan.system.model.request.PageRequest;
 import com.bryan.system.model.request.UserSearchRequest;
 import com.bryan.system.model.request.UserUpdateRequest;
@@ -20,9 +20,7 @@ import java.util.*;
 /**
  * 用户服务实现类，处理用户注册、登录、信息管理、导出等业务逻辑。
  *
- * @author Bryan
- * @version 2.0
- * @since 2025/6/19
+ * @author Bryan Long
  */
 @Slf4j
 @Service

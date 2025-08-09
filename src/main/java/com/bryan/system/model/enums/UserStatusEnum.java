@@ -1,27 +1,26 @@
-package com.bryan.system.common.enums;
+package com.bryan.system.model.enums;
 
 import com.baomidou.mybatisplus.annotation.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * GenderEnum 性别枚举
+ * UserStatusEnum 用户状态枚举
  *
  * @author Bryan Long
- * @version 1.0
- * @since 2025/8/5
  */
 @Getter
 @AllArgsConstructor
-public enum GenderEnum implements IEnum<Integer> {
-    FEMALE(0, "女"),
-    MALE(1, "男");
+public enum UserStatusEnum implements IEnum<Integer> {
+    NORMAL(0, "正常"),
+    BANNED(1, "封禁"),
+    LOCKED(2, "锁定");
 
     private final Integer code;
     private final String desc;
 
-    public static GenderEnum of(Integer code) {
-        for (GenderEnum e : values()) {
+    public static UserStatusEnum of(Integer code) {
+        for (UserStatusEnum e : values()) {
             if (e.getCode().equals(code)) {
                 return e;
             }

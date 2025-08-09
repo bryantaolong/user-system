@@ -1,7 +1,7 @@
 package com.bryan.system.service;
 
-import com.bryan.system.common.enums.UserStatusEnum;
-import com.bryan.system.common.exception.BusinessException;
+import com.bryan.system.model.enums.UserStatusEnum;
+import com.bryan.system.exception.BusinessException;
 import com.bryan.system.repository.UserRepository;
 import com.bryan.system.service.redis.RedisStringService;
 import com.bryan.system.util.http.HttpUtils;
@@ -26,8 +26,6 @@ import java.util.Map;
  * 用户认证服务类，处理注册、登录、鉴权、当前用户信息等逻辑。
  *
  * @author Bryan Long
- * @version 1.0
- * @since 2025/6/28
  */
 @Slf4j
 @Service

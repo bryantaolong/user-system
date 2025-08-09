@@ -1,7 +1,7 @@
 package com.bryan.system.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.bryan.system.common.enums.GenderEnum;
+import com.bryan.system.model.enums.GenderEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,8 +13,6 @@ import java.time.LocalDateTime;
  * userProfile
  *
  * @author Bryan Long
- * @version 1.0
- * @since 2025/8/1
  */
 @Data
 @Builder
