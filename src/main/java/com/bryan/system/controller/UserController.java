@@ -1,12 +1,9 @@
 package com.bryan.system.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.bryan.system.domain.request.PageRequest;
-import com.bryan.system.domain.request.UserSearchRequest;
+import com.bryan.system.domain.request.*;
 import com.bryan.system.domain.response.Result;
-import com.bryan.system.domain.request.UserUpdateRequest;
 import com.bryan.system.domain.entity.User;
-import com.bryan.system.domain.request.ChangePasswordRequest;
 import com.bryan.system.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -109,16 +106,14 @@ public class UserController {
      * <p>仅管理员可操作。</p>
      *
      * @param userId 目标用户ID
-     * @param roles  新角色字符串，逗号分隔（如 "ROLE_USER,ROLE_ADMIN"）
+     * @param req  新角色字符串，逗号分隔（如 "ROLE_USER,ROLE_ADMIN"）
      * @return 更新后的用户实体
      */
-    @PutMapping("/{userId}/role")
+    @PutMapping("/users/{userId}/roles")
     @PreAuthorize("hasRole('ADMIN')")
-    public Result<User> changeRole(
-            @PathVariable Long userId,
-            @RequestBody String roles) {
-        // 1. 调用服务变更角色
-        return Result.success(userService.changeRole(userId, roles));
+    public Result<User> changeRoleByIds(@PathVariable Long userId,
+                                        @Valid @RequestBody ChangeRoleRequest req) {
+        return Result.success(userService.changeRoleByIds(userId, req));
     }
 
     /**
