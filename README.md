@@ -36,6 +36,7 @@ src/
     resources/
       application.yaml
       application-dev.yaml
+      mapper/         # MyBatis mapper xmls
       sql/            # Database schema scripts
   test/
     java/com/bryan/system/
