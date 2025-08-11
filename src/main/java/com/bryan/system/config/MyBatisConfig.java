@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @MapperScan("com.bryan.system.mapper")
 @EnableTransactionManagement
-public class MyBatisPlusConfig {
+public class MyBatisConfig {
 
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {

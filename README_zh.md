@@ -27,10 +27,12 @@ src/
     java/com/bryan/system/
       config/         # 配置类（安全、Redis、MyBatis-Plus等）
       controller/     # RESTful 控制器
+      domain/         # 实体、请求/响应对象、VO
       filter/         # JWT 认证过滤器
       handler/        # MyBatis 自动填充、全局异常处理
       mapper/         # MyBatis-Plus Mapper接口
-      model/          # 实体、请求/响应对象、VO
+      mapper/         # MyBatis Mapper interfaces
+      repository/     # MyBatis-Plus QueryWrapper encapsulated repositories
       service/        # 业务服务层
       util/           # 工具类（JWT、HTTP等）
     resources/

@@ -67,7 +67,7 @@ public class UserRepository {
 
         // 2. 精确匹配字段
         addEqCondition(queryWrapper, "status", searchRequest.getStatus());
-        addEqCondition(queryWrapper, "last_login_time", searchRequest.getLastLoginAt());
+        addEqCondition(queryWrapper, "last_login_at", searchRequest.getLastLoginAt());
         addEqCondition(queryWrapper, "password_reset_at", searchRequest.getPasswordResetAt());
         addEqCondition(queryWrapper, "login_fail_count", searchRequest.getLoginFailCount());
         addEqCondition(queryWrapper, "locked_at", searchRequest.getLockedAt());
