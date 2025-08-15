@@ -1,11 +1,11 @@
 package com.bryan.system.filter;
 
-import com.bryan.system.model.response.Result;
-import com.bryan.system.common.enums.HttpStatus;
+import com.bryan.system.domain.response.Result;
+import com.bryan.system.domain.enums.HttpStatus;
 import com.bryan.system.service.AuthService;
 import com.bryan.system.service.redis.RedisStringService;
 import com.bryan.system.util.jwt.JwtUtils;
-import com.bryan.system.model.entity.User;
+import com.bryan.system.domain.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,8 +29,6 @@ import java.util.stream.Collectors; // 新增导入
  * JWT 认证过滤器，用于解析Token并设置Spring Security上下文。
  *
  * @author Bryan Long
- * @since 2025/6/19 - 20:02
- * @version 1.0
  */
 @Component
 @RequiredArgsConstructor

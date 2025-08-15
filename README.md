@@ -27,15 +27,17 @@ src/
     java/com/bryan/system/
       config/         # Configuration classes (security, Redis, MyBatis-Plus, etc.)
       controller/     # RESTful controllers
+      domain/         # Entities, request/response objects, VO
       filter/         # JWT authentication filter
       handler/        # MyBatis auto-fill, global exception handler
-      mapper/         # MyBatis-Plus Mapper interfaces
-      model/          # Entities, request/response objects, VO
+      mapper/         # MyBatis Mapper interfaces
+      repository/     # MyBatis-Plus QueryWrapper encapsulated repositories
       service/        # Service layer
       util/           # Utility classes (JWT, HTTP, etc.)
     resources/
       application.yaml
       application-dev.yaml
+      mapper/         # MyBatis mapper xmls
       sql/            # Database schema scripts
   test/
     java/com/bryan/system/

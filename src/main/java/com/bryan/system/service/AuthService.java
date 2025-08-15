@@ -1,15 +1,16 @@
 package com.bryan.system.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.bryan.system.common.enums.UserStatusEnum;
-import com.bryan.system.common.exception.BusinessException;
+import com.bryan.system.domain.entity.UserRole;
+import com.bryan.system.domain.enums.UserStatusEnum;
+import com.bryan.system.exception.BusinessException;
+import com.bryan.system.repository.UserRepository;
+import com.bryan.system.repository.UserRoleRepository;
 import com.bryan.system.service.redis.RedisStringService;
 import com.bryan.system.util.http.HttpUtils;
 import com.bryan.system.util.jwt.JwtUtils;
-import com.bryan.system.mapper.UserMapper;
-import com.bryan.system.model.entity.User;
-import com.bryan.system.model.request.LoginRequest;
-import com.bryan.system.model.request.RegisterRequest;
+import com.bryan.system.domain.entity.User;
+import com.bryan.system.domain.request.LoginRequest;
+import com.bryan.system.domain.request.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,15 +28,14 @@ import java.util.Map;
  * 用户认证服务类，处理注册、登录、鉴权、当前用户信息等逻辑。
  *
  * @author Bryan Long
- * @version 1.0
- * @since 2025/6/28
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService implements UserDetailsService {
 
-    private final UserMapper userMapper;
+    private final UserRepository userRepository;
+    private final UserRoleRepository userRoleRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisStringService redisStringService;
 
@@ -49,34 +49,33 @@ public class AuthService implements UserDetailsService {
      */
     public User register(RegisterRequest registerRequest) {
         // 1. 检查用户名是否已存在
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", registerRequest.getUsername());
-
-        if (userMapper.selectOne(queryWrapper) != null) {
+        if(userRepository.findByUsername(registerRequest.getUsername()) != null) {
             throw new BusinessException("用户名已存在");
         }
 
-        // 2. 构建用户实体，密码加密
+        // 2. 查出默认角色
+        UserRole defaultRole = userRoleRepository.findByIsDefaultTrue()
+                .orElseThrow(() -> new BusinessException("系统未配置默认角色"));
+
+        // 3. 构建用户实体，密码加密
         User user = User.builder()
                 .username(registerRequest.getUsername())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .phoneNumber(registerRequest.getPhoneNumber())
+                .phone(registerRequest.getPhone())
                 .email(registerRequest.getEmail())
-                .roles("ROLE_USER")
-                .passwordResetTime(LocalDateTime.now())
-                .createBy(registerRequest.getUsername())
-                .updateBy(registerRequest.getUsername())
+                .roles(defaultRole.getRoleName())
+                .passwordResetAt(LocalDateTime.now())
                 .build();
 
-        // 3. 插入用户数据
-        int inserted = userMapper.insert(user);
-        if (inserted == 0) {
+        // 4. 插入用户数据
+        User saved = userRepository.save(user);
+        if (saved == null) {
             throw new BusinessException("插入数据库失败");
         }
 
         log.info("用户注册成功: id: {}, username: {} ", user.getId(), user.getUsername());
 
-        // 4. 返回新注册用户
+        // 5. 返回新注册用户
         return user;
     }
 
@@ -89,9 +88,7 @@ public class AuthService implements UserDetailsService {
      */
     public String login(LoginRequest loginRequest) {
         // 1. 验证用户凭证
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", loginRequest.getUsername());
-        User user = userMapper.selectOne(queryWrapper);
+        User user = userRepository.findByUsername(loginRequest.getUsername());
 
         if (user == null) {
             throw new BusinessException("用户名或密码错误");
@@ -103,7 +100,7 @@ public class AuthService implements UserDetailsService {
             // 如果输入密码错误次数达到限额-硬编码为 5，则锁定账号
             if(user.getLoginFailCount() >= 5) {
                 user.setStatus(UserStatusEnum.NORMAL);
-                user.setAccountLockTime(LocalDateTime.now());
+                user.setPasswordResetAt(LocalDateTime.now());
                 throw new BusinessException("输入密码错误次数过多，账号锁定");
             }
             throw new BusinessException("用户名或密码错误");
@@ -118,10 +115,10 @@ public class AuthService implements UserDetailsService {
         }
 
         // 3. 更新用户登录信息
-        user.setLoginTime(LocalDateTime.now());
-        user.setLoginIp(HttpUtils.getClientIp());
+        user.setLastLoginAt(LocalDateTime.now());
+        user.setLastLoginIp(HttpUtils.getClientIp());
         user.setLoginFailCount(0); // 重置密码输入错误次数
-        userMapper.updateById(user);
+        userRepository.save(user);
 
         // 4. 生成新的JWT Token
         Map<String, Object> claims = new HashMap<>();
@@ -174,7 +171,7 @@ public class AuthService implements UserDetailsService {
         Long userId = JwtUtils.getCurrentUserId();
 
         // 2. 查询数据库返回用户信息
-        return userMapper.selectById(userId);
+        return userRepository.findById(userId);
     }
 
     /**
@@ -262,10 +259,7 @@ public class AuthService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 1. 根据用户名查询用户
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", username);
-
-        User user = userMapper.selectOne(queryWrapper);
+        User user = userRepository.findByUsername(username);
 
         // 2. 用户不存在则抛出异常
         if (user == null) {

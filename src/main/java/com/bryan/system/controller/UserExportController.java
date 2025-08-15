@@ -1,7 +1,7 @@
 package com.bryan.system.controller;
 
-import com.bryan.system.model.request.UserExportRequest;
-import com.bryan.system.model.vo.UserExportVO;
+import com.bryan.system.domain.request.UserExportRequest;
+import com.bryan.system.domain.vo.UserExportVO;
 import com.bryan.system.service.UserExportService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +14,6 @@ import java.util.Map;
  * UserExportController
  *
  * @author Bryan Long
- * @version 1.0
- * @since 2025/7/26
  */
 @RestController
 @RequestMapping("/api/user/export")
