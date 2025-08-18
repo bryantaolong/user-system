@@ -3,6 +3,9 @@ spring:
     activate:
       on-profile: dev
   datasource:
+#    url: jdbc:postgresql://postgres:5432/user_system
+#    username: postgres
+#    password: postgres
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: 082400
@@ -12,6 +15,8 @@ spring:
       maximum-pool-size: 20
   data:
     redis:
+#      host: redis
+#      port: 6379
       host: localhost
       port: 6379
       password: 123456
