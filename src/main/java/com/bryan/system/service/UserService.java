@@ -1,15 +1,15 @@
 package com.bryan.system.service;
 
 import com.bryan.system.domain.entity.SysUser;
-import com.bryan.system.domain.entity.SysUserRole;
-import com.bryan.system.domain.enums.SysUserStatusEnum;
+import com.bryan.system.domain.entity.UserRole;
+import com.bryan.system.domain.enums.UserStatusEnum;
 import com.bryan.system.domain.request.ChangeRoleRequest;
 import com.bryan.system.domain.response.PageResult;
 import com.bryan.system.exception.BusinessException;
 import com.bryan.system.exception.ResourceNotFoundException;
 import com.bryan.system.domain.request.PageRequest;
-import com.bryan.system.domain.request.SysUserSearchRequest;
-import com.bryan.system.domain.request.SysUserUpdateRequest;
+import com.bryan.system.domain.request.UserSearchRequest;
+import com.bryan.system.domain.request.UserUpdateRequest;
 import com.bryan.system.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -92,7 +92,7 @@ public class UserService {
      * @param pageRequest 分页请求
      * @return 符合查询条件的分页对象（Page）
      */
-    public PageResult<SysUser> searchUsers(SysUserSearchRequest searchRequest,
+    public PageResult<SysUser> searchUsers(UserSearchRequest searchRequest,
                                            PageRequest pageRequest) {
         long offset = (pageRequest.getPageNum() - 1) * pageRequest.getPageSize();
         List<SysUser> rows = userMapper.selectPage(
@@ -122,7 +122,7 @@ public class UserService {
      * @throws ResourceNotFoundException 用户不存在时抛出
      * @throws BusinessException         用户名重复时抛出
      */
-    public SysUser updateUser(Long userId, SysUserUpdateRequest req) {
+    public SysUser updateUser(Long userId, UserUpdateRequest req) {
         SysUser user = getUserById(userId);
 
         // 用户名不能重复
@@ -153,17 +153,17 @@ public class UserService {
     @Transactional
     public SysUser changeRoleByIds(Long userId, ChangeRoleRequest req) {
         List<Long> ids = req.getRoleIds();
-        List<SysUserRole> roles = userRoleService.findByIds(ids);
+        List<UserRole> roles = userRoleService.findByIds(ids);
 
         if (roles.size() != ids.size()) {
             Set<Long> exist = roles.stream()
-                    .map(SysUserRole::getId)
+                    .map(UserRole::getId)
                     .collect(Collectors.toSet());
             ids.removeAll(exist);
             throw new IllegalArgumentException("角色不存在：" + ids);
         }
         String roleNames = roles.stream()
-                .map(SysUserRole::getRoleName)
+                .map(UserRole::getRoleName)
                 .collect(Collectors.joining(","));
         SysUser user = getUserById(userId);
         user.setRoles(roleNames);
@@ -222,7 +222,7 @@ public class UserService {
      */
     public SysUser blockUser(Long userId) {
         SysUser user = getUserById(userId);
-        user.setStatus(SysUserStatusEnum.BANNED);
+        user.setStatus(UserStatusEnum.BANNED);
         userMapper.update(user);
         log.info("用户ID: {} 封禁成功", userId);
         return user;
@@ -237,7 +237,7 @@ public class UserService {
      */
     public SysUser unblockUser(Long userId) {
         SysUser user = getUserById(userId);
-        user.setStatus(SysUserStatusEnum.NORMAL);
+        user.setStatus(UserStatusEnum.NORMAL);
         userMapper.update(user);
         log.info("用户ID: {} 解封成功", userId);
         return user;
@@ -252,8 +252,7 @@ public class UserService {
      */
     public SysUser deleteUser(Long userId) {
         SysUser user = getUserById(userId);
-        user.setDeleted(1);
-        userMapper.update(user);
+        userMapper.updateDeletedById(userId, 1);
         log.info("用户ID: {} 删除成功 (逻辑删除)", userId);
         return user;
     }

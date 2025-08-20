@@ -1,7 +1,7 @@
 package com.bryan.system.service;
 
 import com.bryan.system.domain.dto.RoleOptionDTO;
-import com.bryan.system.domain.entity.SysUserRole;
+import com.bryan.system.domain.entity.UserRole;
 import com.bryan.system.mapper.UserRoleMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class UserRoleService {
                 .toList();
     }
 
-    public List<SysUserRole> findByIds(Collection<Long> ids) {
+    public List<UserRole> findByIds(Collection<Long> ids) {
         return userRoleMapper.selectByIdList(ids);
     }
 }

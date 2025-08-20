@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SysUserProfile {
+public class UserProfile {
 
     private Long userId;
 

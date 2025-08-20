@@ -10,9 +10,9 @@ import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 import com.bryan.system.domain.entity.SysUser;
 import com.bryan.system.exception.BusinessException;
-import com.bryan.system.domain.request.SysUserExportRequest;
-import com.bryan.system.domain.vo.SysUserExportVO;
-import com.bryan.system.domain.converter.SysUserConverter;
+import com.bryan.system.domain.request.UserExportRequest;
+import com.bryan.system.domain.vo.UserExportVO;
+import com.bryan.system.domain.converter.UserConverter;
 import com.bryan.system.mapper.UserMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +48,7 @@ public class UserExportService {
      *
      * @param exportRequest 可包含fileName和status过滤条件
      */
-    public void exportAllFields(SysUserExportRequest exportRequest, HttpServletResponse response) {
+    public void exportAllFields(UserExportRequest exportRequest, HttpServletResponse response) {
         try {
             // 1. 设置响应头
             String fileName = Optional.ofNullable(exportRequest.getFileName())
@@ -57,7 +57,7 @@ public class UserExportService {
 
             // 2. 构建Excel写入器（不使用字段过滤）
             ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream())
-                    .head(SysUserExportVO.class) // 自动包含所有@ExcelProperty字段
+                    .head(UserExportVO.class) // 自动包含所有@ExcelProperty字段
                     .registerWriteHandler(new CustomCellWriteHandler()) // 保持样式
                     .build();
 
@@ -73,7 +73,7 @@ public class UserExportService {
     /**
      * 按字段导出用户数据
      */
-    public void exportUsersByFields(SysUserExportRequest exportRequest, HttpServletResponse response) {
+    public void exportUsersByFields(UserExportRequest exportRequest, HttpServletResponse response) {
         try {
             // 1. 校验字段名
             validateFieldNames(exportRequest.getFields());
@@ -85,7 +85,7 @@ public class UserExportService {
 
             // 3. 构建Excel写入器（包含动态字段和样式处理）
             ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream())
-                    .head(SysUserExportVO.class)
+                    .head(UserExportVO.class)
                     .includeColumnFieldNames(exportRequest.getFields())
                     .registerWriteHandler(new CustomCellWriteHandler())
                     .build();
@@ -108,7 +108,7 @@ public class UserExportService {
         }
 
         // 获取VO中所有有效字段
-        Set<String> validFields = Arrays.stream(SysUserExportVO.class.getDeclaredFields())
+        Set<String> validFields = Arrays.stream(UserExportVO.class.getDeclaredFields())
                 .filter(f -> f.isAnnotationPresent(ExcelProperty.class))
                 .map(Field::getName)
                 .collect(Collectors.toSet());
@@ -157,7 +157,7 @@ public class UserExportService {
      */
     private void executeBatchExport(ExcelWriter excelWriter,
                                     WriteSheet writeSheet,
-                                    SysUserExportRequest exportRequest) {
+                                    UserExportRequest exportRequest) {
         int pageNum = 1;
         int pageSize = 1000;
         int totalExported = 0;
@@ -171,8 +171,8 @@ public class UserExportService {
             if (CollectionUtils.isEmpty(records)) {
                 break;
             }
-            List<SysUserExportVO> vos = records.stream()
-                    .map(SysUserConverter::toExportVO)
+            List<UserExportVO> vos = records.stream()
+                    .map(UserConverter::toExportVO)
                     .toList();
             excelWriter.write(vos, writeSheet);
             totalExported += vos.size();
@@ -186,9 +186,9 @@ public class UserExportService {
     /**
      * 实体转换
      */
-    private List<SysUserExportVO> convertToVO(List<SysUser> sysUsers) {
+    private List<UserExportVO> convertToVO(List<SysUser> sysUsers) {
         return sysUsers.stream()
-                .map(SysUserConverter::toExportVO)
+                .map(UserConverter::toExportVO)
                 .collect(Collectors.toList());
     }
 

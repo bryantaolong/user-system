@@ -1,22 +1,22 @@
 package com.bryan.system.domain.converter;
 
-import com.bryan.system.domain.enums.SysUserStatusEnum;
+import com.bryan.system.domain.enums.UserStatusEnum;
 import com.bryan.system.domain.entity.SysUser;
-import com.bryan.system.domain.vo.SysUserExportVO;
+import com.bryan.system.domain.vo.UserExportVO;
 
 /**
  * UserConvert
  *
  * @author Bryan Long
  */
-public class SysUserConverter {
+public class UserConverter {
 
-    public static SysUserExportVO toExportVO(SysUser sysUser) {
+    public static UserExportVO toExportVO(SysUser sysUser) {
         if (sysUser == null) {
             return null;
         }
 
-        return SysUserExportVO.builder()
+        return UserExportVO.builder()
                 .id(sysUser.getId())
                 .username(sysUser.getUsername())
                 .phone(sysUser.getPhone())
@@ -36,7 +36,7 @@ public class SysUserConverter {
                 .build();
     }
 
-    private static String convertStatus(SysUserStatusEnum status) {
+    private static String convertStatus(UserStatusEnum status) {
         if (status == null) return "";
         return switch (status) {
             case NORMAL -> "正常";

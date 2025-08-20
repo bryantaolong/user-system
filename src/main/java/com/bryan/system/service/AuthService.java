@@ -1,8 +1,8 @@
 package com.bryan.system.service;
 
 import com.bryan.system.domain.entity.SysUser;
-import com.bryan.system.domain.entity.SysUserRole;
-import com.bryan.system.domain.enums.SysUserStatusEnum;
+import com.bryan.system.domain.entity.UserRole;
+import com.bryan.system.domain.enums.UserStatusEnum;
 import com.bryan.system.exception.BusinessException;
 import com.bryan.system.mapper.UserMapper;
 import com.bryan.system.mapper.UserRoleMapper;
@@ -54,7 +54,7 @@ public class AuthService implements UserDetailsService {
         }
 
         // 2. 查出默认角色
-        SysUserRole defaultRole = userRoleMapper.selectOneByIsDefaultTrue();
+        UserRole defaultRole = userRoleMapper.selectOneByIsDefaultTrue();
         if(defaultRole == null) {
             throw new BusinessException("系统未配置默认角色");
         }
@@ -101,7 +101,7 @@ public class AuthService implements UserDetailsService {
 
             // 如果输入密码错误次数达到限额-硬编码为 5，则锁定账号
             if(sysUser.getLoginFailCount() >= 5) {
-                sysUser.setStatus(SysUserStatusEnum.NORMAL);
+                sysUser.setStatus(UserStatusEnum.NORMAL);
                 sysUser.setPasswordResetAt(LocalDateTime.now());
                 throw new BusinessException("输入密码错误次数过多，账号锁定");
             }

@@ -1,6 +1,6 @@
 package com.bryan.system.domain.request;
 
-import com.bryan.system.domain.enums.SysUserStatusEnum;
+import com.bryan.system.domain.enums.UserStatusEnum;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * @since 2025/7/26
  */
 @Getter
-public class SysUserSearchRequest {
+public class UserSearchRequest {
     // 用户名校验
     @Size(min = 2, max = 20, message = "用户名长度应在2-20个字符之间")
     @Pattern(regexp = "^[a-zA-Z0-9_\\u4e00-\\u9fa5]+$", message = "用户名只能包含中文、字母、数字和下划线")
@@ -30,7 +30,7 @@ public class SysUserSearchRequest {
     private String email;
 
     @NotNull(message = "状态不能为空")
-    private SysUserStatusEnum status;
+    private UserStatusEnum status;
 
     // 角色校验
     @Pattern(regexp = "^[a-zA-Z0-9_,-]*$", message = "角色格式不正确") // 允许字母、数字、逗号和横线

@@ -10,7 +10,7 @@ import java.util.List;
  * @author Bryan Long
  */
 @Getter
-public class SysUserExportRequest {
+public class UserExportRequest {
     /**
      * 要导出的字段列表
      */

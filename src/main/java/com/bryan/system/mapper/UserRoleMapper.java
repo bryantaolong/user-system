@@ -1,6 +1,6 @@
 package com.bryan.system.mapper;
 
-import com.bryan.system.domain.entity.SysUserRole;
+import com.bryan.system.domain.entity.UserRole;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,9 +15,9 @@ import java.util.List;
 @Mapper
 public interface UserRoleMapper {
 
-    SysUserRole selectOneByIsDefaultTrue();
+    UserRole selectOneByIsDefaultTrue();
 
-    List<SysUserRole> selectAll();
+    List<UserRole> selectAll();
 
-    List<SysUserRole> selectByIdList(@Param("ids") Collection<Long> ids);
+    List<UserRole> selectByIdList(@Param("ids") Collection<Long> ids);
 }

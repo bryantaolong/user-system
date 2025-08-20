@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SysUserRole implements Serializable {
+public class UserRole implements Serializable {
 
     private Long id;
 

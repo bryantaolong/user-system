@@ -10,7 +10,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum SysUserStatusEnum {
+public enum UserStatusEnum {
     NORMAL(0, "正常"),
     BANNED(1, "封禁"),
     LOCKED(2, "锁定");
@@ -18,8 +18,8 @@ public enum SysUserStatusEnum {
     private final Integer code;
     private final String desc;
 
-    public static SysUserStatusEnum of(Integer code) {
-        for (SysUserStatusEnum e : values()) {
+    public static UserStatusEnum of(Integer code) {
+        for (UserStatusEnum e : values()) {
             if (e.getCode().equals(code)) {
                 return e;
             }

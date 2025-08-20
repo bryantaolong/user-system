@@ -1,6 +1,6 @@
 package com.bryan.system.domain.entity;
 
-import com.bryan.system.domain.enums.SysUserStatusEnum;
+import com.bryan.system.domain.enums.UserStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,7 +38,7 @@ public class SysUser implements Serializable, UserDetails {
     private String email;
 
     /** 使用枚举 */
-    private SysUserStatusEnum status;
+    private UserStatusEnum status;
 
     /** 逗号分隔的角色标识 */
     private String roles;
@@ -95,11 +95,11 @@ public class SysUser implements Serializable, UserDetails {
     @Override
     public boolean isAccountNonLocked() {
         // 正常状态直接返回 true
-        if (this.status == SysUserStatusEnum.NORMAL) {
+        if (this.status == UserStatusEnum.NORMAL) {
             return true;
         }
         // 锁定状态：判断锁定时间是否已过 1 小时
-        if (this.status == SysUserStatusEnum.LOCKED && this.lockedAt != null) {
+        if (this.status == UserStatusEnum.LOCKED && this.lockedAt != null) {
             return LocalDateTime.now()
                     .isAfter(this.lockedAt.plusHours(1));
         }
@@ -113,6 +113,6 @@ public class SysUser implements Serializable, UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.status != SysUserStatusEnum.BANNED && this.deleted == 0;
+        return this.status != UserStatusEnum.BANNED && this.deleted == 0;
     }
 }

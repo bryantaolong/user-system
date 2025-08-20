@@ -77,7 +77,7 @@ public class UserController {
     @PostMapping("/search")
     @PreAuthorize("hasRole('ADMIN')")
     public Result<PageResult<SysUser>> searchUsers(
-            @RequestBody SysUserSearchRequest searchRequest,
+            @RequestBody UserSearchRequest searchRequest,
             @ModelAttribute PageRequest pageRequest) {
         PageResult<SysUser> page = userService.searchUsers(searchRequest, pageRequest);
         return Result.success(page);
@@ -88,7 +88,7 @@ public class UserController {
      * <p>允许管理员更新任意用户信息，或用户本人更新自己的信息。</p>
      *
      * @param userId             目标用户ID
-     * @param sysUserUpdateRequest  包含需要更新的信息（用户名、邮箱等）
+     * @param userUpdateRequest  包含需要更新的信息（用户名、邮箱等）
      * @return 更新后的用户实体
      * @throws IllegalArgumentException 当权限校验失败时抛出
      */
@@ -96,9 +96,9 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN') or (#userId == authentication.principal.id)")
     public Result<SysUser> updateUser(
             @PathVariable Long userId,
-            @RequestBody @Valid SysUserUpdateRequest sysUserUpdateRequest) {
+            @RequestBody @Valid UserUpdateRequest userUpdateRequest) {
         // 1. 调用服务更新用户信息
-        return Result.success(userService.updateUser(userId, sysUserUpdateRequest));
+        return Result.success(userService.updateUser(userId, userUpdateRequest));
     }
 
     /**

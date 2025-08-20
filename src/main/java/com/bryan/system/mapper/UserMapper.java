@@ -1,9 +1,9 @@
 package com.bryan.system.mapper;
 
 import com.bryan.system.domain.entity.SysUser;
-import com.bryan.system.domain.enums.SysUserStatusEnum;
-import com.bryan.system.domain.request.SysUserExportRequest;
-import com.bryan.system.domain.request.SysUserSearchRequest;
+import com.bryan.system.domain.enums.UserStatusEnum;
+import com.bryan.system.domain.request.UserExportRequest;
+import com.bryan.system.domain.request.UserSearchRequest;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -25,13 +25,15 @@ public interface UserMapper {
 
     List<SysUser> selectPage(@Param("offset") long offset,
                              @Param("pageSize") long pageSize,
-                             @Param("req") SysUserSearchRequest search,
-                             @Param("export") SysUserExportRequest export);
+                             @Param("req") UserSearchRequest search,
+                             @Param("export") UserExportRequest export);
 
-    SysUser selectByStatus(@Param("status") SysUserStatusEnum status);
+    SysUser selectByStatus(@Param("status") UserStatusEnum status);
 
     int update(SysUser user);
 
-    long count(@Param("req") SysUserSearchRequest search,
-               @Param("export") SysUserExportRequest export);
+    int updateDeletedById(@Param("id") Long id, @Param("deleted") Integer deleted);
+
+    long count(@Param("req") UserSearchRequest search,
+               @Param("export") UserExportRequest export);
 }

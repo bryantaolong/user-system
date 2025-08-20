@@ -4,7 +4,7 @@
 
 <mapper namespace="com.bryan.system.mapper.UserRoleMapper">
 
-    <resultMap id="BaseResultMap" type="com.bryan.system.domain.entity.SysUserRole">
+    <resultMap id="BaseResultMap" type="com.bryan.system.domain.entity.UserRole">
         <id column="id" property="id"/>
         <result column="role_name" property="roleName"/>
         <result column="is_default" property="isDefault"/>
