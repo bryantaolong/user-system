@@ -1,9 +1,9 @@
 package com.bryan.system.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.bryan.system.domain.entity.SysUser;
 import com.bryan.system.domain.request.*;
+import com.bryan.system.domain.response.PageResult;
 import com.bryan.system.domain.response.Result;
-import com.bryan.system.domain.entity.User;
 import com.bryan.system.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class UserController {
      */
     @PostMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
-    public Result<Page<User>> getAllUsers(@RequestBody PageRequest pageRequest) {
+    public Result<PageResult<SysUser>> getAllUsers(@RequestBody PageRequest pageRequest) {
         // 1. 调用服务层获取所有用户列表
         return Result.success(userService.getAllUsers(pageRequest));
     }
@@ -48,7 +48,7 @@ public class UserController {
      */
     @GetMapping("/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public Result<User> getUserById(@PathVariable Long userId) {
+    public Result<SysUser> getUserById(@PathVariable Long userId) {
         // 1. 调用服务获取用户信息
         return Result.success(userService.getUserById(userId));
     }
@@ -62,7 +62,7 @@ public class UserController {
      */
     @GetMapping("/username/{username}")
     @PreAuthorize("hasRole('ADMIN')")
-    public Result<User> getUserByUsername(@PathVariable String username) {
+    public Result<SysUser> getUserByUsername(@PathVariable String username) {
         // 1. 调用服务获取用户信息
         return Result.success(userService.getUserByUsername(username));
     }
@@ -76,10 +76,10 @@ public class UserController {
      */
     @PostMapping("/search")
     @PreAuthorize("hasRole('ADMIN')")
-    public Result<Page<User>> searchUsers(
-            @RequestBody UserSearchRequest searchRequest,
+    public Result<PageResult<SysUser>> searchUsers(
+            @RequestBody SysUserSearchRequest searchRequest,
             @ModelAttribute PageRequest pageRequest) {
-        Page<User> page = userService.searchUsers(searchRequest, pageRequest);
+        PageResult<SysUser> page = userService.searchUsers(searchRequest, pageRequest);
         return Result.success(page);
     }
 
@@ -88,17 +88,17 @@ public class UserController {
      * <p>允许管理员更新任意用户信息，或用户本人更新自己的信息。</p>
      *
      * @param userId             目标用户ID
-     * @param userUpdateRequest  包含需要更新的信息（用户名、邮箱等）
+     * @param sysUserUpdateRequest  包含需要更新的信息（用户名、邮箱等）
      * @return 更新后的用户实体
      * @throws IllegalArgumentException 当权限校验失败时抛出
      */
     @PutMapping("/{userId}")
     @PreAuthorize("hasRole('ADMIN') or (#userId == authentication.principal.id)")
-    public Result<User> updateUser(
+    public Result<SysUser> updateUser(
             @PathVariable Long userId,
-            @RequestBody @Valid UserUpdateRequest userUpdateRequest) {
+            @RequestBody @Valid SysUserUpdateRequest sysUserUpdateRequest) {
         // 1. 调用服务更新用户信息
-        return Result.success(userService.updateUser(userId, userUpdateRequest));
+        return Result.success(userService.updateUser(userId, sysUserUpdateRequest));
     }
 
     /**
@@ -111,8 +111,8 @@ public class UserController {
      */
     @PutMapping("/users/{userId}/roles")
     @PreAuthorize("hasRole('ADMIN')")
-    public Result<User> changeRoleByIds(@PathVariable Long userId,
-                                        @Valid @RequestBody ChangeRoleRequest req) {
+    public Result<SysUser> changeRoleByIds(@PathVariable Long userId,
+                                           @Valid @RequestBody ChangeRoleRequest req) {
         return Result.success(userService.changeRoleByIds(userId, req));
     }
 
@@ -126,7 +126,7 @@ public class UserController {
      */
     @PutMapping("/{userId}/password")
     @PreAuthorize("hasRole('ADMIN') or (#userId == authentication.principal.id)")
-    public Result<User> changePassword(
+    public Result<SysUser> changePassword(
             @PathVariable Long userId,
             @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
         // 1. 调用服务层执行密码修改
@@ -147,7 +147,7 @@ public class UserController {
      */
     @PutMapping("/{userId}/password/force/{newPassword}")
     @PreAuthorize("hasRole('ADMIN')")
-    public Result<User> changePasswordForcefully(
+    public Result<SysUser> changePasswordForcefully(
             @PathVariable Long userId,
             @PathVariable  String newPassword) {
         // 1. 调用服务层执行密码修改
@@ -163,7 +163,7 @@ public class UserController {
      */
     @PutMapping("/{userId}/block")
     @PreAuthorize("hasRole('ADMIN')")
-    public Result<User> blockUser(
+    public Result<SysUser> blockUser(
             @PathVariable Long userId) {
         // 1. 调用服务封禁用户
         return Result.success(userService.blockUser(userId));
@@ -178,7 +178,7 @@ public class UserController {
      */
     @PutMapping("/{userId}/unblock")
     @PreAuthorize("hasRole('ADMIN')")
-    public Result<User> unblockUser(
+    public Result<SysUser> unblockUser(
             @PathVariable Long userId) {
         // 1. 调用服务解封用户
         return Result.success(userService.unblockUser(userId));
@@ -193,7 +193,7 @@ public class UserController {
      */
     @DeleteMapping("/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public Result<User> deleteUser(@PathVariable Long userId) {
+    public Result<SysUser> deleteUser(@PathVariable Long userId) {
         // 1. 调用服务执行逻辑删除
         return Result.success(userService.deleteUser(userId));
     }

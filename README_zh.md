@@ -10,7 +10,7 @@
 
 * Java 17
 * Spring Boot 3.5.4
-* MyBatis-Plus
+* MyBatis
 * PostgreSQL 17.x
 * Redis
 * Spring Security
@@ -31,7 +31,6 @@ src/
       filter/         # JWT 认证过滤器
       handler/        # MyBatis 自动填充、全局异常处理
       mapper/         # MyBatis-Plus Mapper 接口
-      repository/     # MyBatis-Plus QueryWrapper 封装的仓库
       service/        # 业务服务层
       util/           # 工具类（JWT、HTTP等）
     resources/

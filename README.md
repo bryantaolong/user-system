@@ -10,7 +10,7 @@ This project is a user management system based on Spring Boot 3, supporting user
 
 * Java 17
 * Spring Boot 3.5.4
-* MyBatis-Plus
+* MyBatis
 * PostgreSQL 17.x
 * Redis
 * Spring Security
@@ -31,7 +31,6 @@ src/
       filter/         # JWT authentication filter
       handler/        # MyBatis auto-fill, global exception handler
       mapper/         # MyBatis Mapper interfaces
-      repository/     # MyBatis-Plus QueryWrapper encapsulated repositories
       service/        # Service layer
       util/           # Utility classes (JWT, HTTP, etc.)
     resources/

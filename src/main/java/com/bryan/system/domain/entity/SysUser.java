@@ -1,7 +1,6 @@
 package com.bryan.system.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
-import com.bryan.system.domain.enums.UserStatusEnum;
+import com.bryan.system.domain.enums.SysUserStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,10 +25,8 @@ import java.util.stream.Collectors;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("\"user\"")
-@KeySequence(value = "user_id_seq") // 指定序列名称
-public class User implements Serializable, UserDetails {
-    @TableId(type = IdType.AUTO)
+public class SysUser implements Serializable, UserDetails {
+
     private Long id;
 
     private String username;
@@ -41,8 +38,7 @@ public class User implements Serializable, UserDetails {
     private String email;
 
     /** 使用枚举 */
-    @EnumValue
-    private UserStatusEnum status;
+    private SysUserStatusEnum status;
 
     /** 逗号分隔的角色标识 */
     private String roles;
@@ -58,27 +54,21 @@ public class User implements Serializable, UserDetails {
     private LocalDateTime lockedAt; // 账户锁定时间
 
     /** 逻辑删除 */
-    @TableLogic
     private Integer deleted;
 
     /** 乐观锁 */
-    @Version
     private Integer version;
 
     /** 创建时间 */
-    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
 
     /** 更新时间 */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updatedAt;
 
     /** 创建人 */
-    @TableField(fill = FieldFill.INSERT)
     private String createdBy;
 
     /** 更新人 */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updatedBy;
 
     /**
@@ -105,11 +95,11 @@ public class User implements Serializable, UserDetails {
     @Override
     public boolean isAccountNonLocked() {
         // 正常状态直接返回 true
-        if (this.status == UserStatusEnum.NORMAL) {
+        if (this.status == SysUserStatusEnum.NORMAL) {
             return true;
         }
         // 锁定状态：判断锁定时间是否已过 1 小时
-        if (this.status == UserStatusEnum.LOCKED && this.lockedAt != null) {
+        if (this.status == SysUserStatusEnum.LOCKED && this.lockedAt != null) {
             return LocalDateTime.now()
                     .isAfter(this.lockedAt.plusHours(1));
         }
@@ -123,6 +113,6 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.status != UserStatusEnum.BANNED && this.deleted == 0;
+        return this.status != SysUserStatusEnum.BANNED && this.deleted == 0;
     }
 }

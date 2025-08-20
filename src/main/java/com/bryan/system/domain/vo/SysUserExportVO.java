@@ -22,7 +22,7 @@ import java.util.Map;
  */
 @Data
 @Builder
-public class UserExportVO {
+public class SysUserExportVO {
 
     @ExcelProperty("用户ID")
     @ColumnWidth(10)
@@ -115,7 +115,7 @@ public class UserExportVO {
        ============================================================ */
     public static Map<String, String> getExportableFieldsByAnnotation() {
         Map<String, String> map = new LinkedHashMap<>();
-        Field[] fields = UserExportVO.class.getDeclaredFields();
+        Field[] fields = SysUserExportVO.class.getDeclaredFields();
         for (Field field : fields) {
             if (field.isAnnotationPresent(ExcelProperty.class)) {
                 ExcelProperty anno = field.getAnnotation(ExcelProperty.class);

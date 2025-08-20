@@ -1,11 +1,11 @@
 package com.bryan.system.filter;
 
+import com.bryan.system.domain.entity.SysUser;
 import com.bryan.system.domain.response.Result;
 import com.bryan.system.domain.enums.HttpStatus;
 import com.bryan.system.service.AuthService;
 import com.bryan.system.service.redis.RedisStringService;
 import com.bryan.system.util.jwt.JwtUtils;
-import com.bryan.system.domain.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -78,8 +78,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // 权限信息直接从 Token 中获取，提高性能并符合JWT无状态原则。
             // 但为了安全起见，通常还会从数据库加载用户主体（User对象），以验证用户状态等。
             // 这里我们仍然从数据库加载用户，以确保用户是存在的且状态正常。
-            User user = authService.getCurrentUser();
-            if (user == null || !user.isEnabled() || !user.isAccountNonLocked()) {
+            SysUser sysUser = authService.getCurrentUser();
+            if (sysUser == null || !sysUser.isEnabled() || !sysUser.isAccountNonLocked()) {
                 // 如果用户不存在或被禁用/锁定，则视为认证失败
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -94,7 +94,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // 构建认证对象，使用从 Token 和数据库验证后的权限
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
-                            user, null, authorities // 使用从 Token Claims 获取的权限
+                            sysUser, null, authorities // 使用从 Token Claims 获取的权限
                     );
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
