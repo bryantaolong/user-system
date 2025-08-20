@@ -9,7 +9,7 @@ import lombok.Getter;
  * @author Bryan Long
  */
 @Getter
-public class UserUpdateRequest {
+public class SysUserUpdateRequest {
     /**
      * 用户名。
      * 在更新时是可选的，如果提供则更新，如果不提供则保持不变。

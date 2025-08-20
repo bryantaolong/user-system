@@ -1,8 +1,8 @@
 package com.bryan.system.controller;
 
+import com.bryan.system.domain.entity.SysUser;
 import com.bryan.system.domain.response.Result;
 import com.bryan.system.domain.request.LoginRequest;
-import com.bryan.system.domain.entity.User;
 import com.bryan.system.domain.request.RegisterRequest;
 import com.bryan.system.service.AuthService;
 import jakarta.validation.Valid;
@@ -35,12 +35,12 @@ public class AuthController {
      */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED) // 设置 HTTP 状态码为 201 Created
-    public Result<User> register(@RequestBody @Valid RegisterRequest registerRequest) {
+    public Result<SysUser> register(@RequestBody @Valid RegisterRequest registerRequest) {
         // 1. 调用注册服务，创建新用户
-        User user = authService.register(registerRequest);
+        SysUser sysUser = authService.register(registerRequest);
 
         // 2. 返回注册结果
-        return Result.success(user);
+        return Result.success(sysUser);
     }
 
     /**
@@ -64,12 +64,12 @@ public class AuthController {
      * @return 当前登录用户的 User 实体对象封装在统一响应结构中
      */
     @GetMapping("/me")
-    public Result<User> getCurrentUser() {
+    public Result<SysUser> getCurrentUser() {
         // 1. 从 Spring Security 上下文中获取当前登录用户
-        User currentUser = authService.getCurrentUser();
+        SysUser currentSysUser = authService.getCurrentUser();
 
         // 2. 返回用户信息
-        return Result.success(currentUser);
+        return Result.success(currentSysUser);
     }
 
     /**

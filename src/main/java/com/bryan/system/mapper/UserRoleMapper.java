@@ -1,7 +1,6 @@
 package com.bryan.system.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.bryan.system.domain.entity.UserRole;
+import com.bryan.system.domain.entity.SysUserRole;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -14,11 +13,11 @@ import java.util.List;
  * @author Bryan Long
  */
 @Mapper
-public interface UserRoleMapper extends BaseMapper<UserRole> {
+public interface UserRoleMapper {
 
-    UserRole selectOneByIsDefaultTrue();
+    SysUserRole selectOneByIsDefaultTrue();
 
-    List<UserRole> selectAll();
+    List<SysUserRole> selectAll();
 
-    List<UserRole> selectByIdList(@Param("ids") Collection<Long> ids);
+    List<SysUserRole> selectByIdList(@Param("ids") Collection<Long> ids);
 }

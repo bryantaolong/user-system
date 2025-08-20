@@ -1,6 +1,5 @@
 package com.bryan.system.domain.enums;
 
-import com.baomidou.mybatisplus.annotation.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,7 +10,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum UserStatusEnum implements IEnum<Integer> {
+public enum SysUserStatusEnum {
     NORMAL(0, "正常"),
     BANNED(1, "封禁"),
     LOCKED(2, "锁定");
@@ -19,17 +18,12 @@ public enum UserStatusEnum implements IEnum<Integer> {
     private final Integer code;
     private final String desc;
 
-    public static UserStatusEnum of(Integer code) {
-        for (UserStatusEnum e : values()) {
+    public static SysUserStatusEnum of(Integer code) {
+        for (SysUserStatusEnum e : values()) {
             if (e.getCode().equals(code)) {
                 return e;
             }
         }
         return null;
-    }
-
-    @Override
-    public Integer getValue() {
-        return code;
     }
 }

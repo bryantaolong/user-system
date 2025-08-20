@@ -1,7 +1,7 @@
 package com.bryan.system.controller;
 
-import com.bryan.system.domain.request.UserExportRequest;
-import com.bryan.system.domain.vo.UserExportVO;
+import com.bryan.system.domain.request.SysUserExportRequest;
+import com.bryan.system.domain.vo.SysUserExportVO;
 import com.bryan.system.service.UserExportService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class UserExportController {
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
     public void exportAllUsers(HttpServletResponse response) {
-        userExportService.exportAllFields(new UserExportRequest(), response);
+        userExportService.exportAllFields(new SysUserExportRequest(), response);
     }
 
     /**
@@ -43,7 +43,7 @@ public class UserExportController {
      */
     @PostMapping("/fields")
     @PreAuthorize("hasRole('ADMIN')")
-    public void exportUsersByCondition(@RequestBody UserExportRequest exportRequest,
+    public void exportUsersByCondition(@RequestBody SysUserExportRequest exportRequest,
                                        HttpServletResponse response) {
         userExportService.exportUsersByFields(exportRequest, response);
     }
@@ -57,6 +57,6 @@ public class UserExportController {
     @GetMapping("/fields")
     @PreAuthorize("hasRole('ADMIN')")
     public Map<String, String> getExportableFields() {
-        return UserExportVO.getExportableFieldsByAnnotation();
+        return SysUserExportVO.getExportableFieldsByAnnotation();
     }
 }

@@ -1,9 +1,9 @@
 package com.bryan.system.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.bryan.system.domain.entity.User;
-import com.bryan.system.domain.request.UserExportRequest;
-import com.bryan.system.domain.request.UserSearchRequest;
+import com.bryan.system.domain.entity.SysUser;
+import com.bryan.system.domain.enums.SysUserStatusEnum;
+import com.bryan.system.domain.request.SysUserExportRequest;
+import com.bryan.system.domain.request.SysUserSearchRequest;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,19 +15,23 @@ import java.util.List;
  * @author Bryan Long
  */
 @Mapper
-public interface UserMapper extends BaseMapper<User> {
+public interface UserMapper {
 
-//    int insert(User user);
+    int insert(SysUser user);
 
-//    User selectById(Long id);
+    SysUser selectById(Long id);
 
-    User selectByUsername(String username);
+    SysUser selectByUsername(String username);
 
-    List<User> selectPage(@Param("offset") long offset,
-                          @Param("pageSize") long pageSize,
-                          @Param("req") UserSearchRequest search,
-                          @Param("export") UserExportRequest export);
+    List<SysUser> selectPage(@Param("offset") long offset,
+                             @Param("pageSize") long pageSize,
+                             @Param("req") SysUserSearchRequest search,
+                             @Param("export") SysUserExportRequest export);
 
-    long count(@Param("req") UserSearchRequest search,
-               @Param("export") UserExportRequest export);
+    SysUser selectByStatus(@Param("status") SysUserStatusEnum status);
+
+    int update(SysUser user);
+
+    long count(@Param("req") SysUserSearchRequest search,
+               @Param("export") SysUserExportRequest export);
 }
