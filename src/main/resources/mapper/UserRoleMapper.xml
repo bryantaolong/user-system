@@ -12,14 +12,16 @@
 
     <select id="selectOneByIsDefaultTrue" resultMap="BaseResultMap">
         SELECT id, role_name, is_default
-        FROM sys_user_role
+        FROM user_role
         WHERE is_default = TRUE
+        AND deleted = 0
         LIMIT 1
     </select>
 
     <select id="selectAll" resultMap="BaseResultMap">
         SELECT id, role_name, is_default
-        FROM sys_user_role
+        FROM user_role
+        WHERE deleted = 0
     </select>
 
     <select id="selectByIdList" resultMap="BaseResultMap">
@@ -29,5 +31,6 @@
         <foreach collection="ids" item="id" open="(" close=")" separator=",">
             #{id}
         </foreach>
+        AND deleted = 0
     </select>
 </mapper>
