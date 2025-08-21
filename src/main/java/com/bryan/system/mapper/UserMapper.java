@@ -32,8 +32,6 @@ public interface UserMapper {
 
     int update(SysUser user);
 
-    int updateDeletedById(@Param("id") Long id, @Param("deleted") Integer deleted);
-
     long count(@Param("req") UserSearchRequest search,
                @Param("export") UserExportRequest export);
 }

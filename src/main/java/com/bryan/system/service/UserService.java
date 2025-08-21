@@ -252,7 +252,8 @@ public class UserService {
      */
     public SysUser deleteUser(Long userId) {
         SysUser user = getUserById(userId);
-        userMapper.updateDeletedById(userId, 1);
+        user.setDeleted(1);
+        userMapper.update(user);
         log.info("用户ID: {} 删除成功 (逻辑删除)", userId);
         return user;
     }
