@@ -20,8 +20,8 @@
         <result column="deleted" property="deleted"/>
         <result column="version" property="version"/>
         <result column="created_at" property="createdAt"/>
-        <result column="created_by" property="createdBy"/>
         <result column="updated_at" property="updatedAt"/>
+        <result column="created_by" property="createdBy"/>
         <result column="updated_by" property="updatedBy"/>
     </resultMap>
 
@@ -50,12 +50,14 @@
         SELECT <include refid="BaseColumns"/>
         FROM sys_user
         WHERE id = #{id}
+        AND deleted = 0
     </select>
 
     <select id="selectByUsername" resultMap="BaseResultMap">
         SELECT <include refid="BaseColumns"/>
         FROM sys_user
         WHERE username = #{username}
+        AND deleted = 0
         LIMIT 1
     </select>
 
@@ -67,12 +69,12 @@
             <include refid="SearchWhere"/>
             <include refid="ExportWhere"/>
         </where>
-        ORDER BY id ASC
+        ORDER BY updated_at ASC
         LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
     <select id="selectByStatus" resultType="com.bryan.system.domain.entity.SysUser">
-        SELECT * FROM sys_user WHERE status = #{status}
+        SELECT * FROM sys_user WHERE status = #{status} AND deleted = 0
     </select>
 
     <update id="update" parameterType="com.bryan.system.domain.entity.SysUser">
