@@ -11,28 +11,28 @@ import com.bryan.system.domain.vo.UserExportVO;
  */
 public class UserConverter {
 
-    public static UserExportVO toExportVO(SysUser sysUser) {
-        if (sysUser == null) {
+    public static UserExportVO toExportVO(SysUser user) {
+        if (user == null) {
             return null;
         }
 
         return UserExportVO.builder()
-                .id(sysUser.getId())
-                .username(sysUser.getUsername())
-                .phone(sysUser.getPhone())
-                .email(sysUser.getEmail())
-                .status(convertStatus(sysUser.getStatus()))
-                .roles(sysUser.getRoles())
-                .lastLoginAt(sysUser.getLastLoginAt())
-                .lastLoginIp(sysUser.getLastLoginIp())
-                .passwordResetAt(sysUser.getPasswordResetAt())
-                .loginFailCount(sysUser.getLoginFailCount())
-                .lockedAt(sysUser.getLockedAt())
-                .deleted(convertDeletedStatus(sysUser.getDeleted()))
-                .createdAt(sysUser.getCreatedAt())
-                .createdBy(sysUser.getCreatedBy())
-                .updatedAt(sysUser.getUpdatedAt())
-                .updatedBy(sysUser.getUpdatedBy())
+                .id(user.getId())
+                .username(user.getUsername())
+                .phone(user.getPhone())
+                .email(user.getEmail())
+                .status(convertStatus(user.getStatus()))
+                .roles(user.getRoles())
+                .lastLoginAt(user.getLastLoginAt())
+                .lastLoginIp(user.getLastLoginIp())
+                .passwordResetAt(user.getPasswordResetAt())
+                .loginFailCount(user.getLoginFailCount())
+                .lockedAt(user.getLockedAt())
+                .deleted(convertDeletedStatus(user.getDeleted()))
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
+                .createdBy(user.getCreatedBy())
+                .updatedBy(user.getUpdatedBy())
                 .build();
     }
 

@@ -30,7 +30,7 @@ src/
       domain/         # 实体、请求/响应对象、VO
       filter/         # JWT 认证过滤器
       handler/        # MyBatis 自动填充、全局异常处理
-      mapper/         # MyBatis-Plus Mapper 接口
+      mapper/         # MyBatis mapper 接口
       service/        # 业务服务层
       util/           # 工具类（JWT、HTTP等）
     resources/

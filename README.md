@@ -30,7 +30,7 @@ src/
       domain/         # Entities, request/response objects, VO
       filter/         # JWT authentication filter
       handler/        # MyBatis auto-fill, global exception handler
-      mapper/         # MyBatis Mapper interfaces
+      mapper/         # MyBatis mapper interfaces
       service/        # Service layer
       util/           # Utility classes (JWT, HTTP, etc.)
     resources/
