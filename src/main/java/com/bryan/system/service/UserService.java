@@ -1,5 +1,6 @@
 package com.bryan.system.service;
 
+import com.bryan.system.domain.dto.UserUpdateDTO;
 import com.bryan.system.domain.entity.SysUser;
 import com.bryan.system.domain.entity.UserRole;
 import com.bryan.system.domain.enums.UserStatusEnum;
@@ -8,7 +9,6 @@ import com.bryan.system.domain.response.PageResult;
 import com.bryan.system.exception.BusinessException;
 import com.bryan.system.exception.ResourceNotFoundException;
 import com.bryan.system.domain.request.UserSearchRequest;
-import com.bryan.system.domain.request.UserUpdateRequest;
 import com.bryan.system.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,18 +34,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRoleService userRoleService;
 
-    private PageResult<SysUser> page(long pageNum,
-                                     long pageSize,
-                                     List<SysUser> rows,
-                                     long total) {
-        return PageResult.<SysUser>builder()
-                .rows(rows)
-                .total(total)
-                .pageNum(pageNum)
-                .pageSize(pageSize)
-                .build();
-    }
-
     /**
      * 获取所有用户列表（不分页）。
      *
@@ -60,7 +48,7 @@ public class UserService {
                 null,
                 null);
         long total = userMapper.count(null, null);
-        return page(pageNum, pageSize, rows, total);
+        return PageResult.of(rows, pageNum, pageSize, total);
     }
 
     /**
@@ -101,7 +89,7 @@ public class UserService {
                 searchRequest,
                 null);
         long total = userMapper.count(searchRequest, null);
-        return page(pageNum, pageSize, rows, total);
+        return PageResult.of(rows, pageNum, pageSize, total);
     }
 
     public SysUser save(SysUser sysUser) {
@@ -116,26 +104,26 @@ public class UserService {
     /**
      * 更新用户基础信息（用户名和邮箱）。
      *
-     * @param userId            用户ID
-     * @param req 用户更新请求体
-     * @return 更新后的用户对象
+     * @param userId                     用户ID
+     * @param dto                        用户更新 DTO
+     * @return                           更新后的用户对象
      * @throws ResourceNotFoundException 用户不存在时抛出
      * @throws BusinessException         用户名重复时抛出
      */
-    public SysUser updateUser(Long userId, UserUpdateRequest req) {
+    public SysUser updateUser(Long userId, UserUpdateDTO dto) {
         SysUser user = getUserById(userId);
 
         // 用户名不能重复
-        if (req.getUsername() != null &&
-                !req.getUsername().equals(user.getUsername())) {
-            SysUser sameName = userMapper.selectByUsername(req.getUsername());
+        if (dto.getUsername() != null &&
+                !dto.getUsername().equals(user.getUsername())) {
+            SysUser sameName = userMapper.selectByUsername(dto.getUsername());
             if (sameName != null && !sameName.getId().equals(userId)) {
                 throw new BusinessException("用户名已存在");
             }
-            user.setUsername(req.getUsername());
+            user.setUsername(dto.getUsername());
         }
-        if (req.getPhone() != null) user.setPhone(req.getPhone());
-        if (req.getEmail() != null) user.setEmail(req.getEmail());
+        if (dto.getPhone() != null) user.setPhone(dto.getPhone());
+        if (dto.getEmail() != null) user.setEmail(dto.getEmail());
 
         userMapper.update(user);
         log.info("用户ID: {} 的信息更新成功", userId);
