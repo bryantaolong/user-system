@@ -1,10 +1,10 @@
 package com.bryan.system.domain.converter;
 
-import com.bryan.system.domain.entity.UserProfile;
-import com.bryan.system.domain.enums.UserStatusEnum;
-import com.bryan.system.domain.entity.SysUser;
-import com.bryan.system.domain.vo.UserExportVO;
-import com.bryan.system.domain.vo.UserProfileVO;
+import com.bryan.system.domain.entity.user.UserProfile;
+import com.bryan.system.domain.enums.user.UserStatusEnum;
+import com.bryan.system.domain.entity.user.SysUser;
+import com.bryan.system.domain.vo.user.UserExportVO;
+import com.bryan.system.domain.vo.user.UserProfileVO;
 
 /**
  * UserConvert

@@ -1,9 +1,9 @@
 package com.bryan.system.filter;
 
-import com.bryan.system.domain.entity.SysUser;
+import com.bryan.system.domain.entity.user.SysUser;
 import com.bryan.system.domain.response.Result;
 import com.bryan.system.domain.enums.HttpStatus;
-import com.bryan.system.service.AuthService;
+import com.bryan.system.service.auth.AuthService;
 import com.bryan.system.service.redis.RedisStringService;
 import com.bryan.system.util.jwt.JwtUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;

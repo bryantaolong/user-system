@@ -42,14 +42,14 @@ public class AuditFieldInterceptor implements Interceptor {
         LocalDateTime now = LocalDateTime.now();
         setValue(meta, "createdAt", now);
         setValue(meta, "updatedAt", now);
-        setValue(meta, "createdBy", currentUser());
-        setValue(meta, "updatedBy", currentUser());
+        setValue(meta, "createdBy", this.currentUser());
+        setValue(meta, "updatedBy", this.currentUser());
     }
 
     private void fillUpdate(Object param) {
         MetaObject meta = SystemMetaObject.forObject(param);
         setValue(meta, "updatedAt", LocalDateTime.now());
-        setValue(meta, "updatedBy", currentUser());
+        setValue(meta, "updatedBy", this.currentUser());
     }
 
     private void setValue(MetaObject meta, String property, Object value) {
