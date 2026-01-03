@@ -30,7 +30,7 @@ public class UserProfileService {
         return record;
     }
 
-    public UserProfile findUserProfileByUserId(Long userId) {
+    public UserProfile getUserProfileByUserId(Long userId) {
         UserProfile profile = userProfileMapper.selectByUserId(userId);
 
         if (profile == null) {
@@ -49,7 +49,7 @@ public class UserProfileService {
     }
 
     public UserProfile updateUserProfile(Long userId, UserProfileUpdateDTO dto) {
-        UserProfile profile = this.findUserProfileByUserId(userId);
+        UserProfile profile = this.getUserProfileByUserId(userId);
 
         if (dto.getRealName() != null) {
             profile.setRealName(dto.getRealName());
