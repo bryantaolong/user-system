@@ -97,7 +97,7 @@ CREATE TABLE "user_profile" (
 COMMENT ON TABLE "user_profile" IS '用户资料表，存储用户的详细信息';
 COMMENT ON COLUMN "user_profile".user_id IS '用户ID，关联user表的主键';
 COMMENT ON COLUMN "user_profile".real_name IS '用户真实姓名';
-COMMENT ON COLUMN "user_profile".gender IS '性别(0-未知 1-男 2-女)';
+COMMENT ON COLUMN "user_profile".gender IS '性别(0-女 1-男)';
 COMMENT ON COLUMN "user_profile".birthday IS '用户生日';
 COMMENT ON COLUMN "user_profile".avatar IS '用户头像URL';
 comment on column "user_profile".deleted is '软删除标记(0-未删除 1-已删除)';
