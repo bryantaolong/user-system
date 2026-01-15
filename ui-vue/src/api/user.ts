@@ -2,9 +2,9 @@ import request from '@/utils/request'
 import type { Result } from '@/models/response/Result'
 import type { PageResult } from '@/models/response/PageResult'
 import type { SysUser } from '@/models/entity/SysUser'
-import type { UserUpdateRequest } from '@/models/request/UserUpdateRequest'
-import type { ChangePasswordRequest } from '@/models/request/ChangePasswordRequest'
-import type { UserSearchRequest } from '@/models/request/UserSearchRequest'
+import type { UserUpdateRequest } from '@/models/request/user/UserUpdateRequest.ts'
+import type { ChangePasswordRequest } from '@/models/request/user/ChangePasswordRequest.ts'
+import type { UserSearchRequest } from '@/models/request/user/UserSearchRequest.ts'
 import type { UserProfileVO } from '@/models/vo/UserProfileVO'
 
 /**

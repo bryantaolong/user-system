@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import type { UserUpdateRequest } from '@/models/request/UserUpdateRequest'
+import type { UserUpdateRequest } from '@/models/request/user/UserUpdateRequest.ts'
 
 export interface UserFormData extends UserUpdateRequest {
   password?: string

@@ -7,20 +7,20 @@ create table "sys_user"
         primary key,
     username            varchar(255)                                     not null,
     password            varchar(255)                                     not null,
-    phone_number        varchar(50),
+    phone               varchar(50),
     email               varchar(255),
     status              integer default 0,
     roles               varchar(255),
-    last_login_time     timestamp,
+    last_login_at     timestamp,
     last_login_ip       varchar(255),
     password_reset_at   timestamp,
     login_fail_count    integer default 0,
     locked_at           timestamp,
-    deleted             integer default 0,
-    version             integer default 0,
-    created_at          timestamp                                        not null,
+    deleted             integer default 0 NOT NULL,
+    version             integer default 0 NOT NULL,
+    created_at          timestamp default now()                         not null,
+    updated_at          timestamp default now()                         not null,
     created_by          varchar(255),
-    updated_at          timestamp,
     updated_by          varchar(255)
 );
 
@@ -28,11 +28,11 @@ comment on table "sys_user" is '用户表，存储系统用户的基本信息、
 comment on column "sys_user".id is '用户ID，主键，自增长';
 comment on column "sys_user".username is '用户名，用于登录的唯一标识';
 comment on column "sys_user".password is '加密后的用户密码';
-comment on column "sys_user".phone_number is '用户手机号码';
+comment on column "sys_user".phone is '用户手机号码';
 comment on column "sys_user".email is '用户电子邮箱';
 comment on column "sys_user".status is '用户状态(0-正常 1-禁用 2-锁定)';
 comment on column "sys_user".roles is '用户角色，多个角色用逗号分隔';
-comment on column "sys_user".last_login_time is '最后一次登录时间';
+comment on column "sys_user".last_login_at is '最后一次登录时间';
 comment on column "sys_user".last_login_ip is '最后一次登录IP地址';
 comment on column "sys_user".password_reset_at is '密码重置时间';
 comment on column "sys_user".login_fail_count is '登录失败次数';
@@ -52,14 +52,14 @@ comment on index idx_user_username is '用户名索引，用于加速用户名�
 -- user_role
 create table user_role
 (
-    id         integer   default nextval('user_role_id_seq'::regclass) not null
+    id         integer   not null
         primary key,
     role_name  varchar(50)                                             not null,
     is_default boolean   default false                                 not null,
-    deleted    integer   default 0,
-    version    integer   default 0,
+    deleted    integer   default 0 NOT NULL,
+    version    integer   default 0 NOT NULL,
     created_at timestamp default now()                                 not null,
-    updated_at timestamp,
+    updated_at timestamp default now()                                 not null,
     created_by varchar(255),
     updated_by varchar(255)
 );
@@ -86,10 +86,10 @@ CREATE TABLE "user_profile" (
                                 gender              INTEGER,
                                 birthday            TIMESTAMP,
                                 avatar              VARCHAR(255),
-                                deleted             integer default 0,
-                                version             integer default 0,
-                                created_at          timestamp                                        not null,
-                                updated_at          timestamp,
+                                deleted             integer default 0 NOT NULL,
+                                version             integer default 0 NOT NULL,
+                                created_at          timestamp default now()                        not null,
+                                updated_at          timestamp default now()                        not null,
                                 created_by          varchar(255),
                                 updated_by          varchar(255)
 );
