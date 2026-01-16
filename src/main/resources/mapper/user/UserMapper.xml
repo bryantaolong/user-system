@@ -36,12 +36,12 @@
             username, password, phone, email, roles, status,
             login_fail_count, last_login_at, last_login_ip,
             password_reset_at, locked_at,
-            deleted, version, created_at, updated_at, created_by, updated_by
+            created_at, updated_at, created_by, updated_by
         ) VALUES (
                      #{username}, #{password}, #{phone}, #{email}, #{roles}, #{status},
                      #{loginFailCount}, #{lastLoginAt}, #{lastLoginIp},
                      #{passwordResetAt}, #{lockedAt},
-                     #{deleted}, #{version}, #{createdAt}, #{updatedAt}, #{createdBy}, #{updatedBy}
+                     #{createdAt}, #{updatedAt}, #{createdBy}, #{updatedBy}
                  )
     </insert>
 
@@ -87,7 +87,7 @@
         AND deleted = 0
     </select>
 
-    <update id="update" parameterType="com.bryan.system.domain.entity.user.SysUser">
+    <update id="update" parameterType="com.bryan.platform.domain.entity.user.SysUser">
         UPDATE sys_user
         <set>
             <if test="username != null">username = #{username},</if>

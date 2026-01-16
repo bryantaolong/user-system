@@ -25,10 +25,10 @@
     <insert id="insert" keyProperty="userId">
         INSERT INTO user_profile (
             user_id, real_name, gender, birthday, avatar,
-            deleted, version, created_at, updated_at, created_by, updated_by
+            created_at, updated_at, created_by, updated_by
         ) VALUES (
                      #{userId}, #{realName}, #{gender}, #{birthday}, #{avatar},
-                     #{deleted}, #{version}, #{createdAt}, #{updatedAt}, #{createdBy}, #{updatedBy}
+                     #{createdAt}, #{updatedAt}, #{createdBy}, #{updatedBy}
                  )
     </insert>
 
