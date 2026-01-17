@@ -20,7 +20,7 @@ import java.util.Properties;
                 method  = "update",
                 args    = {MappedStatement.class, Object.class})
 })
-public class AuditFieldInterceptor implements Interceptor {
+public class MyBatisAuditFieldInterceptor implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
