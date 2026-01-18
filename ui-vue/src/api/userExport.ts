@@ -10,7 +10,7 @@ import type {Result} from "@/models/response/Result.ts";
  */
 export function exportAllUsers(fileName?: string, status?: number | null): Promise<void> {
     return request({
-        url: '/api/user/export/all',
+        url: '/api/users/export/all',
         method: 'get',
         params: {
             fileName: fileName || '用户数据',
@@ -36,7 +36,7 @@ export function exportAllUsers(fileName?: string, status?: number | null): Promi
  */
 export function exportUsersByFields(data: UserExportRequest): Promise<void> {
     return request({
-        url: '/api/user/export/fields', // ✅ 对应 @PostMapping("/field")
+        url: '/api/users/export/fields', // ✅ 对应 @PostMapping("/field")
         method: 'post',
         data,
         responseType: 'blob'
@@ -59,7 +59,7 @@ export function exportUsersByFields(data: UserExportRequest): Promise<void> {
  */
 export function getExportFields(): Promise<Result<Record<string, string>>> {
     return request({
-        url: '/api/user/export/fields',
+        url: '/api/users/export/fields',
         method: 'get'
     });
 }
