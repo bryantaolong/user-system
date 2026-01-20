@@ -15,7 +15,13 @@ instance.interceptors.request.use((config) => {
 
 // 响应拦截器
 instance.interceptors.response.use(
-    (response) => response.data, // 直接返回 data 部分
+    (response) => {
+        // 如果是 blob 类型，返回完整的 response 对象，以便于处理文件下载
+        if (response.config.responseType === 'blob') {
+            return response;
+        }
+        return response.data;
+    },
     (error) => {
         if (error.response?.status === 401) {
             localStorage.removeItem('token');

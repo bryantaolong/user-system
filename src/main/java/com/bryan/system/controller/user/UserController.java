@@ -42,7 +42,7 @@ public class UserController {
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize) {
         // 1. 调用服务层获取所有用户列表
-        return Result.success(userService.findAllUsers(pageNum, pageSize));
+        return Result.success(userService.getAllUsers(pageNum, pageSize));
     }
 
     /**
@@ -56,7 +56,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public Result<SysUser> getUserById(@PathVariable Long userId) {
         // 1. 调用服务获取用户信息
-        return Result.success(userService.findUserById(userId));
+        return Result.success(userService.getUserById(userId));
     }
 
     /**
@@ -70,7 +70,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public Result<SysUser> getUserByUsername(@PathVariable String username) {
         // 1. 调用服务获取用户信息
-        return Result.success(userService.findUserByUsername(username));
+        return Result.success(userService.getUserByUsername(username));
     }
 
     /**

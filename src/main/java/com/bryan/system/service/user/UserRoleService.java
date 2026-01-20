@@ -23,7 +23,7 @@ public class UserRoleService {
         return userRoleMapper.selectAll();
     }
 
-    public List<UserRole> findByIds(Collection<Long> ids) {
+    public List<UserRole> getByIds(Collection<Long> ids) {
         return userRoleMapper.selectByIdList(ids);
     }
 }

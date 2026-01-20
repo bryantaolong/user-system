@@ -47,6 +47,15 @@
       :user="currentUser"
     />
   </div>
+
+  <el-button type="primary" @click="handleExportAllUsers">导出所有用户</el-button>
+  <el-button type="success" @click="showExportDialog = true">选择字段导出</el-button>
+  <!-- 导出用户弹窗组件 -->
+  <ExportUsersDialog
+      :visible="showExportDialog"
+      @update:visible="showExportDialog = $event"
+      @exported="handleExported"
+  />
 </template>
 
 <script setup lang="ts">
@@ -61,6 +70,9 @@ import UserFormDialog from '@/components/user/UserFormDialog.vue'
 import UserDetailDialog from '@/components/user/UserDetailDialog.vue'
 import type { UserFormData } from '@/components/user/UserFormDialog.vue'
 import type { UserSearchFormData } from '@/components/user/UserSearchForm.vue'
+import ExportUsersDialog from "@/components/ExportUsersDialog.vue";
+import type {UserSearchRequest} from "@/models/request/user/UserSearchRequestV2.ts";
+import * as userExportService from "@/api/userExport"
 
 const loading = ref(false)
 const submitting = ref(false)
@@ -68,6 +80,29 @@ const userList = ref<SysUser[]>([])
 const total = ref(0)
 const pageNum = ref(1)
 const pageSize = ref(10)
+const showExportDialog = ref(false);
+
+// 搜索表单
+const searchForm = ref<UserSearchRequest>({
+  username: undefined,
+  phone: undefined,
+  email: undefined,
+  status: undefined,
+  roles: undefined,
+  lastLoginAt: undefined,
+  lastLoginIp: undefined,
+  passwordResetAt: undefined,
+  deleted: undefined,
+  version: undefined,
+  createdAt: undefined,
+  createTimeStart: undefined,
+  createTimeEnd: undefined,
+  updatedAt: undefined,
+  updateTimeStart: undefined,
+  updateTimeEnd: undefined,
+  createdBy: undefined,
+  updatedBy: undefined,
+});
 
 const searchFormData = reactive<UserSearchFormData>({
   username: '',
@@ -85,7 +120,7 @@ const userForm = reactive<UserFormData>({
   phone: '',
   email: '',
   realName: '',
-  gender: 1,
+  gender: '',
   birthday: '',
   avatar: '',
   password: '',
@@ -294,6 +329,31 @@ const handleDialogClose = () => {
   userForm.password = ''
   userForm.roles = []
 }
+
+/* ----------------- 导出功能 ----------------- */
+const handleExportAllUsers = async () => {
+  try {
+    const result = await ElMessageBox.prompt('请输入导出文件名:', '导出所有用户', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      inputValue: '所有用户数据',
+      inputPattern: /.+/,
+      inputErrorMessage: '文件名不能为空',
+    });
+    const fileName = result.value || '所有用户数据';
+    await userExportService.exportAllUsers(fileName, searchForm.value.status);
+    ElMessage.success('所有用户数据已开始导出！');
+  } catch (error: any) {
+    if (error !== 'cancel') {
+      console.error('导出所有用户失败:', error);
+      ElMessage.error('导出失败，请重试！');
+    }
+  }
+};
+
+const handleExported = () => {
+  console.log('用户数据导出操作完成。');
+};
 
 onMounted(() => {
   loadUsers()

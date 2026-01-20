@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
-<mapper namespace="com.bryan.platform.mapper.user.UserMapper">
+<mapper namespace="com.bryan.system.mapper.user.UserMapper">
 
     <resultMap id="BaseResultMap" type="com.bryan.system.domain.entity.user.SysUser">
         <id column="id" property="id"/>
@@ -29,20 +28,20 @@
         id, username, password, phone, email, roles, status,
         login_fail_count, last_login_at, last_login_ip,
         password_reset_at, locked_at, deleted, version,
-        created_at, created_by, updated_at, updated_by
+        created_at, updated_at, created_by, updated_by
     </sql>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sys_user (
             username, password, phone, email, roles, status,
             login_fail_count, last_login_at, last_login_ip,
-            password_reset_at, locked_at, deleted, version,
-            created_at, created_by, updated_at, updated_by
+            password_reset_at, locked_at,
+            created_at, updated_at, created_by, updated_by
         ) VALUES (
                      #{username}, #{password}, #{phone}, #{email}, #{roles}, #{status},
                      #{loginFailCount}, #{lastLoginAt}, #{lastLoginIp},
-                     #{passwordResetAt}, #{lockedAt}, #{deleted}, #{version},
-                     #{createdAt}, #{createdBy}, #{updatedAt}, #{updatedBy}
+                     #{passwordResetAt}, #{lockedAt},
+                     #{createdAt}, #{updatedAt}, #{createdBy}, #{updatedBy}
                  )
     </insert>
 
@@ -61,7 +60,6 @@
         LIMIT 1
     </select>
 
-    <!-- 分页查询 -->
     <select id="selectPage" resultMap="BaseResultMap">
         SELECT <include refid="BaseColumns"/>
         FROM sys_user
@@ -73,11 +71,23 @@
         LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
-    <select id="selectByStatus" resultType="com.bryan.system.domain.entity.user.SysUser">
-        SELECT * FROM sys_user WHERE status = #{status} AND deleted = 0
+    <select id="selectByIdList" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/>
+        FROM sys_user
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
     </select>
 
-    <update id="update" parameterType="com.bryan.system.domain.entity.user.SysUser">
+    <select id="selectByStatus" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumns"/>
+        FROM sys_user
+        WHERE status = #{status}
+        AND deleted = 0
+    </select>
+
+    <update id="update" parameterType="com.bryan.platform.domain.entity.user.SysUser">
         UPDATE sys_user
         <set>
             <if test="username != null">username = #{username},</if>
@@ -102,7 +112,9 @@
     <update id="deleteById">
         UPDATE sys_user
         SET deleted = 1,
-            version = version + 1
+            version = version + 1,
+            updated_at = #{updatedAt},
+            updated_by = #{updatedBy}
         WHERE id = #{id}
           AND deleted = 0
     </update>
@@ -116,7 +128,6 @@
         </where>
     </select>
 
-    <!-- 搜索条件 -->
     <sql id="SearchWhere">
         <if test="req != null">
             <if test="req.username != null and req.username != ''">
@@ -140,7 +151,6 @@
             <if test="req.updatedBy != null and req.updatedBy != ''">
                 AND updated_by LIKE '%' || #{req.updatedBy} || '%'
             </if>
-
             <if test="req.status != null">
                 AND status = #{req.status}
             </if>
@@ -153,8 +163,6 @@
             <if test="req.version != null">
                 AND version = #{req.version}
             </if>
-
-            <!-- 时间范围 -->
             <if test="req.createdAt != null">
                 AND created_at = #{req.createdAt}
             </if>
@@ -164,7 +172,6 @@
             <if test="req.createTimeEnd != null">
                 AND created_at &lt;= #{req.createTimeEnd}
             </if>
-
             <if test="req.updatedAt != null">
                 AND updated_at = #{req.updatedAt}
             </if>
@@ -177,10 +184,10 @@
         </if>
     </sql>
 
-    <!-- 导出条件 -->
     <sql id="ExportWhere">
         <if test="export != null and export.status != null">
             AND status = #{export.status}
         </if>
     </sql>
+
 </mapper>

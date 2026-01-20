@@ -1,9 +1,9 @@
 import request from '@/utils/request'
 import type { Result } from '@/models/response/Result'
 import type { SysUser } from '@/models/entity/SysUser'
-import type { LoginRequest } from '@/models/request/LoginRequest'
-import type { RegisterRequest } from '@/models/request/RegisterRequest'
-import type { ChangePasswordRequest } from '@/models/request/ChangePasswordRequest'
+import type { LoginRequest } from '@/models/request/auth/LoginRequest.ts'
+import type { RegisterRequest } from '@/models/request/auth/RegisterRequest.ts'
+import type { ChangePasswordRequest } from '@/models/request/user/ChangePasswordRequest.ts'
 import type { UserProfileVO } from '@/models/vo/UserProfileVO'
 
 /**

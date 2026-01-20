@@ -1,6 +1,6 @@
 package com.bryan.system.config;
 
-import com.bryan.system.handler.AuditFieldInterceptor;
+import com.bryan.system.handler.MyBatisAuditFieldInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class MyBatisConfig {
 
     @Bean
-    public AuditFieldInterceptor auditFieldInterceptor() {
-        return new AuditFieldInterceptor();
+    public MyBatisAuditFieldInterceptor auditFieldInterceptor() {
+        return new MyBatisAuditFieldInterceptor();
     }
 }

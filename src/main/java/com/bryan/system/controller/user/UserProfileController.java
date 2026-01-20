@@ -31,15 +31,15 @@ public class UserProfileController {
 
     @GetMapping("/{userId}")
     public Result<UserProfileVO> getUserProfileByUserId(@PathVariable Long userId) {
-        UserProfile profile = userProfileService.findUserProfileByUserId(userId);
-        SysUser user = userService.findUserById(userId);
+        UserProfile profile = userProfileService.getUserProfileByUserId(userId);
+        SysUser user = userService.getUserById(userId);
         return Result.success(UserConverter.toUserProfileVO(user,  profile));
     }
 
     @GetMapping("/name/{realName}")
     public Result<UserProfileVO> getUserProfileByRealName(@PathVariable String realName) {
         UserProfile profile = userProfileService.findUserProfileByRealName(realName);
-        SysUser user = userService.findUserById(profile.getUserId());
+        SysUser user = userService.getUserById(profile.getUserId());
         return Result.success(UserConverter.toUserProfileVO(user,  profile));
     }
 

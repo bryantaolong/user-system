@@ -39,7 +39,7 @@ public class UserService {
      *
      * @return 包含所有用户的分页对象（Page）。
      */
-    public PageResult<SysUser> findAllUsers(int pageNum,
+    public PageResult<SysUser> getAllUsers(int pageNum,
                                            int pageSize) {
         int offset = (pageNum - 1) * pageSize;
         List<SysUser> rows = userMapper.selectPage(
@@ -58,7 +58,7 @@ public class UserService {
      * @return 用户实体对象
      * @throws ResourceNotFoundException 用户不存在时抛出
      */
-    public SysUser findUserById(Long userId) {
+    public SysUser getUserById(Long userId) {
         return Optional.ofNullable(userMapper.selectById(userId))
                 .orElseThrow(() -> new ResourceNotFoundException("用户不存在"));
     }
@@ -69,7 +69,7 @@ public class UserService {
      * @param username 用户名
      * @return 用户实体对象
      */
-    public SysUser findUserByUsername(String username) {
+    public SysUser getUserByUsername(String username) {
         return userMapper.selectByUsername(username);
     }
 
@@ -111,7 +111,7 @@ public class UserService {
      * @throws BusinessException         用户名重复时抛出
      */
     public SysUser updateUser(Long userId, UserUpdateDTO dto) {
-        SysUser user = findUserById(userId);
+        SysUser user = this.getUserById(userId);
 
         // 用户名不能重复
         if (dto.getUsername() != null &&
@@ -141,7 +141,7 @@ public class UserService {
     @Transactional
     public SysUser changeRoleByIds(Long userId, ChangeRoleRequest req) {
         List<Long> ids = req.getRoleIds();
-        List<UserRole> roles = userRoleService.findByIds(ids);
+        List<UserRole> roles = userRoleService.getByIds(ids);
 
         if (roles.size() != ids.size()) {
             Set<Long> exist = roles.stream()
@@ -153,7 +153,7 @@ public class UserService {
         String roleNames = roles.stream()
                 .map(UserRole::getRoleName)
                 .collect(Collectors.joining(","));
-        SysUser user = findUserById(userId);
+        SysUser user = this.getUserById(userId);
         user.setRoles(roleNames);
         userMapper.update(user);
         return user;
@@ -169,7 +169,7 @@ public class UserService {
      * @throws BusinessException         旧密码验证失败时抛出
      */
     public SysUser resetPassword(Long userId, String newPassword) {
-        SysUser user = this.findUserById(userId);
+        SysUser user = this.getUserById(userId);
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setPasswordResetAt(LocalDateTime.now());
         userMapper.update(user);
@@ -185,7 +185,7 @@ public class UserService {
      * @throws ResourceNotFoundException 用户不存在时抛出
      */
     public SysUser blockUser(Long userId) {
-        SysUser user = this.findUserById(userId);
+        SysUser user = this.getUserById(userId);
         user.setStatus(UserStatusEnum.BANNED);
         userMapper.update(user);
         log.info("用户ID: {} 封禁成功", userId);
@@ -200,7 +200,7 @@ public class UserService {
      * @throws ResourceNotFoundException 用户不存在时抛出
      */
     public SysUser unblockUser(Long userId) {
-        SysUser user = this.findUserById(userId);
+        SysUser user = this.getUserById(userId);
         user.setStatus(UserStatusEnum.NORMAL);
         userMapper.update(user);
         log.info("用户ID: {} 解封成功", userId);
