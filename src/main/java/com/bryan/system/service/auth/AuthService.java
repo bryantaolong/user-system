@@ -102,8 +102,8 @@ public class AuthService implements UserDetailsService {
 
             // 如果输入密码错误次数达到限额-硬编码为 5，则锁定账号
             if(sysUser.getLoginFailCount() >= 5) {
-                sysUser.setStatus(UserStatusEnum.NORMAL);
-                sysUser.setPasswordResetAt(LocalDateTime.now());
+                sysUser.setStatus(UserStatusEnum.LOCKED);
+                sysUser.setLockedAt(LocalDateTime.now());
                 throw new BusinessException("输入密码错误次数过多，账号锁定");
             }
             throw new BusinessException("用户名或密码错误");

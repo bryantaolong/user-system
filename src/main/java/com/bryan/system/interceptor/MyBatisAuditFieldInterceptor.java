@@ -1,4 +1,4 @@
-package com.bryan.system.handler;
+package com.bryan.system.interceptor;
 
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;

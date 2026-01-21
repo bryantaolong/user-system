@@ -1,10 +1,13 @@
 package com.bryan.system.util.jwt;
 
+import com.bryan.system.config.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -19,20 +22,48 @@ import java.util.stream.Collectors;
  * 说明：
  * 1. 生成 Token 使用 HS256 签名算法，密钥长度至少256位。
  * 2. 解析 Token 时验证签名和有效期。
- * 3. 该类静态方法调用，无状态。
- * 4. 密钥 SECRET_STRING 建议生产环境中通过配置文件注入，避免硬编码。
+ * 3. 该类从配置文件中读取 JWT 配置信息。
+ * 4. 密钥、过期时间等配置通过 JwtProperties 注入。
  * </p>
  *
  * @author Bryan Long
  */
+@Component
 public class JwtUtils {
 
-    // 生产环境建议使用外部配置注入密钥，避免硬编码
-    private static final String SECRET_STRING = "BryanTaoLong2025!@#SuperSecretKeyJwtToken987";
+    private static JwtProperties jwtProperties;
 
-    private static final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(SECRET_STRING.getBytes(StandardCharsets.UTF_8));
+    @Autowired
+    public void setJwtProperties(JwtProperties jwtProperties) {
+        JwtUtils.jwtProperties = jwtProperties;
+    }
 
-    private static final long EXPIRATION_MS = 86400000; // 24小时
+    /**
+     * 获取 SecretKey
+     *
+     * @return SecretKey
+     */
+    private static SecretKey getSecretKey() {
+        return Keys.hmacShaKeyFor(jwtProperties.getSecretKey().getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * 获取过期时间
+     *
+     * @return 过期时间（毫秒）
+     */
+    private static long getExpirationMs() {
+        return jwtProperties.getExpirationMs();
+    }
+
+    /**
+     * 获取 Token 前缀
+     *
+     * @return Token 前缀
+     */
+    private static String getTokenPrefix() {
+        return jwtProperties.getTokenPrefix();
+    }
 
     /**
      * 生成带额外声明的 JWT Token。
@@ -51,8 +82,8 @@ public class JwtUtils {
                 .setClaims(claims)
                 .setSubject(userId)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
-                .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
+                .setExpiration(new Date(System.currentTimeMillis() + getExpirationMs()))
+                .signWith(getSecretKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -81,12 +112,12 @@ public class JwtUtils {
         String token = request.getHeader("Authorization");
 
         // 3. 验证 Token 格式是否正确
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7);
+        if (token != null && token.startsWith(getTokenPrefix())) {
+            token = token.substring(getTokenPrefix().length());
             try {
                 // 4. 解析 Token，验证签名和有效期
                 String subject = Jwts.parser()
-                        .verifyWith(SECRET_KEY)
+                        .verifyWith(getSecretKey())
                         .build()
                         .parseClaimsJws(token)
                         .getBody()
@@ -116,12 +147,12 @@ public class JwtUtils {
         String token = request.getHeader("Authorization");
 
         // 3. 验证 Token 格式是否正确
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7);
+        if (token != null && token.startsWith(getTokenPrefix())) {
+            token = token.substring(getTokenPrefix().length());
             try {
                 // 4. 解析 Token，验证签名和有效期
                 Claims claims = Jwts.parser()
-                                .verifyWith(SECRET_KEY)
+                                .verifyWith(getSecretKey())
                                 .build()
                                 .parseClaimsJws(token)
                                 .getBody();
@@ -150,12 +181,12 @@ public class JwtUtils {
         String token = request.getHeader("Authorization");
 
         // 3. 验证 Token 格式是否正确
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7);
+        if (token != null && token.startsWith(getTokenPrefix())) {
+            token = token.substring(getTokenPrefix().length());
             try {
                 // 4. 解析 Token，验证签名和有效期
                 Claims claims = Jwts.parser()
-                        .verifyWith(SECRET_KEY)
+                        .verifyWith(getSecretKey())
                         .build()
                         .parseClaimsJws(token)
                         .getBody();
@@ -179,7 +210,7 @@ public class JwtUtils {
     public static String getUserIdFromToken(String token) {
         try {
             return Jwts.parser()
-                    .verifyWith(SECRET_KEY)
+                    .verifyWith(getSecretKey())
                     .build()
                     .parseClaimsJws(token)
                     .getBody()
@@ -221,7 +252,7 @@ public class JwtUtils {
     public static boolean validateToken(String token) {
         try {
             Jwts.parser()
-                    .verifyWith(SECRET_KEY)
+                    .verifyWith(getSecretKey())
                     .build()
                     .parseClaimsJws(token);
             return true;
@@ -240,7 +271,7 @@ public class JwtUtils {
     private static Claims getClaimsFromToken(String token) {
         try {
             return Jwts.parser()
-                    .verifyWith(SECRET_KEY)
+                    .verifyWith(getSecretKey())
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
