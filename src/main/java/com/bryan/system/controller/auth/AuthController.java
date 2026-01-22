@@ -1,11 +1,13 @@
 package com.bryan.system.controller.auth;
 
+import com.bryan.system.domain.converter.UserConverter;
 import com.bryan.system.domain.entity.user.SysUser;
 import com.bryan.system.domain.entity.user.UserProfile;
-import com.bryan.system.domain.request.user.ChangePasswordRequest;
-import com.bryan.system.domain.response.Result;
 import com.bryan.system.domain.request.auth.LoginRequest;
 import com.bryan.system.domain.request.auth.RegisterRequest;
+import com.bryan.system.domain.request.user.ChangePasswordRequest;
+import com.bryan.system.domain.response.Result;
+import com.bryan.system.domain.vo.user.UserVO;
 import com.bryan.system.service.auth.AuthService;
 import com.bryan.system.service.user.UserProfileService;
 import jakarta.validation.Valid;
@@ -67,15 +69,18 @@ public class AuthController {
     /**
      * 获取当前认证用户信息
      *
-     * @return 当前登录用户的 User 实体对象封装在统一响应结构中
+     * @return 当前登录用户的 DTO 对象封装在统一响应结构中
      */
     @GetMapping("/me")
-    public Result<SysUser> getCurrentUser() {
+    public Result<UserVO> getCurrentUser() {
         // 1. 从 Spring Security 上下文中获取当前登录用户
         SysUser currentSysUser = authService.getCurrentUser();
 
-        // 2. 返回用户信息
-        return Result.success(currentSysUser);
+        // 2. 使用 UserConverter 转换为DTO，排除敏感信息
+        UserVO userVO = UserConverter.toUserVO(currentSysUser);
+
+        // 3. 返回用户信息
+        return Result.success(userVO);
     }
 
     /**

@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { SysUser } from '@/models/entity/SysUser'
-import type { UserProfileVO } from '@/models/vo/UserProfileVO'
+import type { UserVO } from '@/models/vo/UserVO.ts'
+import type { UserProfileVO } from '@/models/vo/UserProfileVO.ts'
 import { authApi } from '@/api/auth'
 import { userApi } from '@/api/user'
 
 export const useUserStore = defineStore('user', () => {
   const token = ref<string>(localStorage.getItem('token') || '')
-  const userInfo = ref<SysUser | null>(null)
+  const userInfo = ref<UserVO | null>(null)
   const userProfile = ref<UserProfileVO | null>(null)
 
   const isAuthenticated = computed(() => !!token.value)
@@ -167,7 +167,6 @@ export const useUserStore = defineStore('user', () => {
 }, {
   persist: {
     key: 'user-store',
-    storage: localStorage,
-    paths: ['token']
+    storage: localStorage
   }
 })

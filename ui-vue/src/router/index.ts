@@ -1,55 +1,61 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import { useUserStore } from '@/stores/user'
-import type { RouteRecordRaw } from 'vue-router'
+import {createRouter, createWebHistory} from 'vue-router'
+import {useUserStore} from '@/stores/user'
+import type {RouteRecordRaw} from 'vue-router'
 
 const routes: RouteRecordRaw[] = [
-  {
-    path: '/',
-    name: 'Index',
-    redirect: '/profile'
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    component: () => import('@/views/auth/Login.vue'),
-    meta: { guest: true }
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    component: () => import('@/views/auth/Register.vue'),
-    meta: { guest: true }
-  },
-  {
-    path: '/admin',
-    component: () => import('@/layouts/AdminLayout.vue'),
-    meta: { requiresAuth: true, requiresAdmin: true },
-    children: [
-      {
-        path: 'users',
-        name: 'UserManagement',
-        component: () => import('@/views/admin/UserManagement.vue'),
-        meta: { title: '用户管理' }
-      },
-      {
-        path: 'profile',
-        name: 'AdminProfile',
+    {
+        path: '/',
+        name: 'Index',
+        redirect: '/profile'
+    },
+    {
+        path: '/login',
+        name: 'Login',
+        component: () => import('@/views/auth/Login.vue'),
+        meta: {guest: true}
+    },
+    {
+        path: '/register',
+        name: 'Register',
+        component: () => import('@/views/auth/Register.vue'),
+        meta: {guest: true}
+    },
+    {
+        path: '/admin',
+        component: () => import('@/layouts/AdminLayout.vue'),
+        meta: {requiresAuth: true, requiresAdmin: true},
+        children: [
+            {
+                path: 'users',
+                name: 'UserManagement',
+                component: () => import('@/views/admin/UserManagement.vue'),
+                meta: {title: '用户管理'}
+            },
+            {
+                path: 'profile',
+                name: 'AdminProfile',
+                component: () => import('@/views/profile/UserProfile.vue'),
+                meta: {title: '个人中心'}
+            },
+            {
+                path: 'logs',
+                name: 'SystemLog',
+                component: () => import('@/views/admin/SystemLog.vue'),
+                meta: {title: '系统日志'}
+            }
+        ]
+    },
+    {
+        path: '/profile',
+        name: 'UserProfile',
         component: () => import('@/views/profile/UserProfile.vue'),
-        meta: { title: '个人中心' }
-      }
-    ]
-  },
-  {
-    path: '/profile',
-    name: 'UserProfile',
-    component: () => import('@/views/profile/UserProfile.vue'),
-    meta: { requiresAuth: true, title: '个人中心' }
-  },
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'NotFound',
-    component: () => import('@/views/NotFound.vue')
-  }
+        meta: {requiresAuth: true, title: '个人中心'}
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'NotFound',
+        component: () => import('@/views/NotFound.vue')
+    }
 ]
 
 const router = createRouter({

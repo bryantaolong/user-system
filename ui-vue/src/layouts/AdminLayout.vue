@@ -21,10 +21,6 @@
             <el-icon><House /></el-icon>
             <span>返回首页</span>
           </el-menu-item>
-          <el-menu-item index="/post/list">
-            <el-icon><Document /></el-icon>
-            <span>博客文章</span>
-          </el-menu-item>
           <el-menu-item index="/admin/users">
             <el-icon><User /></el-icon>
             <span>用户管理</span>

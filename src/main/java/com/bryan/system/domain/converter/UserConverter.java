@@ -1,10 +1,11 @@
 package com.bryan.system.domain.converter;
 
+import com.bryan.system.domain.entity.user.SysUser;
 import com.bryan.system.domain.entity.user.UserProfile;
 import com.bryan.system.domain.enums.user.UserStatusEnum;
-import com.bryan.system.domain.entity.user.SysUser;
 import com.bryan.system.domain.vo.user.UserExportVO;
 import com.bryan.system.domain.vo.user.UserProfileVO;
+import com.bryan.system.domain.vo.user.UserVO;
 
 /**
  * UserConvert
@@ -28,6 +29,23 @@ public class UserConverter {
                 .gender(profile.getGender())
                 .birthday(profile.getBirthday())
                 .avatar(profile.getAvatar())
+                .build();
+    }
+
+    public static UserVO toUserVO(SysUser user) {
+        if (user == null) {
+            return null;
+        }
+
+        return UserVO.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .status(user.getStatus() != null ? user.getStatus().name() : null)
+                .createdAt(user.getCreatedAt())
+                .lastLoginAt(user.getLastLoginAt())
+                .roles(user.getRoles())
                 .build();
     }
 

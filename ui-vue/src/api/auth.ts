@@ -1,10 +1,11 @@
 import request from '@/utils/request'
 import type { Result } from '@/models/response/Result'
-import type { SysUser } from '@/models/entity/SysUser'
+import type { UserVO } from '@/models/vo//UserVO.ts'
+import type { SysUser } from '@/models/entity/SysUser.ts'
 import type { LoginRequest } from '@/models/request/auth/LoginRequest.ts'
 import type { RegisterRequest } from '@/models/request/auth/RegisterRequest.ts'
 import type { ChangePasswordRequest } from '@/models/request/user/ChangePasswordRequest.ts'
-import type { UserProfileVO } from '@/models/vo/UserProfileVO'
+import type { UserProfileVO } from '@/models/vo/UserProfileVO.ts'
 
 /**
  * 用户认证API
@@ -27,7 +28,7 @@ export const authApi = {
   /**
    * 获取当前用户信息
    */
-  getCurrentUser(): Promise<Result<SysUser>> {
+  getCurrentUser(): Promise<Result<UserVO>> {
     return request.get('/api/auth/me')
   },
 

@@ -63,14 +63,14 @@ import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 import { userApi } from '@/api/user'
-import type { SysUser } from '@/models/entity/SysUser'
-import UserSearchForm from '@/components/user/UserSearchForm.vue'
-import UserTable from '@/components/user/UserTable.vue'
-import UserFormDialog from '@/components/user/UserFormDialog.vue'
-import UserDetailDialog from '@/components/user/UserDetailDialog.vue'
-import type { UserFormData } from '@/components/user/UserFormDialog.vue'
-import type { UserSearchFormData } from '@/components/user/UserSearchForm.vue'
-import ExportUsersDialog from "@/components/ExportUsersDialog.vue";
+import type { SysUser } from '@/models/entity/user/SysUser.ts'
+import UserSearchForm from '@/components/admin/UserSearchForm.vue'
+import UserTable from '@/components/admin/UserTable.vue'
+import UserFormDialog from '@/components/admin/UserFormDialog.vue'
+import UserDetailDialog from '@/components/admin/UserDetailDialog.vue'
+import type { UserFormData } from '@/components/admin/UserFormDialog.vue'
+import type { UserSearchFormData } from '@/components/admin/UserSearchForm.vue'
+import ExportUsersDialog from "@/components/admin/ExportUsersDialog.vue";
 import type {UserSearchRequest} from "@/models/request/user/UserSearchRequestV2.ts";
 import * as userExportService from "@/api/userExport"
 
