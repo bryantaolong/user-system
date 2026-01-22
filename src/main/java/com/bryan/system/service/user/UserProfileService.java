@@ -27,6 +27,8 @@ public class UserProfileService {
         if (inserted < 0) {
             throw new BusinessException("创建用户信息失败");
         }
+
+        log.info("用户信息创建成功: id: {}", record.getUserId());
         return record;
     }
 

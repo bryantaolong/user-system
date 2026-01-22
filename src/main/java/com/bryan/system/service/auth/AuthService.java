@@ -67,6 +67,7 @@ public class AuthService implements UserDetailsService {
                 .phone(registerRequest.getPhone())
                 .email(registerRequest.getEmail())
                 .roles(defaultRole.getRoleName())
+                .status(UserStatusEnum.NORMAL)
                 .passwordResetAt(LocalDateTime.now())
                 .build();
 
