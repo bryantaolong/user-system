@@ -1,6 +1,7 @@
 package com.bryan.system.domain.entity.user;
 
 import com.bryan.system.domain.enums.user.UserStatusEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,6 +32,7 @@ public class SysUser implements Serializable, UserDetails {
 
     private String username;
 
+    @JsonIgnore
     private String password;
 
     private String phone;
@@ -76,6 +78,7 @@ public class SysUser implements Serializable, UserDetails {
      * 根据 roles 字段解析权限。
      */
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.roles == null || this.roles.isEmpty()) {
             // 如果没有设置角色，可以返回一个默认角色，或者空列表
@@ -88,11 +91,13 @@ public class SysUser implements Serializable, UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         // 正常状态直接返回 true
         if (this.status == UserStatusEnum.NORMAL) {
@@ -107,11 +112,13 @@ public class SysUser implements Serializable, UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return this.status != UserStatusEnum.BANNED && this.deleted == 0;
     }

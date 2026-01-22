@@ -1,11 +1,13 @@
 package com.bryan.system.controller.auth;
 
+import com.bryan.system.domain.converter.UserConverter;
 import com.bryan.system.domain.entity.user.SysUser;
 import com.bryan.system.domain.entity.user.UserProfile;
-import com.bryan.system.domain.request.user.ChangePasswordRequest;
-import com.bryan.system.domain.response.Result;
 import com.bryan.system.domain.request.auth.LoginRequest;
 import com.bryan.system.domain.request.auth.RegisterRequest;
+import com.bryan.system.domain.request.user.ChangePasswordRequest;
+import com.bryan.system.domain.response.Result;
+import com.bryan.system.domain.vo.user.UserVO;
 import com.bryan.system.service.auth.AuthService;
 import com.bryan.system.service.user.UserProfileService;
 import jakarta.validation.Valid;
@@ -37,7 +39,7 @@ public class AuthController {
      * @return 注册成功的用户对象封装在统一响应结构中
      */
     @PostMapping("/register")
-    public Result<SysUser> register(@RequestBody @Valid RegisterRequest registerRequest) {
+    public Result<UserVO> register(@RequestBody @Valid RegisterRequest registerRequest) {
         // 1. 调用注册服务，创建新用户
         SysUser sysUser = authService.register(registerRequest);
 
@@ -46,7 +48,7 @@ public class AuthController {
         userProfileService.save(userProfile);
 
         // 2. 返回注册结果
-        return Result.success(sysUser);
+        return Result.success(UserConverter.toUserVO(sysUser));
     }
 
     /**
@@ -67,15 +69,18 @@ public class AuthController {
     /**
      * 获取当前认证用户信息
      *
-     * @return 当前登录用户的 User 实体对象封装在统一响应结构中
+     * @return 当前登录用户的 VO 对象封装在统一响应结构中
      */
     @GetMapping("/me")
-    public Result<SysUser> getCurrentUser() {
+    public Result<UserVO> getCurrentUser() {
         // 1. 从 Spring Security 上下文中获取当前登录用户
         SysUser currentSysUser = authService.getCurrentUser();
 
-        // 2. 返回用户信息
-        return Result.success(currentSysUser);
+        // 2. 使用 UserConverter 转换为DTO，排除敏感信息
+        UserVO userVO = UserConverter.toUserVO(currentSysUser);
+
+        // 3. 返回用户信息
+        return Result.success(userVO);
     }
 
     /**
@@ -96,13 +101,12 @@ public class AuthController {
      * @return 更新后的用户实体
      */
     @PutMapping("/password")
-    public Result<SysUser> changePassword(
+    public Result<UserVO> changePassword(
             @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
         // 1. 调用服务层执行密码修改
-        return Result.success(authService.changePassword(
-                changePasswordRequest.getOldPassword(),
-                changePasswordRequest.getNewPassword()
-        ));
+        SysUser updated = authService.changePassword(changePasswordRequest.getOldPassword(),
+                changePasswordRequest.getNewPassword());
+        return Result.success(UserConverter.toUserVO(updated));
     }
 
     /**
@@ -111,9 +115,9 @@ public class AuthController {
      * @return 注销结果
      */
     @DeleteMapping
-    public Result<SysUser> deleteAccount() {
+    public Result<UserVO> deleteAccount() {
         // 1. 调用服务层执行密码修改
-        return Result.success(authService.deleteAccount());
+        return Result.success(UserConverter.toUserVO(authService.deleteAccount()));
     }
 
     /**

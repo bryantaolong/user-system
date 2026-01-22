@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * UserRoleController
+ * 用户角色控制器
+ * 提供角色下拉选项等后台管理接口。
  *
  * @author Bryan Long
  */
@@ -25,6 +26,11 @@ public class UserRoleController {
 
     private final UserRoleService userRoleService;
 
+    /**
+     * 获取全部角色下拉选项
+     *
+     * @return 角色选项列表
+     */
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public Result<List<UserRoleOptionVO>> listRoles() {

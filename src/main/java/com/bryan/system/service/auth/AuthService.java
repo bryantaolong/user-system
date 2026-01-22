@@ -3,6 +3,8 @@ package com.bryan.system.service.auth;
 import com.bryan.system.domain.entity.user.SysUser;
 import com.bryan.system.domain.entity.user.UserRole;
 import com.bryan.system.domain.enums.user.UserStatusEnum;
+import com.bryan.system.domain.request.auth.LoginRequest;
+import com.bryan.system.domain.request.auth.RegisterRequest;
 import com.bryan.system.exception.BusinessException;
 import com.bryan.system.exception.ResourceNotFoundException;
 import com.bryan.system.mapper.user.UserMapper;
@@ -10,8 +12,6 @@ import com.bryan.system.mapper.user.UserRoleMapper;
 import com.bryan.system.service.redis.RedisStringService;
 import com.bryan.system.util.http.HttpUtils;
 import com.bryan.system.util.jwt.JwtUtils;
-import com.bryan.system.domain.request.auth.LoginRequest;
-import com.bryan.system.domain.request.auth.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -67,6 +67,7 @@ public class AuthService implements UserDetailsService {
                 .phone(registerRequest.getPhone())
                 .email(registerRequest.getEmail())
                 .roles(defaultRole.getRoleName())
+                .status(UserStatusEnum.NORMAL)
                 .passwordResetAt(LocalDateTime.now())
                 .build();
 
@@ -102,10 +103,12 @@ public class AuthService implements UserDetailsService {
 
             // 如果输入密码错误次数达到限额-硬编码为 5，则锁定账号
             if(sysUser.getLoginFailCount() >= 5) {
-                sysUser.setStatus(UserStatusEnum.NORMAL);
-                sysUser.setPasswordResetAt(LocalDateTime.now());
+                sysUser.setStatus(UserStatusEnum.LOCKED);
+                sysUser.setLockedAt(LocalDateTime.now());
+                userMapper.update(sysUser);
                 throw new BusinessException("输入密码错误次数过多，账号锁定");
             }
+            userMapper.update(sysUser);
             throw new BusinessException("用户名或密码错误");
         }
 
