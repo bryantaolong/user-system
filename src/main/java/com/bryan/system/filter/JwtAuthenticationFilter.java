@@ -1,8 +1,8 @@
 package com.bryan.system.filter;
 
 import com.bryan.system.domain.entity.user.SysUser;
-import com.bryan.system.domain.response.Result;
 import com.bryan.system.domain.enums.HttpStatus;
+import com.bryan.system.domain.response.Result;
 import com.bryan.system.service.auth.AuthService;
 import com.bryan.system.service.redis.RedisStringService;
 import com.bryan.system.util.jwt.JwtUtils;
@@ -14,19 +14,20 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.security.core.GrantedAuthority; // 新增导入
-import org.springframework.security.core.authority.SimpleGrantedAuthority; // 新增导入
 
 import java.io.IOException;
-import java.util.Collection; // 新增导入
-import java.util.List; // 新增导入
-import java.util.stream.Collectors; // 新增导入
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * JWT 认证过滤器，用于解析Token并设置Spring Security上下文。
+ * JWT 认证过滤器
+ * 负责解析请求头中的 Bearer Token，验证 Redis 白名单，并构建 Spring Security 上下文。
  *
  * @author Bryan Long
  */
@@ -38,6 +39,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final ObjectMapper objectMapper;
     private final RedisStringService redisStringService;
 
+    /**
+     * 单次请求过滤逻辑
+     *
+     * @param request     当前请求
+     * @param response    当前响应
+     * @param filterChain 过滤器链
+     * @throws ServletException 过滤器异常
+     * @throws IOException      IO 异常
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -52,18 +62,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         token = token.substring(7); // 截取掉 "Bearer " 前缀
 
         try {
-            // Redis Token 验证
+            // Redis Token 白名单验证
             String username = JwtUtils.getUsernameFromToken(token);
             String redisToken = redisStringService.get(username);
 
             if (redisToken == null || !redisToken.equals(token)) {
-                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write(
-                        objectMapper.writeValueAsString(
-                                Result.error(HttpStatus.UNAUTHORIZED, "Token已失效，请重新登录")
-                        )
-                );
+                writeUnauthorized(response, "Token已失效，请重新登录");
                 return;
             }
 
@@ -74,42 +78,43 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
 
+            // 从数据库加载用户主体，验证用户状态
             // 这里不再需要 authService.getCurrentUser() 来获取角色，
             // 权限信息直接从 Token 中获取，提高性能并符合JWT无状态原则。
             // 但为了安全起见，通常还会从数据库加载用户主体（User对象），以验证用户状态等。
             // 这里我们仍然从数据库加载用户，以确保用户是存在的且状态正常。
             SysUser sysUser = authService.getCurrentUser();
             if (sysUser == null || !sysUser.isEnabled() || !sysUser.isAccountNonLocked()) {
-                // 如果用户不存在或被禁用/锁定，则视为认证失败
-                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write(
-                        objectMapper.writeValueAsString(
-                                Result.error(HttpStatus.UNAUTHORIZED, "用户状态异常或不存在")
-                        )
-                );
+                writeUnauthorized(response, "用户状态异常或不存在");
                 return;
             }
 
             // 构建认证对象，使用从 Token 和数据库验证后的权限
             UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            sysUser, null, authorities // 使用从 Token Claims 获取的权限
-                    );
+                    new UsernamePasswordAuthenticationToken(sysUser, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
         } catch (Exception e) {
             // 处理 Token 无效或过期的情况
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write(
-                    objectMapper.writeValueAsString(
-                            Result.error(HttpStatus.UNAUTHORIZED, "Token无效或已过期: " + e.getMessage())
-                    )
-            );
+            writeUnauthorized(response, "Token无效或已过期: " + e.getMessage());
             return;
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    /**
+     * 快速写入 401 响应
+     *
+     * @param response 响应对象
+     * @param msg      错误描述
+     * @throws IOException 写出异常
+     */
+    private void writeUnauthorized(HttpServletResponse response, String msg) throws IOException {
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write(
+                objectMapper.writeValueAsString(Result.error(HttpStatus.UNAUTHORIZED, msg))
+        );
     }
 }

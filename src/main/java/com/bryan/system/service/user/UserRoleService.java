@@ -9,7 +9,8 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * UserRoleService
+ * 用户角色业务服务
+ * 提供角色列表查询及按 ID 批量查询能力。
  *
  * @author Bryan Long
  */
@@ -19,10 +20,21 @@ public class UserRoleService {
 
     private final UserRoleMapper userRoleMapper;
 
+    /**
+     * 查询全部角色
+     *
+     * @return 角色实体列表
+     */
     public List<UserRole> listAll() {
         return userRoleMapper.selectAll();
     }
 
+    /**
+     * 根据角色主键列表批量查询
+     *
+     * @param ids 角色主键集合
+     * @return 角色实体列表
+     */
     public List<UserRole> getByIds(Collection<Long> ids) {
         return userRoleMapper.selectByIdList(ids);
     }

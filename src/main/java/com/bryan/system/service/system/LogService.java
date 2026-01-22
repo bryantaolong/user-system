@@ -19,42 +19,46 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 /**
- * 日志服务：提供读取应用日志内容的能力，供后台管理端使用。
+ * 日志读取服务
+ * 提供读取应用日志文件（支持 .gz 压缩）及列表能力，供后台管理端使用。
+ *
+ * @author Bryan Long
  */
 @Slf4j
 @Service
 public class LogService {
 
     /**
-     * 日志文件路径，从 Spring Boot logging.file.name 读取，默认为 logs/platform.log。
+     * 日志文件路径，支持 Spring Boot 配置项 logging.file.name
+     * 默认相对路径：logs/platform.log
      */
     @Value("${logging.file.name:logs/platform.log}")
     private String logFileName;
 
     /**
-     * 获取最近的日志内容（按行），从文件末尾开始最多返回指定条数。
+     * 读取默认日志文件最近 N 行
      *
-     * @param maxLines 需要返回的最大行数
-     * @return 日志行列表（按时间正序，从旧到新）
+     * @param maxLines 最大行数（1~2000）
+     * @return 日志行列表（按时间正序）
      */
     public List<String> getLatestLogs(int maxLines) {
         return getLatestLogs(null, maxLines);
     }
 
     /**
-     * 获取指定日志文件最近的日志内容（按行）。
+     * 读取指定日志文件最近 N 行
      *
      * @param fileName 日志文件名（可选），为空时使用默认日志文件
-     * @param maxLines 需要返回的最大行数
-     * @return 日志行列表（按时间正序，从旧到新）
+     * @param maxLines 最大行数（1~2000）
+     * @return 日志行列表（按时间正序）
      */
     public List<String> getLatestLogs(String fileName, int maxLines) {
         int limit = Math.max(1, Math.min(maxLines, 2000));
         Path path = resolveLogPath(fileName);
 
         if (!Files.exists(path)) {
-            log.warn("Log file not found at path: {}", path.toAbsolutePath());
-            throw new BusinessException("日志文件不存在，请检查日志配置。");
+            log.warn("日志文件不存在：{}", path.toAbsolutePath());
+            throw new BusinessException("日志文件不存在，请检查日志配置");
         }
 
         try {
@@ -65,34 +69,15 @@ public class LogService {
             int fromIndex = Math.max(0, allLines.size() - limit);
             return allLines.subList(fromIndex, allLines.size());
         } catch (IOException e) {
-            log.error("Failed to read log file: {}", path.toAbsolutePath(), e);
-            throw new BusinessException("读取日志文件失败，请稍后重试。", e);
+            log.error("读取日志文件失败：{}", path.toAbsolutePath(), e);
+            throw new BusinessException("读取日志文件失败，请稍后重试", e);
         }
     }
-    
+
     /**
-     * 读取日志文件的所有行，支持普通文本和 gzip 压缩文件。
-     */
-    private List<String> readAllLines(Path path) throws IOException {
-        String fileName = path.getFileName().toString();
-        if (fileName.endsWith(".gz")) {
-            List<String> lines = new ArrayList<>();
-            try (InputStream in = Files.newInputStream(path);
-                 GZIPInputStream gzip = new GZIPInputStream(in);
-                 InputStreamReader isr = new InputStreamReader(gzip, StandardCharsets.UTF_8);
-                 BufferedReader reader = new BufferedReader(isr)) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    lines.add(line);
-                }
-            }
-            return lines;
-        }
-        return Files.readAllLines(path, StandardCharsets.UTF_8);
-    }
-    
-    /**
-     * 获取可用的日志文件列表（仅返回文件名）。
+     * 列出日志目录下所有可用日志文件（.log / .gz）
+     *
+     * @return 文件名列表（仅文件名，不含路径）
      */
     public List<String> listLogFiles() {
         Path defaultLogPath = resolveDefaultLogPath();
@@ -105,20 +90,23 @@ public class LogService {
         try (var stream = Files.list(logDir)) {
             List<String> files = stream
                     .filter(Files::isRegularFile)
-                    .map(path -> path.getFileName().toString())
+                    .map(Path::getFileName)
+                    .map(Path::toString)
                     .filter(name -> name.endsWith(".log") || name.endsWith(".gz"))
                     .sorted()
                     .toList();
-            if (files.isEmpty()) {
-                return List.of(defaultLogPath.getFileName().toString());
-            }
-            return files;
+            return files.isEmpty() ? List.of(defaultLogPath.getFileName().toString()) : files;
         } catch (IOException e) {
-            log.warn("Failed to list log files in directory: {}", logDir.toAbsolutePath(), e);
+            log.warn("列出日志文件失败：{}", logDir.toAbsolutePath(), e);
             return List.of(defaultLogPath.getFileName().toString());
         }
     }
 
+    /* -------------------- 私有工具方法 -------------------- */
+
+    /**
+     * 根据文件名解析日志路径，并做路径穿越防护
+     */
     private Path resolveLogPath(String fileName) {
         if (fileName == null || fileName.isBlank()) {
             return resolveDefaultLogPath();
@@ -131,6 +119,9 @@ public class LogService {
         return path;
     }
 
+    /**
+     * 解析默认日志文件路径（支持相对路径）
+     */
     private Path resolveDefaultLogPath() {
         Path path = Paths.get(logFileName);
         if (!path.isAbsolute()) {
@@ -140,12 +131,32 @@ public class LogService {
         return path;
     }
 
+    /**
+     * 获取日志目录（默认日志文件的父目录）
+     */
     private Path getLogsDirectory() {
         Path defaultLogPath = resolveDefaultLogPath();
         Path parent = defaultLogPath.getParent();
-        if (parent == null) {
-            return Paths.get(System.getProperty("user.dir"));
+        return parent == null ? Paths.get(System.getProperty("user.dir")) : parent;
+    }
+
+    /**
+     * 读取文件全部行，支持普通文本与 .gz 压缩
+     */
+    private List<String> readAllLines(Path path) throws IOException {
+        String fileName = path.getFileName().toString();
+        if (fileName.endsWith(".gz")) {
+            List<String> lines = new ArrayList<>();
+            try (InputStream in = Files.newInputStream(path);
+                 GZIPInputStream gzip = new GZIPInputStream(in);
+                 BufferedReader reader = new BufferedReader(new InputStreamReader(gzip, StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    lines.add(line);
+                }
+            }
+            return lines;
         }
-        return parent;
+        return Files.readAllLines(path, StandardCharsets.UTF_8);
     }
 }

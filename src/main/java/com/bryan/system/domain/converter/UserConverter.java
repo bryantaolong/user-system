@@ -8,12 +8,20 @@ import com.bryan.system.domain.vo.user.UserProfileVO;
 import com.bryan.system.domain.vo.user.UserVO;
 
 /**
- * UserConvert
+ * 用户实体与值对象转换器
+ * 负责 SysUser、UserProfile 与各层级 VO 之间的相互转换。
  *
  * @author Bryan Long
  */
 public class UserConverter {
 
+    /**
+     * 将用户实体与资料实体合并为用户资料 VO
+     *
+     * @param user    用户实体
+     * @param profile 用户资料实体
+     * @return 用户资料 VO；若两者均为 null 则返回 null
+     */
     public static UserProfileVO toUserProfileVO(SysUser user, UserProfile profile) {
         if (user == null && profile == null) {
             return null;
@@ -32,6 +40,12 @@ public class UserConverter {
                 .build();
     }
 
+    /**
+     * 将用户实体转换为对外展示的用户 VO
+     *
+     * @param user 用户实体
+     * @return 用户 VO；若入参为 null 则返回 null
+     */
     public static UserVO toUserVO(SysUser user) {
         if (user == null) {
             return null;
@@ -49,6 +63,12 @@ public class UserConverter {
                 .build();
     }
 
+    /**
+     * 将用户实体转换为导出用的用户导出 VO
+     *
+     * @param user 用户实体
+     * @return 用户导出 VO；若入参为 null 则返回 null
+     */
     public static UserExportVO toExportVO(SysUser user) {
         if (user == null) {
             return null;
@@ -74,6 +94,12 @@ public class UserConverter {
                 .build();
     }
 
+    /**
+     * 将用户状态枚举转换为中文描述
+     *
+     * @param status 用户状态枚举
+     * @return 中文描述
+     */
     private static String convertStatus(UserStatusEnum status) {
         if (status == null) return "";
         return switch (status) {
@@ -85,6 +111,12 @@ public class UserConverter {
         };
     }
 
+    /**
+     * 将删除标记转换为中文描述
+     *
+     * @param deleted 删除标记（0：未删除；其他：已删除）
+     * @return 中文描述
+     */
     private static String convertDeletedStatus(Integer deleted) {
         if (deleted == null) return "";
         return deleted == 0 ? "未删除" : "已删除";

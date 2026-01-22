@@ -14,7 +14,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
- * Spring Security 配置类
+ * Spring Security 全局配置类
+ * 配置过滤器链、密码加密器及方法级安全注解支持。
  *
  * @author Bryan Long
  */
@@ -23,6 +24,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    /**
+     * 配置 HTTP 安全过滤器链
+     * 关闭 CSRF、放行登录/注册接口、其余接口均需认证、使用无状态会话。
+     *
+     * @param http    Spring Security 配置构建器
+     * @param jwtFilter 自定义 JWT 认证过滤器
+     * @return 配置完成的 SecurityFilterChain
+     * @throws Exception 配置异常
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
@@ -39,6 +49,12 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * 注册密码加密器
+     * 使用 BCrypt 强哈希算法，兼容 Spring Security 的 PasswordEncoder 接口。
+     *
+     * @return BCryptPasswordEncoder 实例
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

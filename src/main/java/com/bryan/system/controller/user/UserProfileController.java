@@ -15,7 +15,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * UserProfileController
+ * 用户资料控制器
+ * 提供用户资料的查询、更新等接口。
  *
  * @author Bryan Long
  */
@@ -29,26 +30,49 @@ public class UserProfileController {
     private final UserService userService;
     private final AuthService authService;
 
+    /**
+     * 根据用户主键查询用户资料
+     *
+     * @param userId 用户主键
+     * @return 用户资料 VO
+     */
     @GetMapping("/{userId}")
     public Result<UserProfileVO> getUserProfileByUserId(@PathVariable Long userId) {
         UserProfile profile = userProfileService.getUserProfileByUserId(userId);
         SysUser user = userService.getUserById(userId);
-        return Result.success(UserConverter.toUserProfileVO(user,  profile));
+        return Result.success(UserConverter.toUserProfileVO(user, profile));
     }
 
+    /**
+     * 根据真实姓名查询用户资料
+     *
+     * @param realName 真实姓名
+     * @return 用户资料 VO
+     */
     @GetMapping("/name/{realName}")
     public Result<UserProfileVO> getUserProfileByRealName(@PathVariable String realName) {
         UserProfile profile = userProfileService.findUserProfileByRealName(realName);
         SysUser user = userService.getUserById(profile.getUserId());
-        return Result.success(UserConverter.toUserProfileVO(user,  profile));
+        return Result.success(UserConverter.toUserProfileVO(user, profile));
     }
 
+    /**
+     * 获取当前登录用户的资料
+     *
+     * @return 用户资料 VO
+     */
     @GetMapping("/me")
     public Result<UserProfileVO> getCurrentUserProfile() {
-        Long UserId = authService.getCurrentUserId();
-        return this.getUserProfileByUserId(UserId);
+        Long userId = authService.getCurrentUserId();
+        return this.getUserProfileByUserId(userId);
     }
 
+    /**
+     * 更新当前用户资料
+     *
+     * @param req 更新请求参数
+     * @return 更新后的用户资料 VO
+     */
     @PutMapping
     public Result<UserProfileVO> updateUserProfile(
             @RequestBody UserUpdateRequest req) {
@@ -60,7 +84,7 @@ public class UserProfileController {
                 .avatar(req.getAvatar())
                 .build();
         UserProfileVO vo = UserConverter.toUserProfileVO(authService.getCurrentUser(),
-                                                            userProfileService.updateUserProfile(userId, dto));
+                userProfileService.updateUserProfile(userId, dto));
         return Result.success(vo);
     }
 }

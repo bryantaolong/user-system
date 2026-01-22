@@ -7,18 +7,26 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.util.Objects;
 
 /**
- * HttpUtil
+ * HTTP 工具类
+ * 提供获取客户端 IP、操作系统、浏览器等常用能力。
  *
  * @author Bryan Long
  */
 public class HttpUtils {
 
+    /**
+     * 获取客户端真实 IP
+     * 依次解析 X-Forwarded-For、Proxy-Client-IP、WL-Proxy-Client-IP、
+     * HTTP_CLIENT_IP、HTTP_X_FORWARDED_FOR，最后回退到 RemoteAddr。
+     *
+     * @return 客户端 IP；未知返回 "Unknown"
+     */
     public static String getClientIp() {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes());
+        ServletRequestAttributes attributes = (ServletRequestAttributes) Objects.requireNonNull(
+                RequestContextHolder.getRequestAttributes());
         HttpServletRequest request = attributes.getRequest();
 
         String ip = request.getHeader("X-Forwarded-For");
-
         if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");
         }
@@ -35,16 +43,21 @@ public class HttpUtils {
             ip = request.getRemoteAddr();
         }
 
-        // 对于通过多个代理的情况，第一个IP为客户端真实IP
+        // 多级代理时，取第一个真实 IP
         if (ip != null && ip.contains(",")) {
             ip = ip.substring(0, ip.indexOf(",")).trim();
         }
-
-        return ip;
+        return ip == null ? "Unknown" : ip;
     }
 
+    /**
+     * 获取客户端操作系统
+     *
+     * @return 操作系统名称；未知返回 "Unknown"
+     */
     public static String getClientOS() {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes());
+        ServletRequestAttributes attributes = (ServletRequestAttributes) Objects.requireNonNull(
+                RequestContextHolder.getRequestAttributes());
         HttpServletRequest request = attributes.getRequest();
 
         String userAgent = request.getHeader("User-Agent");
@@ -52,27 +65,33 @@ public class HttpUtils {
             return "Unknown";
         }
 
-        userAgent = userAgent.toLowerCase();
+        String ua = userAgent.toLowerCase();
 
-        if (userAgent.contains("windows")) {
+        if (ua.contains("windows")) {
             return "Windows";
-        } else if (userAgent.contains("mac")) {
-            return "Mac OS";
-        } else if (userAgent.contains("x11")) {
+        } else if (ua.contains("mac")) {
+            return "macOS";
+        } else if (ua.contains("x11")) {
             return "Unix";
-        } else if (userAgent.contains("android")) {
+        } else if (ua.contains("android")) {
             return "Android";
-        } else if (userAgent.contains("iphone")) {
+        } else if (ua.contains("iphone")) {
             return "iOS";
-        } else if (userAgent.contains("linux")) {
+        } else if (ua.contains("linux")) {
             return "Linux";
         } else {
             return "Unknown";
         }
     }
 
+    /**
+     * 获取客户端浏览器
+     *
+     * @return 浏览器名称；未知返回 "Unknown"
+     */
     public static String getClientBrowser() {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes());
+        ServletRequestAttributes attributes = (ServletRequestAttributes) Objects.requireNonNull(
+                RequestContextHolder.getRequestAttributes());
         HttpServletRequest request = attributes.getRequest();
 
         String userAgent = request.getHeader("User-Agent");
