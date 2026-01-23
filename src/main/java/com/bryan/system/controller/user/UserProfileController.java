@@ -11,6 +11,7 @@ import com.bryan.system.service.auth.AuthService;
 import com.bryan.system.service.user.UserProfileService;
 import com.bryan.system.service.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ public class UserProfileController {
     private final AuthService authService;
 
     /**
-     * 根据用户主键查询用户资料
+     * 根据用户主键查询用户资料（公开访问，用于展示用户信息）
      *
      * @param userId 用户主键
      * @return 用户资料 VO
@@ -50,6 +51,7 @@ public class UserProfileController {
      * @return 用户资料 VO
      */
     @GetMapping("/name/{realName}")
+    @PreAuthorize("isAuthenticated()")
     public Result<UserProfileVO> getUserProfileByRealName(@PathVariable String realName) {
         UserProfile profile = userProfileService.findUserProfileByRealName(realName);
         SysUser user = userService.getUserById(profile.getUserId());
@@ -62,6 +64,7 @@ public class UserProfileController {
      * @return 用户资料 VO
      */
     @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
     public Result<UserProfileVO> getCurrentUserProfile() {
         Long userId = authService.getCurrentUserId();
         return this.getUserProfileByUserId(userId);
@@ -74,6 +77,7 @@ public class UserProfileController {
      * @return 更新后的用户资料 VO
      */
     @PutMapping
+    @PreAuthorize("isAuthenticated()")
     public Result<UserProfileVO> updateUserProfile(
             @RequestBody UserUpdateRequest req) {
         Long userId = authService.getCurrentUserId();
