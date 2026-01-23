@@ -1,4 +1,4 @@
-<!-- src/components/user/ExportUsersDialog.vue -->
+<!-- src/components/admin/ExportUsersDialog.vue -->
 <template>
   <el-dialog
     v-model="dialogVisible"
@@ -37,7 +37,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
-import * as userExportService from '@/api/userExport.ts';
+import { userExportApi } from '@/api/userExport'
 import type { UserExportRequest } from '@/models/request/user/UserExportRequest.ts';
 
 // 定义组件的 props
@@ -71,7 +71,7 @@ const handleClose = () => {
 // 获取可导出字段列表
 const fetchExportFields = async () => {
   try {
-    const res = await userExportService.getExportFields();
+    const res = await userExportApi.getExportFields()
     if (res.code === 200 && res.data) {
       exportFieldsOptions.value = new Map(Object.entries(res.data)); // 将对象转换为Map
       selectedExportFields.value = Array.from(exportFieldsOptions.value.keys()); // 默认全选
@@ -96,7 +96,7 @@ const confirmExport = async () => {
       fileName: exportFileName.value || '用户数据',
       status: exportStatusFilter.value ?? undefined
     };
-    await userExportService.exportUsersByFields(exportRequest); // ✅ 使用选择字段导出的接口
+    await userExportApi.exportUsersByFields(exportRequest)
     ElMessage.success('用户数据已开始导出！');
     emit('exported');
     handleClose();

@@ -63,7 +63,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 import { userApi } from '@/api/user'
-import type { SysUser } from '@/models/entity/user/SysUser.ts'
+import type { SysUser } from '@/models/entity/SysUser.ts'
 import UserSearchForm from '@/components/admin/UserSearchForm.vue'
 import UserTable from '@/components/admin/UserTable.vue'
 import UserFormDialog from '@/components/admin/UserFormDialog.vue'
@@ -72,7 +72,7 @@ import type { UserFormData } from '@/components/admin/UserFormDialog.vue'
 import type { UserSearchFormData } from '@/components/admin/UserSearchForm.vue'
 import ExportUsersDialog from "@/components/admin/ExportUsersDialog.vue";
 import type {UserSearchRequest} from "@/models/request/user/UserSearchRequestV2.ts";
-import * as userExportService from "@/api/userExport"
+import { userExportApi } from '@/api/userExport'
 
 const loading = ref(false)
 const submitting = ref(false)
@@ -341,7 +341,7 @@ const handleExportAllUsers = async () => {
       inputErrorMessage: '文件名不能为空',
     });
     const fileName = result.value || '所有用户数据';
-    await userExportService.exportAllUsers(fileName, searchForm.value.status);
+    await userExportApi.exportAllUsers(fileName, searchForm.value.status)
     ElMessage.success('所有用户数据已开始导出！');
   } catch (error: any) {
     if (error !== 'cancel') {
