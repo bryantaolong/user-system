@@ -3,19 +3,27 @@ package com.bryan.system.service.file;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 
+/**
+ * 文件存储服务
+ * 提供文件上传、删除与读取能力。
+ */
 @Service
-public class FileStorageService {
+public class LocalFileService {
 
     @Value("${file.upload-dir}")
     private String uploadDir;
 
+    /**
+     * 存储上传文件并返回相对路径
+     *
+     * @param file 上传文件
+     * @param subDirectory 子目录
+     * @return uploads 下的相对路径
+     * @throws IOException 文件读写异常
+     */
     public String storeFile(MultipartFile file, String subDirectory) throws IOException {
         // 构建上传目录的绝对路径，包括子目录
         Path uploadPath = Paths.get(uploadDir, subDirectory).toAbsolutePath().normalize();
@@ -54,6 +62,12 @@ public class FileStorageService {
         return Paths.get(subDirectory, fileName).toString();
     }
 
+    /**
+     * 删除指定相对路径的文件
+     *
+     * @param filePath uploads 下的相对路径
+     * @return 是否删除成功
+     */
     public boolean deleteFile(String filePath) {
         try {
             // 构建文件的完整物理路径
@@ -67,6 +81,13 @@ public class FileStorageService {
         }
     }
 
+    /**
+     * 读取指定相对路径文件为字节数组
+     *
+     * @param filePath uploads 下的相对路径
+     * @return 文件字节数组
+     * @throws IOException 文件读写异常
+     */
     public byte[] loadFileAsBytes(String filePath) throws IOException {
         // 构建文件的完整物理路径
         Path fullPath = Paths.get(uploadDir, filePath).toAbsolutePath().normalize();
