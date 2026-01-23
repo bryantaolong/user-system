@@ -40,6 +40,7 @@ public class AuthController {
      * @return 注册成功的用户对象封装在统一响应结构中
      */
     @PostMapping("/register")
+    @PreAuthorize("permitAll()")
     public Result<UserVO> register(@RequestBody @Valid RegisterRequest registerRequest) {
         // 1. 调用注册服务，创建新用户
         SysUser sysUser = authService.register(registerRequest);
@@ -59,6 +60,7 @@ public class AuthController {
      * @return 登录成功后生成的 JWT Token 字符串封装在统一响应结构中
      */
     @PostMapping("/login")
+    @PreAuthorize("permitAll()")
     public Result<String> login(@RequestBody @Valid LoginRequest loginRequest) {
         // 1. 调用认证服务进行登录验证
         String token = authService.login(loginRequest);
