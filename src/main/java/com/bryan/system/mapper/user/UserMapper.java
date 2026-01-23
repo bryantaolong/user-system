@@ -7,6 +7,7 @@ import com.bryan.system.domain.request.user.UserSearchRequest;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -27,6 +28,8 @@ public interface UserMapper {
                              @Param("pageSize") int pageSize,
                              @Param("req") UserSearchRequest search,
                              @Param("export") UserExportRequest export);
+
+    List<SysUser> selectByIdList(@Param("ids") Collection<Long> ids);
 
     SysUser selectByStatus(@Param("status") UserStatusEnum status);
 
