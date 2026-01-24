@@ -13,7 +13,7 @@
             <el-avatar
                 v-if="userStore.userProfile?.avatar"
                 :size="120"
-                :src="userStore.userProfile.avatar"
+                :src="getAvatarUrl(userStore.userProfile.avatar)"
             />
             <el-avatar v-else :size="120">
               {{ userStore.userInfo?.username?.charAt(0).toUpperCase() }}
@@ -91,12 +91,12 @@
 import {ref, reactive, onMounted} from 'vue'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import {Camera} from '@element-plus/icons-vue'
-import {useRouter} from 'vue-router'
 import {useUserStore} from '@/stores/user'
 import {userApi} from '@/api/user'
 import BasicInfo from '@/components/profile/BasicInfo.vue'
 import SecuritySettings from '@/components/profile/SecuritySettings.vue'
 import LoginHistory from '@/components/profile/LoginHistory.vue'
+import {getAvatarUrl} from "@/utils/file.ts";
 
 /* --- 工具方法 --- */
 function genderToNum(g?: string): 1 | 0 {
@@ -108,7 +108,6 @@ function numToGender(n: 1 | 0): 'MALE' | 'FEMALE' {
 }
 
 /* --- 基础状态 --- */
-const router = useRouter()
 const userStore = useUserStore()
 const activeMainTab = ref('settings')
 const editActiveTab = ref('basic')
@@ -256,27 +255,6 @@ onMounted(() => {
   margin-bottom: 15px;
 }
 
-.profile-stats {
-  display: flex;
-  gap: 30px;
-}
-
-.stat-item {
-  text-align: center;
-  cursor: pointer;
-}
-
-.stat-number {
-  display: block;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.stat-label {
-  font-size: 13px;
-  color: #909399;
-}
-
 .main-tabs {
   padding: 0 10px;
 }
@@ -284,51 +262,6 @@ onMounted(() => {
 :deep(.el-tabs__item) {
   font-size: 16px;
   height: 55px;
-}
-
-.tab-content-container {
-  padding: 20px 0;
-}
-
-.posts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-}
-
-.post-card {
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.post-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-}
-
-.post-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 10px;
-  height: 44px;
-  overflow: hidden;
-}
-
-.post-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: #909399;
-}
-
-.pagination-wrapper {
-  margin-top: 30px;
-  display: flex;
-  justify-content: center;
-}
-
-.info-tabs {
-  padding: 0 10px;
 }
 
 .settings-container {

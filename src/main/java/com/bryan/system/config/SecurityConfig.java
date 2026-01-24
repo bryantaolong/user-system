@@ -26,7 +26,8 @@ public class SecurityConfig {
 
     /**
      * 配置 HTTP 安全过滤器链
-     * 关闭 CSRF、放行登录/注册接口、其余接口均需认证、使用无状态会话。
+     * 关闭 CSRF、放行所有请求、使用无状态会话。
+     * 认证控制通过方法级 @PreAuthorize 注解实现，更加直观和灵活。
      *
      * @param http    Spring Security 配置构建器
      * @param jwtFilter 自定义 JWT 认证过滤器
@@ -41,8 +42,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

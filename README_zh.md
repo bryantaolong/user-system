@@ -37,7 +37,6 @@ src/
       application.yaml
       application-dev.yaml
       mapper/         # MyBatis Mapper XML 文件
-      sql/            # 数据库建表脚本
   test/
     java/com/bryan/system/
       UserSystemApplicationTests.java
@@ -53,15 +52,15 @@ src/
 ## 配置说明
 
 * 数据库连接、Redis 配置请在 `src/main/resources/application-dev.yaml` 中修改。
-* 日志、MyBatis-Plus 逻辑删除等通用配置见 `src/main/resources/application.yaml`。
-* 数据库建表脚本见 [`src/main/resources/sql/create_table.sql`](src/main/resources/sql/create_table.sql)。
+* 日志、MyBatis 等通用配置见 `src/main/resources/application.yaml`。
+* 数据库建表脚本见 [`sql/create_table.sql`](sql/create_table.sql)。
 
 ## 启动方式
 
 1. 初始化数据库（PostgreSQL），执行建表脚本：
 
    ```sh
-   psql -U postgres -d postgres -f src/main/resources/sql/create_table.sql
+   psql -U postgres -d postgres -f sql/create_table.sql
    ```
 2. 启动 Redis 服务。
 3. 使用 Maven 构建并运行项目：
@@ -126,7 +125,7 @@ services:
       POSTGRES_DB: user_system
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./src/main/resources/sql/create_table.sql:/docker-entrypoint-initdb.d/create_table.sql
+      - ./sql/create_table.sql:/docker-entrypoint-initdb.d/create_table.sql
     ports:
       - "5432:5432"
 
@@ -190,7 +189,7 @@ docker-compose up -d --build
 * 用户登录：`POST /api/auth/login`
 * 查询所有用户：`GET /api/user/all`（管理员权限）
 * 用户搜索：`POST /api/user/search`
-* 用户更新、角色变更、密码修改、封禁/解封、逻辑删除等详见 [`UserController`](src/main/java/com/bryan/system/controller/UserController.java)
+* 用户更新、角色变更、密码修改、封禁/解封、逻辑删除等详见 [`UserController`](src/main/java/com/bryan/system/controller/user/UserController.java)
 * 用户数据导出：`GET /api/user/export/all`、`POST /api/user/export/field`（管理员权限）
 
 ## 其他说明

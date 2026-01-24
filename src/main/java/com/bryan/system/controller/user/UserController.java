@@ -61,7 +61,7 @@ public class UserController {
 
     /**
      * 根据用户名查询用户信息。
-     * 仅允许 ADMIN 角色访问。
+     * 允许未认证用户访问，用于公开信息展示。
      *
      * @param username 用户名
      * @return 对应用户实体

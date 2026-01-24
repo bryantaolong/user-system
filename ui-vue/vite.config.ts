@@ -17,6 +17,10 @@ export default defineConfig({
         target: 'http://localhost:8080', // Spring Boot 后端地址
         changeOrigin: true,
       },
+      '/uploads': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
     },
   },
 })

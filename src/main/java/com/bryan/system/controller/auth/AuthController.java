@@ -12,6 +12,7 @@ import com.bryan.system.service.auth.AuthService;
 import com.bryan.system.service.user.UserProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
@@ -39,6 +40,7 @@ public class AuthController {
      * @return 注册成功的用户对象封装在统一响应结构中
      */
     @PostMapping("/register")
+    @PreAuthorize("permitAll()")
     public Result<UserVO> register(@RequestBody @Valid RegisterRequest registerRequest) {
         // 1. 调用注册服务，创建新用户
         SysUser sysUser = authService.register(registerRequest);
@@ -58,6 +60,7 @@ public class AuthController {
      * @return 登录成功后生成的 JWT Token 字符串封装在统一响应结构中
      */
     @PostMapping("/login")
+    @PreAuthorize("permitAll()")
     public Result<String> login(@RequestBody @Valid LoginRequest loginRequest) {
         // 1. 调用认证服务进行登录验证
         String token = authService.login(loginRequest);
@@ -72,6 +75,7 @@ public class AuthController {
      * @return 当前登录用户的 VO 对象封装在统一响应结构中
      */
     @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
     public Result<UserVO> getCurrentUser() {
         // 1. 从 Spring Security 上下文中获取当前登录用户
         SysUser currentSysUser = authService.getCurrentUser();
@@ -89,6 +93,7 @@ public class AuthController {
      * @return boolean 是否退出登录
      */
     @GetMapping("/logout")
+    @PreAuthorize("isAuthenticated()")
     public boolean logout() {
         return authService.logout();
     }
@@ -101,11 +106,12 @@ public class AuthController {
      * @return 更新后的用户实体
      */
     @PutMapping("/password")
+    @PreAuthorize("isAuthenticated()")
     public Result<UserVO> changePassword(
             @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
         // 1. 调用服务层执行密码修改
         SysUser updated = authService.changePassword(changePasswordRequest.getOldPassword(),
-                changePasswordRequest.getNewPassword());
+                                                        changePasswordRequest.getNewPassword());
         return Result.success(UserConverter.toUserVO(updated));
     }
 
@@ -115,6 +121,7 @@ public class AuthController {
      * @return 注销结果
      */
     @DeleteMapping
+    @PreAuthorize("isAuthenticated()")
     public Result<UserVO> deleteAccount() {
         // 1. 调用服务层执行密码修改
         return Result.success(UserConverter.toUserVO(authService.deleteAccount()));

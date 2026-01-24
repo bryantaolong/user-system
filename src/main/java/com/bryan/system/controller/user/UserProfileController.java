@@ -4,6 +4,7 @@ import com.bryan.system.domain.converter.UserConverter;
 import com.bryan.system.domain.dto.user.UserProfileUpdateDTO;
 import com.bryan.system.domain.entity.user.SysUser;
 import com.bryan.system.domain.entity.user.UserProfile;
+import com.bryan.system.domain.enums.HttpStatus;
 import com.bryan.system.domain.request.user.UserUpdateRequest;
 import com.bryan.system.domain.response.Result;
 import com.bryan.system.domain.vo.user.UserProfileVO;
@@ -11,8 +12,10 @@ import com.bryan.system.service.auth.AuthService;
 import com.bryan.system.service.user.UserProfileService;
 import com.bryan.system.service.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 用户资料控制器
@@ -31,7 +34,26 @@ public class UserProfileController {
     private final AuthService authService;
 
     /**
-     * 根据用户主键查询用户资料
+     * 上传当前用户头像
+     *
+     * @param file 头像文件
+     * @return 统一响应结果，包含头像相对路径
+     */
+    @PostMapping("/avatar")
+    @PreAuthorize("isAuthenticated()")
+    public Result<String> uploadAvatar(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return Result.error(HttpStatus.BAD_REQUEST, "上传文件不能为空");
+        }
+        Long userId = authService.getCurrentUserId();
+        String avatarPath = userProfileService.updateAvatar(userId, file);
+        return Result.success(avatarPath);
+    }
+
+
+
+    /**
+     * 根据用户主键查询用户资料（公开访问，用于展示用户信息）
      *
      * @param userId 用户主键
      * @return 用户资料 VO
@@ -50,6 +72,7 @@ public class UserProfileController {
      * @return 用户资料 VO
      */
     @GetMapping("/name/{realName}")
+    @PreAuthorize("isAuthenticated()")
     public Result<UserProfileVO> getUserProfileByRealName(@PathVariable String realName) {
         UserProfile profile = userProfileService.findUserProfileByRealName(realName);
         SysUser user = userService.getUserById(profile.getUserId());
@@ -62,6 +85,7 @@ public class UserProfileController {
      * @return 用户资料 VO
      */
     @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
     public Result<UserProfileVO> getCurrentUserProfile() {
         Long userId = authService.getCurrentUserId();
         return this.getUserProfileByUserId(userId);
@@ -74,6 +98,7 @@ public class UserProfileController {
      * @return 更新后的用户资料 VO
      */
     @PutMapping
+    @PreAuthorize("isAuthenticated()")
     public Result<UserProfileVO> updateUserProfile(
             @RequestBody UserUpdateRequest req) {
         Long userId = authService.getCurrentUserId();
