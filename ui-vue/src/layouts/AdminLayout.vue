@@ -53,7 +53,7 @@
           <div class="header-right">
             <el-dropdown trigger="hover" @command="handleCommand">
               <div class="user-info">
-                <el-avatar :size="32" :src="userStore.userProfile?.avatar">
+                <el-avatar :size="32" :src="getAvatarUrl(userStore.userProfile?.avatar)">
                   {{ userStore.userInfo?.username?.charAt(0).toUpperCase() }}
                 </el-avatar>
                 <span class="username">{{ userStore.userInfo?.username }}</span>
@@ -94,10 +94,10 @@ import {
   Setting,
   ArrowDown,
   SwitchButton,
-  Document,
   House
 } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
+import { getAvatarUrl } from '@/utils/file'
 
 const route = useRoute()
 const router = useRouter()

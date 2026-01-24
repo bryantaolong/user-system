@@ -5,9 +5,13 @@ import com.bryan.system.domain.entity.user.UserProfile;
 import com.bryan.system.exception.BusinessException;
 import com.bryan.system.exception.ResourceNotFoundException;
 import com.bryan.system.mapper.user.UserProfileMapper;
+import com.bryan.system.service.file.LocalFileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 /**
  * 用户资料业务服务
@@ -21,6 +25,43 @@ import org.springframework.stereotype.Service;
 public class UserProfileService {
 
     private final UserProfileMapper userProfileMapper;
+    private final LocalFileService localFileService;
+
+    /**
+     * 上传并更新用户头像
+     *
+     * @param userId 用户主键
+     * @param file   头像文件
+     * @return 更新后的头像相对路径
+     * @throws BusinessException 文件存储或数据库更新失败
+     */
+    public String updateAvatar(Long userId, MultipartFile file) {
+        UserProfile profile = this.getUserProfileByUserId(userId);
+
+        try {
+            // 1. 存储新头像文件
+            String avatarPath = localFileService.storeFile(file, "avatars");
+
+            // 2. 如果原有头像存在，尝试删除旧文件（可选，根据业务需求）
+            if (profile.getAvatar() != null && !profile.getAvatar().isEmpty()) {
+                localFileService.deleteFile(profile.getAvatar());
+            }
+
+            // 3. 更新数据库
+            profile.setAvatar(avatarPath);
+            int updated = userProfileMapper.update(profile);
+            if (updated == 0) {
+                throw new BusinessException("头像更新失败");
+            }
+
+            log.info("用户头像更新成功，用户ID: {}, 路径: {}", userId, avatarPath);
+            return avatarPath;
+        } catch (IOException e) {
+            log.error("用户头像上传失败，用户ID: {}", userId, e);
+            throw new BusinessException("头像上传失败: " + e.getMessage());
+        }
+    }
+
 
     /**
      * 创建用户资料
