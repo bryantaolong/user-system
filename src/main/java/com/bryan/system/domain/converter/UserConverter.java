@@ -59,6 +59,8 @@ public class UserConverter {
                 .status(user.getStatus() != null ? user.getStatus().name() : null)
                 .createdAt(user.getCreatedAt())
                 .lastLoginAt(user.getLastLoginAt())
+                .lastLoginIp(user.getLastLoginIp())
+                .lastLoginDevice(user.getLastLoginDevice())
                 .roles(user.getRoles())
                 .build();
     }
@@ -83,10 +85,12 @@ public class UserConverter {
                 .roles(user.getRoles())
                 .lastLoginAt(user.getLastLoginAt())
                 .lastLoginIp(user.getLastLoginIp())
+                .lastLoginDevice(user.getLastLoginDevice())
                 .passwordResetAt(user.getPasswordResetAt())
                 .loginFailCount(user.getLoginFailCount())
                 .lockedAt(user.getLockedAt())
                 .deleted(convertDeletedStatus(user.getDeleted()))
+                .version(user.getVersion())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
                 .createdBy(user.getCreatedBy())

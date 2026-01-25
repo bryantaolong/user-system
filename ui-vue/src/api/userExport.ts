@@ -1,7 +1,5 @@
 // src/api/userExport.ts
 import request from '@/utils/request'
-import type { UserExportRequest } from '@/models/request/user/UserExportRequest'
-import type { Result } from '@/models/response/Result'
 
 /**
  * 用户数据导出 API
@@ -14,7 +12,7 @@ export const userExportApi = {
    */
   exportAllUsers(fileName?: string, status?: number | null): Promise<void> {
     return request({
-      url: '/api/users/export/all',
+      url: '/api/users/export',
       method: 'get',
       params: {
         fileName: fileName || '用户数据',
@@ -32,37 +30,6 @@ export const userExportApi = {
       document.body.removeChild(link)
       window.URL.revokeObjectURL(url)
     }) as Promise<void>
-  },
-
-  /**
-   * 导出用户数据（支持字段选择）
-   * @param data 用户导出请求数据
-   */
-  exportUsersByFields(data: UserExportRequest): Promise<void> {
-    return request({
-      url: '/api/users/export/fields',
-      method: 'post',
-      data,
-      responseType: 'blob'
-    }).then(response => {
-      const filename = data.fileName ? `${data.fileName}.xlsx` : '用户数据.xlsx'
-      const url = window.URL.createObjectURL(new Blob([response.data]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', filename)
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      window.URL.revokeObjectURL(url)
-    }) as Promise<void>
-  },
-
-  /**
-   * 获取可导出的字段列表（字段名 => 中文名）
-   * @returns 例如：{ "username": "用户名", "email": "邮箱", ... }
-   */
-  getExportFields(): Promise<Result<Record<string, string>>> {
-    return request.get('/api/users/export/fields')
   }
 }
 

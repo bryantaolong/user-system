@@ -56,8 +56,10 @@ public class MyBatisAuditFieldInterceptor implements Interceptor {
         LocalDateTime now = LocalDateTime.now();
         setValue(meta, "createdAt", now);
         setValue(meta, "updatedAt", now);
-        setValue(meta, "createdBy", currentUser());
-        setValue(meta, "updatedBy", currentUser());
+        setValue(meta, "createdBy", this.currentUser());
+        setValue(meta, "updatedBy", this.currentUser());
+        setValue(meta, "deleted", 0);
+        setValue(meta, "version", 0);
     }
 
     /**
@@ -68,7 +70,24 @@ public class MyBatisAuditFieldInterceptor implements Interceptor {
     private void fillUpdate(Object param) {
         MetaObject meta = SystemMetaObject.forObject(param);
         setValue(meta, "updatedAt", LocalDateTime.now());
-        setValue(meta, "updatedBy", currentUser());
+        setValue(meta, "updatedBy", this.currentUser());
+        this.incrementVersion(meta);
+    }
+
+    /**
+     * 递增 version 字段
+     *
+     * @param meta 元对象
+     */
+    private void incrementVersion(MetaObject meta) {
+        if (meta.hasGetter("version")) {
+            Object currentVersion = meta.getValue("version");
+            if (currentVersion instanceof Integer) {
+                meta.setValue("version", ((Integer) currentVersion) + 1);
+            } else if (currentVersion == null) {
+                meta.setValue("version", 1);
+            }
+        }
     }
 
     /**
@@ -91,7 +110,7 @@ public class MyBatisAuditFieldInterceptor implements Interceptor {
      */
     private String currentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.isAuthenticated()) {
+        if (auth == null || !auth.isAuthenticated() || auth.getName().equals("anonymousUser")) {
             return "SYSTEM";
         }
         return auth.getName();

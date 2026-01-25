@@ -30,5 +30,8 @@ public class UserVO {
 
     private String lastLoginIp;
 
+    private String lastLoginDevice;
+
     private LocalDateTime createdAt;
+
 }

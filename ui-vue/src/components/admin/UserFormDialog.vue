@@ -24,10 +24,14 @@
       <el-form-item v-if="dialogType === 'add'" label="密码" prop="password">
         <el-input v-model="localUserForm.password" type="password" show-password />
       </el-form-item>
-      <el-form-item label="角色" prop="roles">
-        <el-select v-model="localUserForm.roles" multiple placeholder="请选择角色">
-          <el-option label="普通用户" value="ROLE_USER" />
-          <el-option label="管理员" value="ROLE_ADMIN" />
+      <el-form-item label="角色" prop="roleIds">
+        <el-select v-model="localUserForm.roleIds" multiple placeholder="请选择角色">
+          <el-option
+            v-for="r in roleOptions"
+            :key="r.id"
+            :label="r.roleName"
+            :value="r.id"
+          />
         </el-select>
       </el-form-item>
     </el-form>
@@ -44,10 +48,12 @@
 import { ref, computed, watch, nextTick } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import type { UserUpdateRequest } from '@/models/request/user/UserUpdateRequest.ts'
+import { userRoleApi } from '@/api/userRole'
+import type { UserRoleOptionVO } from '@/models/response/user/UserRoleOptionVO'
 
 export interface UserFormData extends UserUpdateRequest {
   password?: string
-  roles?: string[]
+  roleIds?: number[]
 }
 
 const props = defineProps<{
@@ -75,24 +81,35 @@ const dialogTitle = computed(() =>
 
 const userFormRef = ref<FormInstance>()
 
+const roleOptions = ref<UserRoleOptionVO[]>([])
+
+const loadRoleOptions = async () => {
+  if (roleOptions.value.length > 0) return
+  const res = await userRoleApi.listRoles()
+  if (res.code === 200) {
+    roleOptions.value = res.data
+  }
+}
+
 // ✅ 初始化 localUserForm，确保所有字段有默认值
 const localUserForm = ref<UserFormData>({
   username: props.userForm.username || '',
   phone: props.userForm.phone || '',
   email: props.userForm.email || '',
-  roles: props.userForm.roles ? [...props.userForm.roles] : [],
+  roleIds: props.userForm.roleIds ? [...props.userForm.roleIds] : [],
   password: props.userForm.password || ''
 })
 
 // ✅ 仅监听 visible 变化，在打开时同步最新 props 数据
 watch(visible, async (isVisible) => {
   if (isVisible) {
+    await loadRoleOptions()
     // 同步最新数据，同时防止 undefined 覆盖
     localUserForm.value = {
       username: props.userForm.username || '',
       phone: props.userForm.phone || '',
       email: props.userForm.email || '',
-      roles: props.userForm.roles ? [...props.userForm.roles] : [],
+      roleIds: props.userForm.roleIds ? [...props.userForm.roleIds] : [],
       password: props.userForm.password || ''
     }
 
@@ -109,7 +126,8 @@ const userRules = computed<FormRules>(() => {
       { min: 2, max: 20, message: '用户名长度应在2-20个字符之间', trigger: 'blur' }
     ],
     phone: [{ pattern: /^1[3-9]\d{9}$/, message: '电话号码格式不正确', trigger: 'blur' }],
-    email: [{ type: 'email', message: '邮箱格式不正确', trigger: 'blur' }]
+    email: [{ type: 'email', message: '邮箱格式不正确', trigger: 'blur' }],
+    roleIds: [{ required: true, message: '请选择角色', trigger: 'change' }]
   }
 
   if (props.dialogType === 'add') {
@@ -148,7 +166,7 @@ const handleClose = () => {
     username: props.userForm.username || '',
     phone: props.userForm.phone || '',
     email: props.userForm.email || '',
-    roles: props.userForm.roles ? [...props.userForm.roles] : [],
+    roleIds: props.userForm.roleIds ? [...props.userForm.roleIds] : [],
     password: props.userForm.password || ''
   }
   emit('close')

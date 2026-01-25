@@ -13,7 +13,9 @@ create table "sys_user"
     roles               varchar(255),
     last_login_at     timestamp,
     last_login_ip       varchar(255),
+    last_login_device   varchar(255),
     password_reset_at   timestamp,
+
     login_fail_count    integer default 0,
     locked_at           timestamp,
     deleted             integer default 0 NOT NULL,
@@ -34,7 +36,9 @@ comment on column "sys_user".status is '用户状态(0-正常 1-禁用 2-锁定)
 comment on column "sys_user".roles is '用户角色，多个角色用逗号分隔';
 comment on column "sys_user".last_login_at is '最后一次登录时间';
 comment on column "sys_user".last_login_ip is '最后一次登录IP地址';
+comment on column "sys_user".last_login_device is '最后一次登录设备信息';
 comment on column "sys_user".password_reset_at is '密码重置时间';
+
 comment on column "sys_user".login_fail_count is '登录失败次数';
 comment on column "sys_user".locked_at is '账户锁定时间';
 comment on column "sys_user".deleted is '软删除标记(0-未删除 1-已删除)';

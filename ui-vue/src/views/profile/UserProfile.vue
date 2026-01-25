@@ -5,9 +5,9 @@
         <div class="profile-avatar">
           <el-upload
               class="avatar-uploader"
-              action="/api/upload/avatar"
+              action="#"
               :show-file-list="false"
-              :on-success="handleAvatarSuccess"
+              :http-request="handleUploadAvatar"
               :before-upload="beforeAvatarUpload"
           >
             <el-avatar
@@ -26,6 +26,7 @@
             </div>
           </el-upload>
         </div>
+
         <div class="profile-info">
           <div class="profile-basic">
             <h2 class="profile-username">{{ userStore.userInfo?.username }}</h2>
@@ -36,7 +37,7 @@
 
     <el-card class="main-content-card">
       <el-tabs v-model="activeMainTab" class="main-tabs">
-        
+
         <el-tab-pane label="设置" name="settings">
           <div class="settings-container">
             <el-tabs v-model="editActiveTab" tab-position="left" class="settings-tabs">
@@ -93,10 +94,12 @@ import {ElMessage, ElMessageBox} from 'element-plus'
 import {Camera} from '@element-plus/icons-vue'
 import {useUserStore} from '@/stores/user'
 import {userApi} from '@/api/user'
+import {userProfileApi} from '@/api/userProfile'
+import {getAvatarUrl} from '@/utils/file'
+import {getLocationFromIp} from '@/utils/ipLocation'
 import BasicInfo from '@/components/profile/BasicInfo.vue'
 import SecuritySettings from '@/components/profile/SecuritySettings.vue'
 import LoginHistory from '@/components/profile/LoginHistory.vue'
-import {getAvatarUrl} from "@/utils/file.ts";
 
 /* --- 工具方法 --- */
 function genderToNum(g?: string): 1 | 0 {
@@ -106,7 +109,6 @@ function genderToNum(g?: string): 1 | 0 {
 function numToGender(n: 1 | 0): 'MALE' | 'FEMALE' {
   return n === 0 ? 'FEMALE' : 'MALE'
 }
-
 /* --- 基础状态 --- */
 const userStore = useUserStore()
 const activeMainTab = ref('settings')
@@ -164,10 +166,19 @@ const handleDeleteAccount = async () => {
   }
 }
 
-const handleAvatarSuccess = (res: any) => {
-  if (res.code === 200) {
-    ElMessage.success('上传成功')
-    userStore.userProfile!.avatar = res.data
+const handleUploadAvatar = async (options: any) => {
+  try {
+    const res = await userProfileApi.uploadAvatar(options.file)
+    if (res.code === 200) {
+      ElMessage.success('头像上传成功')
+      if (userStore.userProfile) {
+        userStore.userProfile.avatar = res.data
+      }
+    } else {
+      ElMessage.error(res.message || '上传失败')
+    }
+  } catch (e: any) {
+    ElMessage.error(e.message || '上传失败')
   }
 }
 
@@ -177,9 +188,35 @@ const beforeAvatarUpload = (file: File) => {
   return isLt2M
 }
 
-const loginHistory = ref([
-  {loginTime: '2024-01-15 14:30:25', ipAddress: '192.168.1.100', location: '北京市', device: 'Chrome on Windows'}
-])
+const loginHistory = ref<any[]>([])
+
+const loadLoginHistory = async () => {
+  if (userStore.userInfo?.lastLoginAt) {
+    try {
+      const ipAddress = userStore.userInfo.lastLoginIp || 'Unknown'
+      const location = ipAddress !== 'Unknown' 
+        ? await getLocationFromIp(ipAddress) 
+        : 'Unknown'
+      
+      loginHistory.value = [{
+        loginTime: userStore.userInfo.lastLoginAt.replace('T', ' ').substring(0, 19),
+        ipAddress: ipAddress,
+        location: location,
+        device: userStore.userInfo.lastLoginDevice || 'Unknown'
+      }]
+    } catch (error) {
+      console.error('Failed to load login history:', error)
+      loginHistory.value = [{
+        loginTime: userStore.userInfo.lastLoginAt.replace('T', ' ').substring(0, 19),
+        ipAddress: 'Unknown',
+        location: 'Unknown',
+        device: 'Unknown'
+      }]
+    }
+  } else {
+    loginHistory.value = []
+  }
+}
 
 onMounted(() => {
   if (userStore.userProfile) {
@@ -191,6 +228,7 @@ onMounted(() => {
       email: userStore.userProfile.email || ''
     })
   }
+  loadLoginHistory()
 })
 </script>
 
@@ -253,6 +291,27 @@ onMounted(() => {
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 15px;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 30px;
+}
+
+.stat-item {
+  text-align: center;
+  cursor: pointer;
+}
+
+.stat-number {
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #909399;
 }
 
 .main-tabs {

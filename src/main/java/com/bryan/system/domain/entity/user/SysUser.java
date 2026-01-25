@@ -49,6 +49,8 @@ public class SysUser implements Serializable, UserDetails {
 
     private String lastLoginIp;
 
+    private String lastLoginDevice;
+
     private LocalDateTime passwordResetAt;
 
     private Integer loginFailCount; // 登录失败次数
