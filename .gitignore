@@ -1,3 +1,9 @@
+### Custom ###
+.claude/
+.model/
+uploads/
+
+### Java ###
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
