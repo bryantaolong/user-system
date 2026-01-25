@@ -57,6 +57,10 @@ public class UserExportVO {
     @ColumnWidth(20)
     private String lastLoginIp;
 
+    @ExcelProperty("最后登录设备")
+    @ColumnWidth(20)
+    private String lastLoginDevice;
+
     @ExcelProperty("密码重置时间")
     @ColumnWidth(20)
     @DateTimeFormat("yyyy-MM-dd HH:mm:ss")

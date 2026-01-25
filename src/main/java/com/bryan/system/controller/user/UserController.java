@@ -2,10 +2,7 @@ package com.bryan.system.controller.user;
 
 import com.bryan.system.domain.dto.user.UserUpdateDTO;
 import com.bryan.system.domain.entity.user.SysUser;
-import com.bryan.system.domain.request.user.ChangePasswordRequest;
-import com.bryan.system.domain.request.user.ChangeRoleRequest;
-import com.bryan.system.domain.request.user.UserSearchRequest;
-import com.bryan.system.domain.request.user.UserUpdateRequest;
+import com.bryan.system.domain.request.user.*;
 import com.bryan.system.domain.response.PageResult;
 import com.bryan.system.domain.response.Result;
 import com.bryan.system.service.user.UserService;
@@ -29,6 +26,12 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public Result<SysUser> createUser(@RequestBody @Valid UserCreateRequest req) {
+        return Result.success(userService.createUser(req));
+    }
 
     /**
      * 获取所有用户列表（不分页）。

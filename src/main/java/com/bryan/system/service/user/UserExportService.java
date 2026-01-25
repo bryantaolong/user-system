@@ -18,14 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * 用户导出业务服务
@@ -48,81 +44,39 @@ public class UserExportService {
      * @param exportRequest 文件名称、状态过滤条件
      * @param response      响应流
      */
-    public void exportAllFields(UserExportRequest exportRequest, HttpServletResponse response) {
+    public void exportAllUsers(UserExportRequest exportRequest, HttpServletResponse response,
+                               int pageNum, int pageSize) throws IOException {
         try {
             String fileName = Optional.ofNullable(exportRequest.getFileName()).orElse("用户数据全量导出");
             setupResponse(response, fileName);
 
             ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream())
-                    .head(UserExportVO.class)                 // 全部字段
+                    .head(UserExportVO.class)
                     .registerWriteHandler(new CustomCellWriteHandler())
                     .build();
 
-            executeBatchExport(excelWriter, EasyExcel.writerSheet("用户列表").build(), exportRequest);
+            executeBatchExport(excelWriter,
+                    EasyExcel.writerSheet("用户列表").build(),
+                    exportRequest, pageNum, pageSize);
         } catch (IOException e) {
             throw new BusinessException("全量导出失败，请检查系统资源", e);
-        }
-    }
-
-    /**
-     * 按字段导出：仅导出指定列
-     *
-     * @param exportRequest 字段列表、文件名称、状态过滤条件
-     * @param response      响应流
-     */
-    public void exportUsersByFields(UserExportRequest exportRequest, HttpServletResponse response) {
-        try {
-            validateFieldNames(exportRequest.getFields());
-            String fileName = Optional.ofNullable(exportRequest.getFileName()).orElse("用户数据导出");
-            setupResponse(response, fileName);
-
-            ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream())
-                    .head(UserExportVO.class)
-                    .includeColumnFieldNames(exportRequest.getFields()) // 动态列
-                    .registerWriteHandler(new CustomCellWriteHandler())
-                    .build();
-
-            executeBatchExport(excelWriter, EasyExcel.writerSheet("用户列表").build(), exportRequest);
-        } catch (IOException e) {
-            throw new BusinessException("用户数据导出失败，请稍后重试", e);
         }
     }
 
     /* -------------------- 私有辅助 -------------------- */
 
     /**
-     * 字段名校验：确保请求字段在 VO 中真实存在
-     */
-    private void validateFieldNames(List<String> fields) {
-        if (CollectionUtils.isEmpty(fields)) {
-            throw new IllegalArgumentException("导出字段列表不能为空");
-        }
-        Set<String> valid = Arrays.stream(UserExportVO.class.getDeclaredFields())
-                .filter(f -> f.isAnnotationPresent(com.alibaba.excel.annotation.ExcelProperty.class))
-                .map(Field::getName)
-                .collect(Collectors.toSet());
-
-        fields.forEach(f -> {
-            if (!valid.contains(f)) {
-                throw new IllegalArgumentException(
-                        String.format("无效导出字段: %s （可用字段: %s）", f, valid));
-            }
-        });
-    }
-
-    /**
      * 分批查询 + 写入，防止内存溢出
      */
     private void executeBatchExport(ExcelWriter excelWriter,
                                     WriteSheet writeSheet,
-                                    UserExportRequest exportRequest) {
-        int pageNum  = 1;
-        int pageSize = 1000;
+                                    UserExportRequest exportRequest,
+                                    int pageNum, int pageSize) throws IOException {
         int total    = 0;
 
         while (true) {
             int offset = (pageNum - 1) * pageSize;
-            List<SysUser> records = userMapper.selectPage(offset, pageSize, null, exportRequest);
+            List<SysUser> records = userMapper.selectExportPage(offset, pageSize, exportRequest);
             if (CollectionUtils.isEmpty(records)) {
                 break;
             }

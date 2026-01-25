@@ -26,8 +26,11 @@ public interface UserMapper {
 
     List<SysUser> selectPage(@Param("offset") int offset,
                              @Param("pageSize") int pageSize,
-                             @Param("req") UserSearchRequest search,
-                             @Param("export") UserExportRequest export);
+                             @Param("req") UserSearchRequest search);
+
+    List<SysUser> selectExportPage(@Param("offset") int offset,
+                                   @Param("pageSize") int pageSize,
+                                   @Param("export") UserExportRequest export);
 
     List<SysUser> selectByIdList(@Param("ids") Collection<Long> ids);
 
@@ -37,6 +40,5 @@ public interface UserMapper {
 
     int deleteById(@Param("id") Long id);
 
-    long count(@Param("req") UserSearchRequest search,
-               @Param("export") UserExportRequest export);
+    long count(@Param("req") UserSearchRequest search);
 }

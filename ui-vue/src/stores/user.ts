@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import type { UserVO } from '@/models/vo/UserVO.ts'
 import type { UserProfileVO } from '@/models/vo/UserProfileVO.ts'
 import { authApi } from '@/api/auth'
-import { userApi } from '@/api/user'
+import { userProfileApi } from '@/api/userProfile'
 
 export const useUserStore = defineStore('user', () => {
   const token = ref<string>(localStorage.getItem('token') || '')
@@ -55,7 +55,6 @@ export const useUserStore = defineStore('user', () => {
     try {
       const res = await authApi.register(data)
       if (res.code === 200 && res.data) {
-        setToken(res.data.password || '')
         userInfo.value = res.data
         return { success: true }
       }
@@ -121,7 +120,7 @@ export const useUserStore = defineStore('user', () => {
    */
   const updateProfile = async (data: any) => {
     try {
-      const res = await userApi.updateUserProfile(data)
+      const res = await userProfileApi.updateUserProfile(data)
       if (res.code === 200) {
         userProfile.value = res.data
         return { success: true }

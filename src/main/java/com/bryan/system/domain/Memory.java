@@ -1,6 +1,6 @@
 package com.bryan.system.domain;
 
-import com.bryan.system.util.math.Arithmetic;
+import com.bryan.system.util.math.ArithmeticUtil;
 
 /**
  * Memory 內存相关信息
@@ -24,7 +24,7 @@ public class Memory {
     private double remainingMemory;
 
     public double getTotalMemory() {
-        return Arithmetic.div(totalMemory, (1024 * 1024 * 1024), 2);
+        return ArithmeticUtil.div(totalMemory, (1024 * 1024 * 1024), 2);
     }
 
     public void setTotalMemory(long totalMemory) {
@@ -32,7 +32,7 @@ public class Memory {
     }
 
     public double getUsedMemory() {
-        return Arithmetic.div(usedMemory, (1024 * 1024 * 1024), 2);
+        return ArithmeticUtil.div(usedMemory, (1024 * 1024 * 1024), 2);
     }
 
     public void setUsedMemory(long usedMemory) {
@@ -40,7 +40,7 @@ public class Memory {
     }
 
     public double getRemainingMemory() {
-        return Arithmetic.div(remainingMemory, (1024 * 1024 * 1024), 2);
+        return ArithmeticUtil.div(remainingMemory, (1024 * 1024 * 1024), 2);
     }
 
     public void setRemainingMemory(long remainingMemory) {
@@ -48,7 +48,7 @@ public class Memory {
     }
 
     public double getUsage() {
-        return Arithmetic.mul(Arithmetic.div(usedMemory, remainingMemory, 4), 100);
+        return ArithmeticUtil.mul(ArithmeticUtil.div(usedMemory, remainingMemory, 4), 100);
     }
 }
 

@@ -1,6 +1,6 @@
 package com.bryan.system.domain;
 
-import com.bryan.system.util.math.Arithmetic;
+import com.bryan.system.util.math.ArithmeticUtil;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,23 +42,23 @@ public class Cpu {
     private double idleRate;
 
     public double getTotalUsage() {
-        return Arithmetic.round(Arithmetic.mul(totalUsage, 100), 2);
+        return ArithmeticUtil.round(ArithmeticUtil.mul(totalUsage, 100), 2);
     }
 
     public double getSystemUsage() {
-        return Arithmetic.round(Arithmetic.mul(systemUsage / totalUsage, 100), 2);
+        return ArithmeticUtil.round(ArithmeticUtil.mul(systemUsage / totalUsage, 100), 2);
     }
 
     public double getUserUsage() {
-        return Arithmetic.round(Arithmetic.mul(userUsage / totalUsage, 100), 2);
+        return ArithmeticUtil.round(ArithmeticUtil.mul(userUsage / totalUsage, 100), 2);
     }
 
     public double getWaitRate() {
-        return Arithmetic.round(Arithmetic.mul(waitRate / totalUsage, 100), 2);
+        return ArithmeticUtil.round(ArithmeticUtil.mul(waitRate / totalUsage, 100), 2);
     }
 
     public double getIdleRate() {
-        return Arithmetic.round(Arithmetic.mul(idleRate / totalUsage, 100), 2);
+        return ArithmeticUtil.round(ArithmeticUtil.mul(idleRate / totalUsage, 100), 2);
     }
 
 }

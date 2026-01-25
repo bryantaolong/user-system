@@ -16,7 +16,7 @@
     </resultMap>
 
     <sql id="BaseColumns">
-        id, role_name, is_default,
+        id, role_name, is_default, deleted, version
         created_at, updated_at, created_by, updated_by
     </sql>
 

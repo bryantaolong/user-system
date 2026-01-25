@@ -123,8 +123,10 @@ public class AuthService implements UserDetailsService {
         // 3. 更新用户登录信息
         sysUser.setLastLoginAt(LocalDateTime.now());
         sysUser.setLastLoginIp(HttpUtils.getClientIp());
+        sysUser.setLastLoginDevice(HttpUtils.getClientOS() + " / " + HttpUtils.getClientBrowser());
         sysUser.setLoginFailCount(0); // 重置密码输入错误次数
         userMapper.update(sysUser);
+
 
         // 4. 生成新的JWT Token
         Map<String, Object> claims = new HashMap<>();

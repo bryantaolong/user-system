@@ -8,6 +8,7 @@ export interface SysUser {
   roles: string;
   lastLoginAt?: string;
   lastLoginIp?: string;
+  lastLoginDevice?: string;
   passwordResetAt?: string;
   loginFailCount?: number;
   lockedAt?: string;

@@ -12,8 +12,9 @@ defineProps<{
   history: Array<{
     loginTime: string
     ipAddress: string
-    location: string
+    location?: string
     device: string
   }>
 }>()
 </script>
+

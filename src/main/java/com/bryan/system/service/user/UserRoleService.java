@@ -30,6 +30,15 @@ public class UserRoleService {
     }
 
     /**
+     * 获取默认角色
+     *
+     * @return 默认角色；若未配置则返回 null
+     */
+    public UserRole getDefaultRole() {
+        return userRoleMapper.selectOneByIsDefaultTrue();
+    }
+
+    /**
      * 根据角色主键列表批量查询
      *
      * @param ids 角色主键集合

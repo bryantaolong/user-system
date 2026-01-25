@@ -8,7 +8,7 @@ import java.math.RoundingMode;
  *
  * @author Bryan Long
  */
-public class Arithmetic {
+public class ArithmeticUtil {
     /**
      * 默认除法运算精度
      */
@@ -17,7 +17,7 @@ public class Arithmetic {
     /**
      * 这个类不能实例化
      */
-    private Arithmetic() {
+    private ArithmeticUtil() {
     }
 
     /**
