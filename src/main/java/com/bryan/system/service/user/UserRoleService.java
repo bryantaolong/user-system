@@ -1,7 +1,7 @@
 package com.bryan.system.service.user;
 
-import com.bryan.system.domain.entity.user.UserRole;
-import com.bryan.system.mapper.user.UserRoleMapper;
+import com.bryan.system.domain.entity.UserRole;
+import com.bryan.system.mapper.UserRoleMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,14 +1,14 @@
 package com.bryan.system.service.auth;
 
-import com.bryan.system.domain.entity.user.SysUser;
-import com.bryan.system.domain.entity.user.UserRole;
+import com.bryan.system.domain.entity.SysUser;
+import com.bryan.system.domain.entity.UserRole;
 import com.bryan.system.domain.enums.user.UserStatusEnum;
 import com.bryan.system.domain.request.auth.LoginRequest;
 import com.bryan.system.domain.request.auth.RegisterRequest;
 import com.bryan.system.exception.BusinessException;
 import com.bryan.system.exception.ResourceNotFoundException;
-import com.bryan.system.mapper.user.UserMapper;
-import com.bryan.system.mapper.user.UserRoleMapper;
+import com.bryan.system.mapper.UserMapper;
+import com.bryan.system.mapper.UserRoleMapper;
 import com.bryan.system.service.redis.RedisStringService;
 import com.bryan.system.util.http.HttpUtils;
 import com.bryan.system.util.jwt.JwtUtils;
@@ -242,19 +242,24 @@ public class AuthService implements UserDetailsService {
     }
 
     /**
-     * 清除当前用户的 JWT Token 在 Redis 中的缓存。
+     * 根据用户名加载用户信息，用于 Spring Security 登录认证。
      *
-     * @return boolean 是否成功
-     * @throws BusinessException Token 清理失败
+     * @param username 用户名
+     * @return 用户详情
+     * @throws UsernameNotFoundException 用户不存在
      */
-    public boolean logout() {
-        String username = JwtUtils.getCurrentUsername();
-        boolean deleted = redisStringService.delete(username);
-        if (!deleted) {
-            throw new BusinessException("Token 清除失败");
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // 1. 根据用户名查询用户
+        SysUser sysUser = userMapper.selectByUsername(username);
+
+        // 2. 用户不存在则抛出异常
+        if (sysUser == null) {
+            throw new UsernameNotFoundException("用户不存在: " + username);
         }
 
-        return true;
+        // 3. 返回用户详情（已实现 UserDetails）
+        return sysUser;
     }
 
     /**
@@ -280,6 +285,22 @@ public class AuthService implements UserDetailsService {
     }
 
     /**
+     * 清除当前用户的 JWT Token 在 Redis 中的缓存。
+     *
+     * @return boolean 是否成功
+     * @throws BusinessException Token 清理失败
+     */
+    public boolean logout() {
+        String username = JwtUtils.getCurrentUsername();
+        boolean deleted = redisStringService.delete(username);
+        if (!deleted) {
+            throw new BusinessException("Token 清除失败");
+        }
+
+        return true;
+    }
+
+    /**
      * 注销用户。
      *
      * @return 注销结果
@@ -293,26 +314,5 @@ public class AuthService implements UserDetailsService {
         userMapper.deleteById(user.getId());
         log.info("用户ID: {} 注销成功", user.getId());
         return user;
-    }
-
-    /**
-     * 根据用户名加载用户信息，用于 Spring Security 登录认证。
-     *
-     * @param username 用户名
-     * @return 用户详情
-     * @throws UsernameNotFoundException 用户不存在
-     */
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // 1. 根据用户名查询用户
-        SysUser sysUser = userMapper.selectByUsername(username);
-
-        // 2. 用户不存在则抛出异常
-        if (sysUser == null) {
-            throw new UsernameNotFoundException("用户不存在: " + username);
-        }
-
-        // 3. 返回用户详情（已实现 UserDetails）
-        return sysUser;
     }
 }

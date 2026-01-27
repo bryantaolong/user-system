@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import type { Result } from '@/models/response/Result'
 import type { UserUpdateRequest } from '@/models/request/user/UserUpdateRequest'
-import type { UserProfileVO } from '@/models/vo/user/UserProfileVO'
+import type { UserProfileVO } from '@/models/vo/UserProfileVO'
 
 /**
  * 用户资料 API

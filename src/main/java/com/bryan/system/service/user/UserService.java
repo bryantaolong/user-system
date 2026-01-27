@@ -1,8 +1,8 @@
 package com.bryan.system.service.user;
 
-import com.bryan.system.domain.dto.user.UserUpdateDTO;
-import com.bryan.system.domain.entity.user.SysUser;
-import com.bryan.system.domain.entity.user.UserRole;
+import com.bryan.system.domain.dto.UserUpdateDTO;
+import com.bryan.system.domain.entity.SysUser;
+import com.bryan.system.domain.entity.UserRole;
 import com.bryan.system.domain.enums.user.UserStatusEnum;
 import com.bryan.system.domain.request.user.ChangeRoleRequest;
 import com.bryan.system.domain.request.user.UserCreateRequest;
@@ -10,7 +10,7 @@ import com.bryan.system.domain.request.user.UserSearchRequest;
 import com.bryan.system.domain.response.PageResult;
 import com.bryan.system.exception.BusinessException;
 import com.bryan.system.exception.ResourceNotFoundException;
-import com.bryan.system.mapper.user.UserMapper;
+import com.bryan.system.mapper.UserMapper;
 import com.bryan.system.util.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +38,72 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final UserRoleService userRoleService;
+
+    /**
+     * 管理员创建用户
+     *
+     * @param req 创建请求
+     * @return 新增的用户实体
+     */
+    @Transactional
+    public SysUser createUser(UserCreateRequest req) {
+        if (userMapper.selectByUsername(req.getUsername()) != null) {
+            throw new BusinessException("用户名已存在");
+        }
+
+        List<Long> roleIds = req.getRoleIds() == null
+                ? new ArrayList<>()
+                : new ArrayList<>(req.getRoleIds());
+        if (roleIds == null || roleIds.isEmpty()) {
+            UserRole defaultRole = userRoleService.getDefaultRole();
+            if (defaultRole == null) {
+                throw new BusinessException("系统未配置默认角色");
+            }
+            roleIds.add(defaultRole.getId());
+        }
+
+        List<UserRole> roles = userRoleService.getByIds(roleIds);
+        if (roles.size() != roleIds.size()) {
+            Set<Long> exist = roles.stream()
+                    .map(UserRole::getId)
+                    .collect(Collectors.toSet());
+            List<Long> missing = new ArrayList<>(roleIds);
+            missing.removeAll(exist);
+            throw new IllegalArgumentException("角色不存在：" + missing);
+        }
+
+        String roleNames = roles.stream()
+                .map(UserRole::getRoleName)
+                .collect(Collectors.joining(","));
+
+        LocalDateTime now = LocalDateTime.now();
+        String operator = String.valueOf(JwtUtils.getCurrentUserId());
+
+        SysUser sysUser = SysUser.builder()
+                .username(req.getUsername())
+                .password(passwordEncoder.encode(req.getPassword()))
+                .phone(req.getPhone())
+                .email(req.getEmail())
+                .roles(roleNames)
+                .status(UserStatusEnum.NORMAL)
+                .loginFailCount(0)
+                .deleted(0)
+                .version(0)
+                .createdAt(now)
+                .updatedAt(now)
+                .createdBy(operator)
+                .updatedBy(operator)
+                .passwordResetAt(now)
+                .build();
+
+        int saved = userMapper.insert(sysUser);
+        if (saved == 0) {
+            throw new BusinessException("插入数据库失败");
+        }
+
+        log.info("管理员创建用户成功: id: {}, username: {} ", sysUser.getId(), sysUser.getUsername());
+        return sysUser;
+    }
 
     /**
      * 获取所有用户列表（不分页）。
@@ -116,72 +182,6 @@ public class UserService {
      */
     public boolean existsById(Long userId) {
         return userMapper.selectById(userId) != null;
-    }
-
-    /**
-     * 管理员创建用户
-     *
-     * @param req 创建请求
-     * @return 新增的用户实体
-     */
-    @Transactional
-    public SysUser createUser(UserCreateRequest req) {
-        if (userMapper.selectByUsername(req.getUsername()) != null) {
-            throw new BusinessException("用户名已存在");
-        }
-
-        List<Long> roleIds = req.getRoleIds() == null
-                ? new ArrayList<>()
-                : new ArrayList<>(req.getRoleIds());
-        if (roleIds == null || roleIds.isEmpty()) {
-            UserRole defaultRole = userRoleService.getDefaultRole();
-            if (defaultRole == null) {
-                throw new BusinessException("系统未配置默认角色");
-            }
-            roleIds.add(defaultRole.getId());
-        }
-
-        List<UserRole> roles = userRoleService.getByIds(roleIds);
-        if (roles.size() != roleIds.size()) {
-            Set<Long> exist = roles.stream()
-                    .map(UserRole::getId)
-                    .collect(Collectors.toSet());
-            List<Long> missing = new ArrayList<>(roleIds);
-            missing.removeAll(exist);
-            throw new IllegalArgumentException("角色不存在：" + missing);
-        }
-
-        String roleNames = roles.stream()
-                .map(UserRole::getRoleName)
-                .collect(Collectors.joining(","));
-
-        LocalDateTime now = LocalDateTime.now();
-        String operator = String.valueOf(JwtUtils.getCurrentUserId());
-
-        SysUser sysUser = SysUser.builder()
-                .username(req.getUsername())
-                .password(passwordEncoder.encode(req.getPassword()))
-                .phone(req.getPhone())
-                .email(req.getEmail())
-                .roles(roleNames)
-                .status(UserStatusEnum.NORMAL)
-                .loginFailCount(0)
-                .deleted(0)
-                .version(0)
-                .createdAt(now)
-                .updatedAt(now)
-                .createdBy(operator)
-                .updatedBy(operator)
-                .passwordResetAt(now)
-                .build();
-
-        int saved = userMapper.insert(sysUser);
-        if (saved == 0) {
-            throw new BusinessException("插入数据库失败");
-        }
-
-        log.info("管理员创建用户成功: id: {}, username: {} ", sysUser.getId(), sysUser.getUsername());
-        return sysUser;
     }
 
     /**

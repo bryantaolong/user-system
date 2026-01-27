@@ -1,6 +1,6 @@
-package com.bryan.system.mapper.user;
+package com.bryan.system.mapper;
 
-import com.bryan.system.domain.entity.user.UserRole;
+import com.bryan.system.domain.entity.UserRole;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

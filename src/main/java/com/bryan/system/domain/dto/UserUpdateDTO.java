@@ -1,4 +1,4 @@
-package com.bryan.system.domain.dto.user;
+package com.bryan.system.domain.dto;
 
 import lombok.Builder;
 import lombok.Data;

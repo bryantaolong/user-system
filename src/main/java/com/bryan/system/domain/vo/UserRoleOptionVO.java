@@ -1,4 +1,4 @@
-package com.bryan.system.domain.vo.user;
+package com.bryan.system.domain.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

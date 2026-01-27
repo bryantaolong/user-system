@@ -1,4 +1,4 @@
-package com.bryan.system.domain.entity.user;
+package com.bryan.system.domain.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

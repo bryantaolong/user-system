@@ -37,4 +37,3 @@ public class System {
     private String osArchitecture;
 
 }
-

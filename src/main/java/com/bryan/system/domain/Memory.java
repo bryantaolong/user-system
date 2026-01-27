@@ -51,4 +51,3 @@ public class Memory {
         return ArithmeticUtil.mul(ArithmeticUtil.div(usedMemory, remainingMemory, 4), 100);
     }
 }
-

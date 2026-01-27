@@ -1,13 +1,13 @@
 package com.bryan.system.controller.auth;
 
 import com.bryan.system.domain.converter.UserConverter;
-import com.bryan.system.domain.entity.user.SysUser;
-import com.bryan.system.domain.entity.user.UserProfile;
+import com.bryan.system.domain.entity.SysUser;
+import com.bryan.system.domain.entity.UserProfile;
 import com.bryan.system.domain.request.auth.LoginRequest;
 import com.bryan.system.domain.request.auth.RegisterRequest;
 import com.bryan.system.domain.request.user.ChangePasswordRequest;
 import com.bryan.system.domain.response.Result;
-import com.bryan.system.domain.vo.user.UserVO;
+import com.bryan.system.domain.vo.UserVO;
 import com.bryan.system.service.auth.AuthService;
 import com.bryan.system.service.user.UserProfileService;
 import jakarta.validation.Valid;
@@ -43,14 +43,14 @@ public class AuthController {
     @PreAuthorize("permitAll()")
     public Result<UserVO> register(@RequestBody @Valid RegisterRequest registerRequest) {
         // 1. 调用注册服务，创建新用户
-        SysUser sysUser = authService.register(registerRequest);
+        SysUser registered = authService.register(registerRequest);
 
         // 2. 初始化 UserProfile
-        UserProfile userProfile = UserProfile.builder().userId(sysUser.getId()).build();
-        userProfileService.save(userProfile);
+        UserProfile userProfile = UserProfile.builder().userId(registered.getId()).build();
+        UserProfile profile = userProfileService.createUserProfile(userProfile);
 
         // 2. 返回注册结果
-        return Result.success(UserConverter.toUserVO(sysUser));
+        return Result.success(UserConverter.toUserVO(registered));
     }
 
     /**
@@ -88,46 +88,6 @@ public class AuthController {
     }
 
     /**
-     * 退出登录
-     *
-     * @return boolean 是否退出登录
-     */
-    @GetMapping("/logout")
-    @PreAuthorize("isAuthenticated()")
-    public boolean logout() {
-        return authService.logout();
-    }
-
-    /**
-     * 修改用户密码。
-     * 管理员可修改任意用户密码，用户本人可修改自己的密码。
-     *
-     * @param changePasswordRequest 包含旧密码和新密码的请求体
-     * @return 更新后的用户实体
-     */
-    @PutMapping("/password")
-    @PreAuthorize("isAuthenticated()")
-    public Result<UserVO> changePassword(
-            @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
-        // 1. 调用服务层执行密码修改
-        SysUser updated = authService.changePassword(changePasswordRequest.getOldPassword(),
-                                                        changePasswordRequest.getNewPassword());
-        return Result.success(UserConverter.toUserVO(updated));
-    }
-
-    /**
-     * 注销用户。
-     *
-     * @return 注销结果
-     */
-    @DeleteMapping
-    @PreAuthorize("isAuthenticated()")
-    public Result<UserVO> deleteAccount() {
-        // 1. 调用服务层执行密码修改
-        return Result.success(UserConverter.toUserVO(authService.deleteAccount()));
-    }
-
-    /**
      * 验证 Token 合法性及用户状态
      *
      * @param token JWT Token 字符串
@@ -135,6 +95,7 @@ public class AuthController {
      * @return 验证结果字符串封装在统一响应结构中
      */
     @GetMapping("/validate")
+    @PreAuthorize("permitAll()")
     public Result<String> validate(
             @RequestParam String token,
             @AuthenticationPrincipal UserDetails userDetails) {
@@ -163,5 +124,45 @@ public class AuthController {
 
         // 3. 校验通过
         return Result.success("Validation passed");
+    }
+
+    /**
+     * 修改用户密码。
+     * 管理员可修改任意用户密码，用户本人可修改自己的密码。
+     *
+     * @param changePasswordRequest 包含旧密码和新密码的请求体
+     * @return 更新后的用户实体
+     */
+    @PutMapping("/password")
+    @PreAuthorize("isAuthenticated()")
+    public Result<UserVO> changePassword(
+            @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
+        // 1. 调用服务层执行密码修改
+        SysUser updated = authService.changePassword(changePasswordRequest.getOldPassword(),
+                changePasswordRequest.getNewPassword());
+        return Result.success(UserConverter.toUserVO(updated));
+    }
+
+    /**
+     * 注销用户。
+     *
+     * @return 注销结果
+     */
+    @DeleteMapping
+    @PreAuthorize("isAuthenticated()")
+    public Result<UserVO> deleteAccount() {
+        // 1. 调用服务层执行密码修改
+        return Result.success(UserConverter.toUserVO(authService.deleteAccount()));
+    }
+
+    /**
+     * 退出登录
+     *
+     * @return boolean 是否退出登录
+     */
+    @GetMapping("/logout")
+    @PreAuthorize("isAuthenticated()")
+    public boolean logout() {
+        return authService.logout();
     }
 }

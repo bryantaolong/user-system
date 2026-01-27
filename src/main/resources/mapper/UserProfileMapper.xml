@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bryan.system.mapper.user.UserProfileMapper">
+<mapper namespace="com.bryan.system.mapper.UserProfileMapper">
 
-    <resultMap id="BaseResultMap" type="com.bryan.system.domain.entity.user.UserProfile">
+    <resultMap id="BaseResultMap" type="com.bryan.system.domain.entity.UserProfile">
         <id column="user_id" property="userId"/>
         <result column="real_name" property="realName"/>
         <result column="gender" property="gender"/>
