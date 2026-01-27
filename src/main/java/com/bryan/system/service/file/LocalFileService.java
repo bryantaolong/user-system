@@ -3,8 +3,12 @@ package com.bryan.system.service.file;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 /**
  * 文件存储服务
@@ -60,6 +64,22 @@ public class LocalFileService {
 
         // 返回文件在 uploads 目录下的相对路径
         return Paths.get(subDirectory, fileName).toString();
+//        ！！！此是备用的方案，返回文件在 uploads 目录下的相对路径，使用正斜杠（URL格式）
+//        return Paths.get(subDirectory, fileName).toString().replace("\\", "/");
+    }
+
+    /**
+     * 读取指定相对路径文件为字节数组
+     *
+     * @param filePath uploads 下的相对路径
+     * @return 文件字节数组
+     * @throws IOException 文件读写异常
+     */
+    public byte[] loadFileAsBytes(String filePath) throws IOException {
+        // 构建文件的完整物理路径
+        Path fullPath = Paths.get(uploadDir, filePath).toAbsolutePath().normalize();
+        // 读取文件所有字节
+        return Files.readAllBytes(fullPath);
     }
 
     /**
@@ -79,19 +99,5 @@ public class LocalFileService {
             e.printStackTrace();
             return false;
         }
-    }
-
-    /**
-     * 读取指定相对路径文件为字节数组
-     *
-     * @param filePath uploads 下的相对路径
-     * @return 文件字节数组
-     * @throws IOException 文件读写异常
-     */
-    public byte[] loadFileAsBytes(String filePath) throws IOException {
-        // 构建文件的完整物理路径
-        Path fullPath = Paths.get(uploadDir, filePath).toAbsolutePath().normalize();
-        // 读取文件所有字节
-        return Files.readAllBytes(fullPath);
     }
 }

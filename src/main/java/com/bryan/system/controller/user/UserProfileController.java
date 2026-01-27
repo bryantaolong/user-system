@@ -1,13 +1,13 @@
 package com.bryan.system.controller.user;
 
 import com.bryan.system.domain.converter.UserConverter;
-import com.bryan.system.domain.dto.user.UserProfileUpdateDTO;
-import com.bryan.system.domain.entity.user.SysUser;
-import com.bryan.system.domain.entity.user.UserProfile;
+import com.bryan.system.domain.dto.UserProfileUpdateDTO;
+import com.bryan.system.domain.entity.SysUser;
+import com.bryan.system.domain.entity.UserProfile;
 import com.bryan.system.domain.enums.HttpStatus;
 import com.bryan.system.domain.request.user.UserUpdateRequest;
 import com.bryan.system.domain.response.Result;
-import com.bryan.system.domain.vo.user.UserProfileVO;
+import com.bryan.system.domain.vo.UserProfileVO;
 import com.bryan.system.service.auth.AuthService;
 import com.bryan.system.service.user.UserProfileService;
 import com.bryan.system.service.user.UserService;
@@ -50,8 +50,6 @@ public class UserProfileController {
         return Result.success(avatarPath);
     }
 
-
-
     /**
      * 根据用户主键查询用户资料（公开访问，用于展示用户信息）
      *
@@ -59,6 +57,7 @@ public class UserProfileController {
      * @return 用户资料 VO
      */
     @GetMapping("/{userId}")
+    @PreAuthorize("permitAll()")
     public Result<UserProfileVO> getUserProfileByUserId(@PathVariable Long userId) {
         UserProfile profile = userProfileService.getUserProfileByUserId(userId);
         SysUser user = userService.getUserById(userId);

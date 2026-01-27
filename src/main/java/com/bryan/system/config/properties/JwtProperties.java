@@ -1,5 +1,7 @@
 package com.bryan.system.config.properties;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +11,8 @@ import org.springframework.stereotype.Component;
  *
  * @author Bryan Long
  */
+@Setter
+@Getter
 @Component
 @ConfigurationProperties(prefix = "jwt")
 public class JwtProperties {
@@ -31,57 +35,4 @@ public class JwtProperties {
      */
     private String tokenPrefix = "Bearer ";
 
-    /**
-     * 获取 JWT 签名密钥
-     *
-     * @return 密钥字符串
-     */
-    public String getSecretKey() {
-        return secretKey;
-    }
-
-    /**
-     * 设置 JWT 签名密钥
-     *
-     * @param secretKey 密钥字符串
-     */
-    public void setSecretKey(String secretKey) {
-        this.secretKey = secretKey;
-    }
-
-    /**
-     * 获取 Token 过期时间（毫秒）
-     *
-     * @return 过期时间毫秒值
-     */
-    public Long getExpirationMs() {
-        return expirationMs;
-    }
-
-    /**
-     * 设置 Token 过期时间（毫秒）
-     *
-     * @param expirationMs 过期时间毫秒值
-     */
-    public void setExpirationMs(Long expirationMs) {
-        this.expirationMs = expirationMs;
-    }
-
-    /**
-     * 获取 Token 前缀
-     *
-     * @return 前缀字符串
-     */
-    public String getTokenPrefix() {
-        return tokenPrefix;
-    }
-
-    /**
-     * 设置 Token 前缀
-     *
-     * @param tokenPrefix 前缀字符串
-     */
-    public void setTokenPrefix(String tokenPrefix) {
-        this.tokenPrefix = tokenPrefix;
-    }
 }

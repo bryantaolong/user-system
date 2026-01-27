@@ -1,4 +1,4 @@
-package com.bryan.system.domain.dto.user;
+package com.bryan.system.domain.vo;
 
 import com.bryan.system.domain.enums.user.GenderEnum;
 import lombok.Builder;
@@ -7,15 +7,21 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * UserProfileUpdateDTO
+ * UserProfileVO
  *
  * @author Bryan Long
  */
 @Data
 @Builder
-public class UserProfileUpdateDTO {
+public class UserProfileVO {
 
     private Long userId;
+
+    private String username;
+
+    private String phone;
+
+    private String email;
 
     private String realName;
 

@@ -1,4 +1,4 @@
-package com.bryan.system.domain.entity.user;
+package com.bryan.system.domain.entity;
 
 import com.bryan.system.domain.enums.user.UserStatusEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;

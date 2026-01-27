@@ -1,10 +1,10 @@
 package com.bryan.system.service.user;
 
-import com.bryan.system.domain.dto.user.UserProfileUpdateDTO;
-import com.bryan.system.domain.entity.user.UserProfile;
+import com.bryan.system.domain.dto.UserProfileUpdateDTO;
+import com.bryan.system.domain.entity.UserProfile;
 import com.bryan.system.exception.BusinessException;
 import com.bryan.system.exception.ResourceNotFoundException;
-import com.bryan.system.mapper.user.UserProfileMapper;
+import com.bryan.system.mapper.UserProfileMapper;
 import com.bryan.system.service.file.LocalFileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,49 +28,13 @@ public class UserProfileService {
     private final LocalFileService localFileService;
 
     /**
-     * 上传并更新用户头像
-     *
-     * @param userId 用户主键
-     * @param file   头像文件
-     * @return 更新后的头像相对路径
-     * @throws BusinessException 文件存储或数据库更新失败
-     */
-    public String updateAvatar(Long userId, MultipartFile file) {
-        UserProfile profile = this.getUserProfileByUserId(userId);
-
-        try {
-            // 1. 存储新头像文件
-            String avatarPath = localFileService.storeFile(file, "avatars");
-
-            // 2. 如果原有头像存在，尝试删除旧文件（可选，根据业务需求）
-            if (profile.getAvatar() != null && !profile.getAvatar().isEmpty()) {
-                localFileService.deleteFile(profile.getAvatar());
-            }
-
-            // 3. 更新数据库
-            profile.setAvatar(avatarPath);
-            int updated = userProfileMapper.update(profile);
-            if (updated == 0) {
-                throw new BusinessException("头像更新失败");
-            }
-
-            log.info("用户头像更新成功，用户ID: {}, 路径: {}", userId, avatarPath);
-            return avatarPath;
-        } catch (IOException e) {
-            log.error("用户头像上传失败，用户ID: {}", userId, e);
-            throw new BusinessException("头像上传失败: " + e.getMessage());
-        }
-    }
-
-
-    /**
      * 创建用户资料
      *
      * @param record 用户资料实体
      * @return 已持久化的实体
      * @throws BusinessException 数据库插入失败
      */
-    public UserProfile save(UserProfile record) {
+    public UserProfile createUserProfile(UserProfile record) {
         int inserted = userProfileMapper.insert(record);
         if (inserted <= 0) {
             throw new BusinessException("创建用户信息失败");
@@ -139,5 +103,40 @@ public class UserProfileService {
         }
         log.info("用户信息更新成功，用户ID: {}", userId);
         return profile;
+    }
+
+    /**
+     * 上传并更新用户头像
+     *
+     * @param userId 用户主键
+     * @param file   头像文件
+     * @return 更新后的头像相对路径
+     * @throws BusinessException 文件存储或数据库更新失败
+     */
+    public String updateAvatar(Long userId, MultipartFile file) {
+        UserProfile profile = this.getUserProfileByUserId(userId);
+
+        try {
+            // 1. 存储新头像文件
+            String avatarPath = localFileService.storeFile(file, "avatars");
+
+            // 2. 如果原有头像存在，尝试删除旧文件（可选，根据业务需求）
+            if (profile.getAvatar() != null && !profile.getAvatar().isEmpty()) {
+                localFileService.deleteFile(profile.getAvatar());
+            }
+
+            // 3. 更新数据库
+            profile.setAvatar(avatarPath);
+            int updated = userProfileMapper.update(profile);
+            if (updated == 0) {
+                throw new BusinessException("头像更新失败");
+            }
+
+            log.info("用户头像更新成功，用户ID: {}, 路径: {}", userId, avatarPath);
+            return avatarPath;
+        } catch (IOException e) {
+            log.error("用户头像上传失败，用户ID: {}", userId, e);
+            throw new BusinessException("头像上传失败: " + e.getMessage());
+        }
     }
 }

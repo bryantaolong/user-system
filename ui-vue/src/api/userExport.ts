@@ -13,7 +13,7 @@ export const userExportApi = {
   exportAllUsers(fileName?: string, status?: number | null): Promise<void> {
     return request({
       url: '/api/users/export',
-      method: 'get',
+      method: 'GET',
       params: {
         fileName: fileName || '用户数据',
         status: status ?? undefined

@@ -1,6 +1,6 @@
 package com.bryan.system.filter;
 
-import com.bryan.system.domain.entity.user.SysUser;
+import com.bryan.system.domain.entity.SysUser;
 import com.bryan.system.domain.enums.HttpStatus;
 import com.bryan.system.domain.response.Result;
 import com.bryan.system.service.auth.AuthService;

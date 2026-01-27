@@ -1,7 +1,7 @@
 package com.bryan.system.controller.user;
 
 import com.bryan.system.domain.response.Result;
-import com.bryan.system.domain.vo.user.UserRoleOptionVO;
+import com.bryan.system.domain.vo.UserRoleOptionVO;
 import com.bryan.system.service.user.UserRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;

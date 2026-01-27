@@ -1,10 +1,12 @@
 package com.bryan.system.controller.user;
 
-import com.bryan.system.domain.dto.user.UserUpdateDTO;
-import com.bryan.system.domain.entity.user.SysUser;
+import com.bryan.system.domain.dto.UserUpdateDTO;
+import com.bryan.system.domain.entity.SysUser;
+import com.bryan.system.domain.entity.UserProfile;
 import com.bryan.system.domain.request.user.*;
 import com.bryan.system.domain.response.PageResult;
 import com.bryan.system.domain.response.Result;
+import com.bryan.system.service.user.UserProfileService;
 import com.bryan.system.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,11 +28,25 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final UserProfileService userProfileService;
 
+    /**
+     * 创建用户
+     *
+     * @param req 用户创建请求
+     * @return 创建后的用户实体
+     */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public Result<SysUser> createUser(@RequestBody @Valid UserCreateRequest req) {
-        return Result.success(userService.createUser(req));
+        // 1. 调用创建服务，创建新用户
+        SysUser created = userService.createUser(req);
+
+        // 2. 初始化 UserProfile
+        UserProfile userProfile = UserProfile.builder().userId(created.getId()).build();
+        UserProfile profile = userProfileService.createUserProfile(userProfile);
+
+        return Result.success(created);
     }
 
     /**
@@ -41,7 +57,7 @@ public class UserController {
      */
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Result<PageResult<SysUser>> listUsers(
+    public Result<PageResult<SysUser>> pageUsers(
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize) {
         // 1. 调用服务层获取所有用户列表

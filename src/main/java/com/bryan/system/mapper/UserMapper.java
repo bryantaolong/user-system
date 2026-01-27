@@ -1,6 +1,6 @@
-package com.bryan.system.mapper.user;
+package com.bryan.system.mapper;
 
-import com.bryan.system.domain.entity.user.SysUser;
+import com.bryan.system.domain.entity.SysUser;
 import com.bryan.system.domain.enums.user.UserStatusEnum;
 import com.bryan.system.domain.request.user.UserExportRequest;
 import com.bryan.system.domain.request.user.UserSearchRequest;
@@ -36,9 +36,9 @@ public interface UserMapper {
 
     SysUser selectByStatus(@Param("status") UserStatusEnum status);
 
+    long count(@Param("req") UserSearchRequest search);
+
     int update(SysUser user);
 
     int deleteById(@Param("id") Long id);
-
-    long count(@Param("req") UserSearchRequest search);
 }
