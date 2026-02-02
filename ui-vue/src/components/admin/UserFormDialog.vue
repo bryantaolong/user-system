@@ -48,8 +48,8 @@
 import { ref, computed, watch, nextTick } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import type { UserUpdateRequest } from '@/models/request/user/UserUpdateRequest.ts'
-import { userRoleApi } from '@/api/userRole'
-import type { UserRoleOptionVO } from '@/models/response/user/UserRoleOptionVO'
+import * as userRoleApi from '@/api/userRole'
+import type { UserRoleOptionVO } from '@/models/vo/UserRoleOptionVO'
 
 export interface UserFormData extends UserUpdateRequest {
   password?: string

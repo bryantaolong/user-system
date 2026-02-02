@@ -31,10 +31,10 @@ public class SystemLogController {
      */
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Result<List<String>> getLatestLogs(
+    public Result<List<String>> listLatestLogs(
             @RequestParam(defaultValue = "200") int lines,
             @RequestParam(required = false) String file) {
-        return Result.success(logService.getLatestLogs(file, lines));
+        return Result.success(logService.listLatestLogs(file, lines));
     }
 
     /**
@@ -42,7 +42,7 @@ public class SystemLogController {
      */
     @GetMapping("/files")
     @PreAuthorize("hasRole('ADMIN')")
-    public Result<List<String>> getLogFiles() {
+    public Result<List<String>> listLogFiles() {
         return Result.success(logService.listLogFiles());
     }
 }

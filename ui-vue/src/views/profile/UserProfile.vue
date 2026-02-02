@@ -89,14 +89,14 @@
 </template>
 
 <script setup lang="ts">
-import {ref, reactive, onMounted} from 'vue'
-import {ElMessage, ElMessageBox} from 'element-plus'
-import {Camera} from '@element-plus/icons-vue'
-import {useUserStore} from '@/stores/user'
-import {userApi} from '@/api/user'
-import {userProfileApi} from '@/api/userProfile'
-import {getAvatarUrl} from '@/utils/file'
-import {getLocationFromIp} from '@/utils/ipLocation'
+import { ref, reactive, onMounted } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { Camera } from '@element-plus/icons-vue'
+import { useUserStore } from '@/stores/user'
+import * as userApi from '@/api/user'
+import * as userProfileApi from '@/api/userProfile'
+import { getAvatarUrl } from '@/utils/file'
+import { getLocationFromIp } from '@/utils/ipLocation'
 import BasicInfo from '@/components/profile/BasicInfo.vue'
 import SecuritySettings from '@/components/profile/SecuritySettings.vue'
 import LoginHistory from '@/components/profile/LoginHistory.vue'

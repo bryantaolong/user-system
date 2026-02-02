@@ -65,7 +65,7 @@ public class UserProfileService {
      * @return 用户资料实体
      * @throws ResourceNotFoundException 用户资料不存在
      */
-    public UserProfile findUserProfileByRealName(String realName) {
+    public UserProfile getUserProfileByRealName(String realName) {
         UserProfile profile = userProfileMapper.selectByRealName(realName);
         if (profile == null) {
             throw new ResourceNotFoundException("用户信息不存在");

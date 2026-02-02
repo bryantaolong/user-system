@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { UserVO } from '@/models/vo/UserVO.ts'
-import type { UserProfileVO } from '@/models/vo/UserProfileVO.ts'
-import { authApi } from '@/api/auth'
-import { userProfileApi } from '@/api/userProfile'
+import type { UserVO } from '@/models/vo/user/UserVO.ts'
+import type { UserProfileVO } from '@/models/vo/user/UserProfileVO.ts'
+import * as authApi  from '@/api/auth'
+import * as userProfileApi from '@/api/userProfile'
 
 export const useUserStore = defineStore('user', () => {
   const token = ref<string>(localStorage.getItem('token') || '')
@@ -71,7 +71,7 @@ export const useUserStore = defineStore('user', () => {
     try {
       const [userRes, profileRes] = await Promise.all([
         authApi.getCurrentUser(),
-        authApi.getCurrentUserProfile()
+        userProfileApi.getCurrentUserProfile()
       ])
 
       if (userRes.code === 200 && profileRes.code === 200) {
