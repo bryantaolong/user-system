@@ -57,7 +57,7 @@ public class UserController {
      */
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Result<PageResult<SysUser>> pageUsers(
+    public Result<PageResult<SysUser>> listUsers(
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize) {
         // 1. 调用服务层获取所有用户列表
@@ -100,11 +100,11 @@ public class UserController {
      */
     @PostMapping("/search")
     @PreAuthorize("hasRole('ADMIN')")
-    public Result<PageResult<SysUser>> searchUsers(
+    public Result<PageResult<SysUser>> queryUsers(
             @RequestBody UserSearchRequest searchRequest,
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize) {
-        PageResult<SysUser> page = userService.searchUsers(searchRequest, pageNum, pageSize);
+        PageResult<SysUser> page = userService.queryUsers(searchRequest, pageNum, pageSize);
         return Result.success(page);
     }
 

@@ -44,7 +44,7 @@ public class UserRoleService {
      * @param ids 角色主键集合
      * @return 角色实体列表
      */
-    public List<UserRole> getByIds(Collection<Long> ids) {
+    public List<UserRole> listByIds(Collection<Long> ids) {
         return userRoleMapper.selectByIdList(ids);
     }
 }

@@ -62,7 +62,7 @@ public class UserService {
             roleIds.add(defaultRole.getId());
         }
 
-        List<UserRole> roles = userRoleService.getByIds(roleIds);
+        List<UserRole> roles = userRoleService.listByIds(roleIds);
         if (roles.size() != roleIds.size()) {
             Set<Long> exist = roles.stream()
                     .map(UserRole::getId)
@@ -149,9 +149,9 @@ public class UserService {
      * @param searchRequest 搜索请求
      * @return 符合查询条件的分页对象（Page）
      */
-    public PageResult<SysUser> searchUsers(UserSearchRequest searchRequest,
-                                           int pageNum,
-                                           int pageSize) {
+    public PageResult<SysUser> queryUsers(UserSearchRequest searchRequest,
+                                          int pageNum,
+                                          int pageSize) {
         int offset = (pageNum - 1) * pageSize;
         List<SysUser> rows = userMapper.selectPage(
                 offset,
@@ -224,7 +224,7 @@ public class UserService {
     @Transactional
     public SysUser changeRoleByIds(Long userId, ChangeRoleRequest req) {
         List<Long> ids = req.getRoleIds();
-        List<UserRole> roles = userRoleService.getByIds(ids);
+        List<UserRole> roles = userRoleService.listByIds(ids);
 
         if (roles.size() != ids.size()) {
             Set<Long> exist = roles.stream()

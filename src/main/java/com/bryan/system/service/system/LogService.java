@@ -41,8 +41,8 @@ public class LogService {
      * @param maxLines 最大行数（1~2000）
      * @return 日志行列表（按时间正序）
      */
-    public List<String> getLatestLogs(int maxLines) {
-        return getLatestLogs(null, maxLines);
+    public List<String> listLatestLogs(int maxLines) {
+        return this.listLatestLogs(null, maxLines);
     }
 
     /**
@@ -52,7 +52,7 @@ public class LogService {
      * @param maxLines 最大行数（1~2000）
      * @return 日志行列表（按时间正序）
      */
-    public List<String> getLatestLogs(String fileName, int maxLines) {
+    public List<String> listLatestLogs(String fileName, int maxLines) {
         int limit = Math.max(1, Math.min(maxLines, 2000));
         Path path = resolveLogPath(fileName);
 

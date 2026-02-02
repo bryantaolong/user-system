@@ -59,10 +59,10 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
-import { userApi } from '@/api/user'
-import { userExportApi } from '@/api/userExport'
-import { userRoleApi } from '@/api/userRole'
-import { userProfileApi } from '@/api/userProfile'
+import * as userApi from '@/api/user'
+import * as userExportApi from '@/api/userExport'
+import * as userRoleApi from '@/api/userRole'
+import * as userProfileApi from '@/api/userProfile'
 import type { SysUser } from '@/models/entity/SysUser'
 import UserSearchForm from '@/components/admin/UserSearchForm.vue'
 import UserTable from '@/components/admin/UserTable.vue'
@@ -142,8 +142,8 @@ const loadUsers = async () => {
     const hasSearch = Object.keys(searchParams).length > 0
 
     const res = hasSearch
-        ? await userApi.searchUsers(searchParams, pageNum.value, pageSize.value)
-        : await userApi.getUserList(pageNum.value, pageSize.value)
+        ? await userApi.queryUsers(searchParams, pageNum.value, pageSize.value)
+        : await userApi.listUsers(pageNum.value, pageSize.value)
 
     if (res.code === 200) {
       userList.value = res.data.rows

@@ -10,87 +10,86 @@ import type { UserSearchRequest } from '@/models/request/user/UserSearchRequest.
 /**
  * 用户管理API
  */
-export const userApi = {
-  /**
-   * 创建用户（管理员）
-   */
-  createUser(data: UserCreateRequest): Promise<Result<SysUser>> {
-    return request.post('/api/users', data)
-  },
 
-  /**
-   * 获取用户列表（分页）
-   */
-  getUserList(pageNum = 1, pageSize = 10): Promise<Result<PageResult<SysUser>>> {
-    return request.get('/api/users', {
-      params: { pageNum, pageSize }
-    })
-  },
+/**
+ * 创建用户（管理员）
+ */
+export function createUser(data: UserCreateRequest): Promise<Result<SysUser>> {
+  return request.post('/api/users', data)
+}
 
-  /**
-   * 根据ID获取用户信息
-   */
-  getUserById(userId: number): Promise<Result<SysUser>> {
-    return request.get(`/api/users/${userId}`)
-  },
+/**
+ * 获取用户列表（分页）
+ */
+export function listUsers(pageNum = 1, pageSize = 10): Promise<Result<PageResult<SysUser>>> {
+  return request.get('/api/users', {
+    params: { pageNum, pageSize }
+  })
+}
 
-  /**
-   * 根据用户名获取用户信息
-   */
-  getUserByUsername(username: string): Promise<Result<SysUser>> {
-    return request.get(`/api/users/username/${username}`)
-  },
+/**
+ * 根据ID获取用户信息
+ */
+export function getUserById(userId: number): Promise<Result<SysUser>> {
+  return request.get(`/api/users/${userId}`)
+}
 
-  /**
-   * 搜索用户
-   */
-  searchUsers(data: UserSearchRequest, pageNum = 1, pageSize = 10): Promise<Result<PageResult<SysUser>>> {
-    return request.post('/api/users/search', data, {
-      params: { pageNum, pageSize }
-    })
-  },
+/**
+ * 根据用户名获取用户信息
+ */
+export function getUserByUsername(username: string): Promise<Result<SysUser>> {
+  return request.get(`/api/users/username/${username}`)
+}
 
-  /**
-   * 更新用户信息
-   */
-  updateUser(userId: number, data: UserUpdateRequest): Promise<Result<SysUser>> {
-    return request.put(`/api/users/${userId}`, data)
-  },
+/**
+ * 搜索用户
+ */
+export function queryUsers(data: UserSearchRequest, pageNum = 1, pageSize = 10): Promise<Result<PageResult<SysUser>>> {
+  return request.post('/api/users/search', data, {
+    params: { pageNum, pageSize }
+  })
+}
 
-  /**
-   * 修改用户角色（管理员）
-   */
-  changeUserRoles(userId: number, roleIds: number[]): Promise<Result<SysUser>> {
-    return request.put(`/api/users/roles/${userId}`, { roleIds })
-  },
+/**
+ * 更新用户信息
+ */
+export function updateUser(userId: number, data: UserUpdateRequest): Promise<Result<SysUser>> {
+  return request.put(`/api/users/${userId}`, data)
+}
 
-  /**
-   * 重置用户密码（管理员）
-   */
-  resetPassword(userId: number, newPassword: string): Promise<Result<SysUser>> {
-    const data: ChangePasswordRequest = { newPassword }
-    return request.put(`/api/users/password/${userId}`, data)
-  },
+/**
+ * 修改用户角色（管理员）
+ */
+export function changeUserRoles(userId: number, roleIds: number[]): Promise<Result<SysUser>> {
+  return request.put(`/api/users/roles/${userId}`, { roleIds })
+}
 
-  /**
-   * 封禁用户
-   */
-  blockUser(userId: number): Promise<Result<SysUser>> {
-    return request.put(`/api/users/block/${userId}`)
-  },
+/**
+ * 重置用户密码（管理员）
+ */
+export function resetPassword(userId: number, newPassword: string): Promise<Result<SysUser>> {
+  const data: ChangePasswordRequest = { newPassword }
+  return request.put(`/api/users/password/${userId}`, data)
+}
 
-  /**
-   * 解封用户
-   */
-  unblockUser(userId: number): Promise<Result<SysUser>> {
-    return request.put(`/api/users/unblock/${userId}`)
-  },
+/**
+ * 封禁用户
+ */
+export function blockUser(userId: number): Promise<Result<SysUser>> {
+  return request.put(`/api/users/block/${userId}`)
+}
 
-  /**
-   * 删除用户（逻辑删除）
-   */
-  deleteUser(userId: number): Promise<Result<number>> {
-    return request.delete(`/api/users/${userId}`)
-  }
+/**
+ * 解封用户
+ */
+export function unblockUser(userId: number): Promise<Result<SysUser>> {
+  return request.put(`/api/users/unblock/${userId}`)
+}
+
+/**
+ * 删除用户（逻辑删除）
+ */
+export function deleteUser(userId: number): Promise<Result<number>> {
+  return request.delete(`/api/users/${userId}`)
 }
 

@@ -49,7 +49,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import { logApi } from '@/api/log'
+import * as logApi from '@/api/log'
 
 const loading = ref(false)
 const logs = ref<string[]>([])
@@ -61,7 +61,7 @@ const logsText = computed(() => logs.value.join('\n'))
 
 const loadFiles = async () => {
   try {
-    const res = await logApi.getLogFiles()
+    const res = await logApi.listLogFiles()
     if (res.code === 200) {
       logFiles.value = res.data || []
       if (!selectedFile.value && logFiles.value.length > 0) {
@@ -79,7 +79,7 @@ const loadFiles = async () => {
 const loadLogs = async () => {
   loading.value = true
   try {
-    const res = await logApi.getLatestLogs(lineCount.value, selectedFile.value || undefined)
+    const res = await logApi.listLatestLogs(lineCount.value, selectedFile.value || undefined)
     if (res.code === 200) {
       logs.value = res.data || []
     } else {

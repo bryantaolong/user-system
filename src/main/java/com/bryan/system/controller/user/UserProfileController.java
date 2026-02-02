@@ -73,7 +73,7 @@ public class UserProfileController {
     @GetMapping("/name/{realName}")
     @PreAuthorize("isAuthenticated()")
     public Result<UserProfileVO> getUserProfileByRealName(@PathVariable String realName) {
-        UserProfile profile = userProfileService.findUserProfileByRealName(realName);
+        UserProfile profile = userProfileService.getUserProfileByRealName(realName);
         SysUser user = userService.getUserById(profile.getUserId());
         return Result.success(UserConverter.toUserProfileVO(user, profile));
     }
