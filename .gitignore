@@ -1,7 +1,9 @@
 ### Custom ###
-.claude/
 .model/
-uploads/
+.claude/
+.gemini/
+.qwen/
+.qoder/
 
 ### Java ###
 HELP.md
@@ -10,7 +12,21 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 logs/
+uploads/
+
+### Vue ###
 ui-vue/node_modules/
+ui-vue/logs
+ui-vue/*.log
+ui-vue/npm-debug.log*
+ui-vue/yarn-debug.log*
+ui-vue/yarn-error.log*
+ui-vue/pnpm-debug.log*
+ui-vue/lerna-debug.log*
+ui-vue/dist
+ui-vue/dist-ssr
+ui-vue/release
+ui-vue/*.local
 
 ### STS ###
 .apt_generated
