@@ -1,5 +1,6 @@
 package com.bryan.system.service.file;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,7 @@ import java.util.Set;
  * 文件存储服务
  * 提供文件上传、删除与读取能力。
  */
+@Slf4j
 @Service
 public class LocalFileService {
 
@@ -172,8 +174,8 @@ public class LocalFileService {
             // 删除文件，如果文件不存在则返回 false
             return Files.deleteIfExists(fullPath);
         } catch (IOException e) {
-            // 打印异常信息，但返回 false 表示删除失败
-            e.printStackTrace();
+            // 记录异常信息到日志，但返回 false 表示删除失败
+            log.error("Failed to delete file: {}, error: {}", filePath, e.getMessage(), e);
             return false;
         }
     }

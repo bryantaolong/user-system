@@ -33,9 +33,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addResourceLocations(absolutePath);
     }
 
+    @Value("${cors.allowed-origins:http://localhost:5173}")  // 默认为开发环境前端地址
+    private String allowedOrigins;
+
     /**
      * 配置全局跨域规则
-
      * 允许前端开发服务器（localhost:5173）跨域访问所有接口，支持常见 HTTP 方法与凭证传递。
      *
      * @param registry CorsRegistry 注册器
@@ -43,7 +45,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5173")
+                .allowedOrigins(allowedOrigins)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
