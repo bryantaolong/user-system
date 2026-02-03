@@ -7,30 +7,30 @@
       </div>
 
       <el-form
-        ref="formRef"
-        :model="loginForm"
-        :rules="loginRules"
-        class="login-form"
-        size="large"
+          ref="formRef"
+          :model="loginForm"
+          :rules="loginRules"
+          class="login-form"
+          size="large"
       >
         <el-form-item prop="username">
           <el-input
-            v-model="loginForm.username"
-            placeholder="请输入用户名"
-            :prefix-icon="User"
-            clearable
+              v-model="loginForm.username"
+              placeholder="请输入用户名"
+              :prefix-icon="User"
+              clearable
           />
         </el-form-item>
 
         <el-form-item prop="password">
           <el-input
-            v-model="loginForm.password"
-            type="password"
-            placeholder="请输入密码"
-            :prefix-icon="Lock"
-            show-password
-            clearable
-            @keyup.enter="handleLogin"
+              v-model="loginForm.password"
+              type="password"
+              placeholder="请输入密码"
+              :prefix-icon="Lock"
+              show-password
+              clearable
+              @keyup.enter="handleLogin"
           />
         </el-form-item>
 
@@ -43,11 +43,11 @@
 
         <el-form-item>
           <el-button
-            type="primary"
-            size="large"
-            :loading="loading"
-            class="login-button"
-            @click="handleLogin"
+              type="primary"
+              size="large"
+              :loading="loading"
+              class="login-button"
+              @click="handleLogin"
           >
             登录
           </el-button>
@@ -111,13 +111,7 @@ const handleLogin = async () => {
 
       if (result.success) {
         ElMessage.success('登录成功！')
-
-        // 根据角色跳转到不同页面
-        if (userStore.isAdmin) {
-          router.push('/admin/users')
-        } else {
-          router.push('/profile')
-        }
+        router.push('/')
       } else {
         ElMessage.error(result.message || '登录失败')
       }
@@ -139,7 +133,8 @@ const handleLogin = async () => {
   justify-content: center;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* NVIDIA 标志性绿色渐变 */
+  background: linear-gradient(135deg, #76b900 0%, #5b8c00 50%, #3d5a00 100%);
 }
 
 .login-card {
@@ -149,7 +144,7 @@ const handleLogin = async () => {
   padding: 40px;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(10px);
 }
 
@@ -167,7 +162,7 @@ const handleLogin = async () => {
 .background-circle {
   position: absolute;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(118, 185, 0, 0.15);
   animation: float 20s infinite linear;
   pointer-events: none;
 }
@@ -177,6 +172,7 @@ const handleLogin = async () => {
   height: 300px;
   top: -150px;
   left: -150px;
+  background: rgba(91, 140, 0, 0.2);
 }
 
 .circle2 {
@@ -185,6 +181,7 @@ const handleLogin = async () => {
   bottom: -100px;
   right: -100px;
   animation-delay: -10s;
+  background: rgba(118, 185, 0, 0.25);
 }
 
 .circle3 {
@@ -193,6 +190,7 @@ const handleLogin = async () => {
   top: 50%;
   right: 10%;
   animation-delay: -15s;
+  background: rgba(61, 90, 0, 0.2);
 }
 
 @keyframes float {
@@ -221,13 +219,13 @@ const handleLogin = async () => {
 .login-title {
   font-size: 32px;
   font-weight: 600;
-  color: #303133;
+  color: #1a1a1a;
   margin-bottom: 8px;
 }
 
 .login-subtitle {
   font-size: 14px;
-  color: #909399;
+  color: #666;
 }
 
 .login-form {
@@ -240,17 +238,32 @@ const handleLogin = async () => {
   font-size: 16px;
   font-weight: 500;
   border-radius: 8px;
+  /* NVIDIA 绿色按钮 */
+  background: linear-gradient(to right, #76b900, #5b8c00);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.login-button:hover {
+  background: linear-gradient(to right, #8bd100, #6ba200);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(118, 185, 0, 0.3);
+}
+
+.login-button:active {
+  transform: translateY(0);
 }
 
 .forgot-link {
   float: right;
   font-size: 14px;
+  color: #76b900;
 }
 
 .login-footer {
   text-align: center;
   font-size: 14px;
-  color: #909399;
+  color: #666;
   padding-top: 20px;
   border-top: 1px solid #e4e7ed;
 }
@@ -263,15 +276,33 @@ const handleLogin = async () => {
 }
 
 :deep(.el-input__wrapper:hover) {
-  border-color: #409eff;
+  border-color: #76b900;
 }
 
 :deep(.el-input__wrapper.is-focus) {
-  border-color: #409eff;
-  box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.1);
+  border-color: #76b900;
+  box-shadow: 0 0 0 2px rgba(118, 185, 0, 0.1);
 }
 
 :deep(.el-form-item.is-error .el-input__wrapper) {
   border-color: #f56c6c;
+}
+
+:deep(.el-checkbox__input.is-checked .el-checkbox__inner) {
+  background-color: #76b900;
+  border-color: #76b900;
+}
+
+:deep(.el-link--primary) {
+  color: #76b900;
+}
+
+:deep(.el-link--primary:hover) {
+  color: #5b8c00;
+}
+
+/* 输入框图标颜色 */
+:deep(.el-input__prefix) {
+  color: #76b900;
 }
 </style>

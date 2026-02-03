@@ -70,10 +70,6 @@ public class UserExportVO {
     @ColumnWidth(12)
     private String deleted;
 
-    @ExcelProperty("版本号")
-    @ColumnWidth(10)
-    private Integer version;
-
     @ExcelProperty("创建时间")
     @ColumnWidth(20)
     @DateTimeFormat("yyyy-MM-dd HH:mm:ss")
