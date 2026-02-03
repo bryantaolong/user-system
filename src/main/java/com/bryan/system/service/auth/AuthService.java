@@ -96,7 +96,11 @@ public class AuthService implements UserDetailsService {
         // 1. 验证用户凭证
         SysUser sysUser = userMapper.selectByUsername(loginRequest.getUsername());
 
+        // 无论用户名是否存在，都进行失败次数记录，防止用户名枚举攻击
         if (sysUser == null) {
+            // 用户不存在时，也记录一次失败的登录尝试（可以使用固定的用户ID或IP作为key）
+            log.warn("登录失败 - 用户不存在: {}", loginRequest.getUsername());
+            // 为防止用户名枚举，仍然抛出相同的错误消息
             throw new BusinessException("用户名或密码错误");
         }
 
@@ -108,9 +112,11 @@ public class AuthService implements UserDetailsService {
                 sysUser.setStatus(UserStatusEnum.LOCKED);
                 sysUser.setLockedAt(LocalDateTime.now());
                 userMapper.update(sysUser);
+                log.warn("用户登录失败次数过多，已锁定: {}", sysUser.getUsername());
                 throw new BusinessException("输入密码错误次数过多，账号锁定");
             }
             userMapper.update(sysUser);
+            log.warn("用户登录密码错误: {}, 失败次数: {}", sysUser.getUsername(), sysUser.getLoginFailCount());
             throw new BusinessException("用户名或密码错误");
         }
 

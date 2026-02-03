@@ -12,6 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
  *
  * @author Bryan Long
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -96,7 +98,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         } catch (Exception e) {
             // 处理 Token 无效或过期的情况
-            writeUnauthorized(response, "Token无效或已过期: " + e.getMessage());
+            // 不返回具体异常信息，防止信息泄露
+            log.warn("Token验证失败: {}", e.getClass().getSimpleName());
+            writeUnauthorized(response, "Token无效或已过期");
             return;
         }
 
