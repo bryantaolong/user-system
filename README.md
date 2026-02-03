@@ -29,7 +29,8 @@ src/
       controller/     # RESTful controllers
       domain/         # Entities, request/response objects, VO
       filter/         # JWT authentication filter
-      handler/        # MyBatis auto-fill, global exception handler
+      handler/        # Global exception handler, PostgreSQL type handler
+      interceptor/    # MyBatis auto-fill
       mapper/         # MyBatis mapper interfaces
       service/        # Service layer
       util/           # Utility classes (JWT, HTTP, etc.)

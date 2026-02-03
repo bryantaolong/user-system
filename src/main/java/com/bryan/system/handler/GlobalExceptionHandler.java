@@ -3,6 +3,7 @@ package com.bryan.system.handler;
 import com.bryan.system.domain.enums.HttpStatus;
 import com.bryan.system.domain.response.Result;
 import com.bryan.system.exception.BusinessException;
+import com.bryan.system.exception.OptimisticLockException;
 import com.bryan.system.exception.ResourceNotFoundException;
 import com.bryan.system.exception.UnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -79,6 +80,19 @@ public class GlobalExceptionHandler {
     public Result<String> handleBusinessException(BusinessException e) {
         log.error("业务异常: {}", e.getMessage(), e);
         return Result.error(HttpStatus.INTERNAL_ERROR, e.getMessage());
+    }
+
+    /**
+     * 处理乐观锁冲突异常
+     * 当数据版本号不匹配时抛出，提示用户刷新后重试
+     *
+     * @param e 乐观锁冲突异常
+     * @return 统一错误响应
+     */
+    @ExceptionHandler(OptimisticLockException.class)
+    public Result<String> handleOptimisticLockException(OptimisticLockException e) {
+        log.warn("乐观锁冲突: {}", e.getMessage());
+        return Result.error(HttpStatus.CONFLICT, e.getMessage());
     }
 
     /**

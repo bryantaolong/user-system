@@ -29,7 +29,8 @@ src/
       controller/     # RESTful 控制器
       domain/         # 实体、请求/响应对象、VO
       filter/         # JWT 认证过滤器
-      handler/        # MyBatis 自动填充、全局异常处理
+      handler/        # 全局异常处理、PostgreSQL 类型处理器
+      interceptor/    # MyBatis 自动填充
       mapper/         # MyBatis mapper 接口
       service/        # 业务服务层
       util/           # 工具类（JWT、HTTP等）
