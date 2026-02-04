@@ -59,6 +59,21 @@ public class UserProfileService {
     }
 
     /**
+     * 根据用户主键查询用户资料，如果不存在则返回空实体
+     *
+     * @param userId 用户主键
+     * @return 用户资料实体，如果不存在则返回空的实体
+     */
+    public UserProfile getUserProfileByUserIdOrEmpty(Long userId) {
+        UserProfile profile = userProfileMapper.selectByUserId(userId);
+        if (profile == null) {
+            log.warn("用户资料不存在，用户ID: {}, 返回空实体", userId);
+            return UserProfile.builder().userId(userId).build();
+        }
+        return profile;
+    }
+
+    /**
      * 根据真实姓名查询用户资料
      *
      * @param realName 真实姓名
