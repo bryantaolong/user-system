@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { UserVO } from '@/models/vo/user/UserVO.ts'
-import type { UserProfileVO } from '@/models/vo/user/UserProfileVO.ts'
+import type { UserVO } from '@/models/vo/UserVO.ts'
+import type { UserProfileVO } from '@/models/vo/UserProfileVO.ts'
 import * as authApi  from '@/api/auth'
 import * as userProfileApi from '@/api/userProfile'
 
@@ -66,20 +66,29 @@ export const useUserStore = defineStore('user', () => {
 
   /**
    * 获取用户信息
+   * 注意：两个 API 独立调用，即使 profile 获取失败也认为登录有效
    */
   const fetchUserInfo = async () => {
     try {
-      const [userRes, profileRes] = await Promise.all([
-        authApi.getCurrentUser(),
-        userProfileApi.getCurrentUserProfile()
-      ])
+      const userRes = await authApi.getCurrentUser()
 
-      if (userRes.code === 200 && profileRes.code === 200) {
-        userInfo.value = userRes.data
-        userProfile.value = profileRes.data
-        return { success: true }
+      if (userRes.code !== 200) {
+        return { success: false, message: '获取用户信息失败' }
       }
-      return { success: false, message: '获取用户信息失败' }
+
+      userInfo.value = userRes.data
+
+      // UserProfile 独立获取，失败不影响登录状态
+      try {
+        const profileRes = await userProfileApi.getCurrentUserProfile()
+        if (profileRes.code === 200) {
+          userProfile.value = profileRes.data
+        }
+      } catch (profileError) {
+        console.warn('获取用户资料失败，可能用户资料尚未创建:', profileError)
+      }
+
+      return { success: true }
     } catch (error: any) {
       return { success: false, message: error.message || '获取用户信息失败' }
     }

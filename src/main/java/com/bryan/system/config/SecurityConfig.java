@@ -26,7 +26,7 @@ public class SecurityConfig {
 
     /**
      * 配置 HTTP 安全过滤器链
-     * 关闭 CSRF、放行所有请求、使用无状态会话。
+     * 关闭 CSRF、放行所有请求、配置具体路径的访问权限、使用无状态会话。
      * 认证控制通过方法级 @PreAuthorize 注解实现，更加直观和灵活。
      *
      * @param http    Spring Security 配置构建器

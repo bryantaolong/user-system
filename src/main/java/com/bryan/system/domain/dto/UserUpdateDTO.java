@@ -12,8 +12,6 @@ import lombok.Data;
 @Builder
 public class UserUpdateDTO {
 
-    private String username;
-
     private String phone;
 
     private String email;

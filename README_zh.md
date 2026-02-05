@@ -29,7 +29,8 @@ src/
       controller/     # RESTful 控制器
       domain/         # 实体、请求/响应对象、VO
       filter/         # JWT 认证过滤器
-      handler/        # MyBatis 自动填充、全局异常处理
+      handler/        # 全局异常处理、PostgreSQL 类型处理器
+      interceptor/    # MyBatis 自动填充
       mapper/         # MyBatis mapper 接口
       service/        # 业务服务层
       util/           # 工具类（JWT、HTTP等）
@@ -75,113 +76,6 @@ src/
    mvn clean package
    java -jar target/user-system-0.0.1-SNAPSHOT.jar
    ```
-
-## 🐳 容器化部署 (Docker)
-
-本项目支持使用 **Docker** 和 **Docker Compose** 进行容器化部署。
-
-### 1. 构建项目
-
-确保已安装 **Docker** 和 **Docker Compose**，然后打包 JAR：
-
-```bash
-mvn clean package -DskipTests
-```
-
-### 2. 创建 Dockerfile
-
-在项目根目录下新建 `Dockerfile`：
-
-```dockerfile
-# 使用官方 OpenJDK 17 作为基础镜像
-FROM eclipse-temurin:17-jdk-alpine
-
-# 设置工作目录
-WORKDIR /app
-
-# 复制构建产物
-COPY target/user-system-0.0.1-SNAPSHOT.jar app.jar
-
-# 暴露端口
-EXPOSE 8080
-
-# 启动应用
-ENTRYPOINT ["java", "-jar", "app.jar"]
-```
-
-### 3. 创建 docker-compose.yml
-
-在项目根目录下新建 `docker-compose.yml`：
-
-```yaml
-version: "3.9"
-services:
-  postgres:
-    image: postgres:17
-    container_name: user-postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: user_system
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./sql/create_table.sql:/docker-entrypoint-initdb.d/create_table.sql
-    ports:
-      - "5432:5432"
-
-  redis:
-    image: redis:6
-    container_name: user-redis
-    ports:
-      - "6379:6379"
-
-  app:
-    build: .
-    container_name: user-system
-    depends_on:
-      - postgres
-      - redis
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/user_system
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_REDIS_HOST: redis
-      SPRING_REDIS_PORT: 6379
-    ports:
-      - "8080:8080"
-
-volumes:
-  postgres_data:
-```
-
-### 4. 更新 Spring 配置
-
-将 `src/main/resources/application-dev.yaml` 中的数据库和 Redis 主机名改为容器名：
-
-```yaml
-spring:
-  datasource:
-    url: jdbc:postgresql://postgres:5432/user_system
-    username: postgres
-    password: postgres
-  redis:
-    host: redis
-    port: 6379
-```
-
-### 5. 启动服务
-
-执行以下命令构建并启动所有服务：
-
-```bash
-docker-compose up -d --build
-```
-
-### 6. 访问应用
-
-* 应用接口: [http://localhost:8080/api](http://localhost:8080/api)
-* PostgreSQL: `localhost:5432` (用户: `postgres` / 密码: `postgres`)
-* Redis: `localhost:6379`
 
 ## 常用接口
 

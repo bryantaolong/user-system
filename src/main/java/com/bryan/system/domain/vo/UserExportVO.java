@@ -66,22 +66,9 @@ public class UserExportVO {
     @DateTimeFormat("yyyy-MM-dd HH:mm:ss")
     private LocalDateTime passwordResetAt;
 
-    @ExcelProperty("登录失败次数")
-    @ColumnWidth(15)
-    private Integer loginFailCount;
-
-    @ExcelProperty("账户锁定时间")
-    @ColumnWidth(20)
-    @DateTimeFormat("yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime lockedAt;
-
     @ExcelProperty("删除状态")
     @ColumnWidth(12)
     private String deleted;
-
-    @ExcelProperty("版本号")
-    @ColumnWidth(10)
-    private Integer version;
 
     @ExcelProperty("创建时间")
     @ColumnWidth(20)

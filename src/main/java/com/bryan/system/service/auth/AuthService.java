@@ -1,5 +1,6 @@
 package com.bryan.system.service.auth;
 
+import com.bryan.system.config.properties.SecurityProperties;
 import com.bryan.system.domain.entity.SysUser;
 import com.bryan.system.domain.entity.UserRole;
 import com.bryan.system.domain.enums.user.UserStatusEnum;
@@ -39,6 +40,7 @@ public class AuthService implements UserDetailsService {
     private final UserRoleMapper userRoleMapper;
     private final PasswordEncoder passwordEncoder;
     private final RedisStringService redisStringService;
+    private final SecurityProperties securityProperties;
 
     /**
      * 用户注册。
@@ -94,21 +96,27 @@ public class AuthService implements UserDetailsService {
         // 1. 验证用户凭证
         SysUser sysUser = userMapper.selectByUsername(loginRequest.getUsername());
 
+        // 无论用户名是否存在，都进行失败次数记录，防止用户名枚举攻击
         if (sysUser == null) {
+            // 用户不存在时，也记录一次失败的登录尝试（可以使用固定的用户ID或IP作为key）
+            log.warn("登录失败 - 用户不存在: {}", loginRequest.getUsername());
+            // 为防止用户名枚举，仍然抛出相同的错误消息
             throw new BusinessException("用户名或密码错误");
         }
 
         if(!passwordEncoder.matches(loginRequest.getPassword(), sysUser.getPassword())){
             sysUser.setLoginFailCount(sysUser.getLoginFailCount() + 1);
 
-            // 如果输入密码错误次数达到限额-硬编码为 5，则锁定账号
-            if(sysUser.getLoginFailCount() >= 5) {
+            // 如果输入密码错误次数达到限额，则锁定账号
+            if(sysUser.getLoginFailCount() >= securityProperties.getLoginFailLimit()) {
                 sysUser.setStatus(UserStatusEnum.LOCKED);
                 sysUser.setLockedAt(LocalDateTime.now());
                 userMapper.update(sysUser);
+                log.warn("用户登录失败次数过多，已锁定: {}", sysUser.getUsername());
                 throw new BusinessException("输入密码错误次数过多，账号锁定");
             }
             userMapper.update(sysUser);
+            log.warn("用户登录密码错误: {}, 失败次数: {}", sysUser.getUsername(), sysUser.getLoginFailCount());
             throw new BusinessException("用户名或密码错误");
         }
 
@@ -277,10 +285,20 @@ public class AuthService implements UserDetailsService {
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new BusinessException("旧密码不正确");
         }
+        
+        // 更新密码
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setPasswordResetAt(LocalDateTime.now());
         userMapper.update(user);
-        log.info("用户ID: {} 的密码更新成功", user.getId());
+        
+        // 清除 Redis 中的旧 Token，强制用户重新登录
+        boolean deleted = redisStringService.delete(user.getUsername());
+        if (!deleted) {
+            log.warn("用户ID: {} 密码更新成功，但清除旧 Token 失败", user.getId());
+        } else {
+            log.info("用户ID: {} 密码更新成功，旧 Token 已清除", user.getId());
+        }
+        
         return user;
     }
 

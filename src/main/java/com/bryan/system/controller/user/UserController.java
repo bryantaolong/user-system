@@ -124,7 +124,6 @@ public class UserController {
             @RequestBody @Valid UserUpdateRequest req) {
         // 1. 调用服务更新用户信息
         UserUpdateDTO dto = UserUpdateDTO.builder()
-                .username(req.getUsername())
                 .phone(req.getPhone())
                 .email(req.getEmail())
                 .build();

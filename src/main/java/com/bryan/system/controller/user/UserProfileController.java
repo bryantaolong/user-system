@@ -81,13 +81,15 @@ public class UserProfileController {
     /**
      * 获取当前登录用户的资料
      *
-     * @return 用户资料 VO
+     * @return 用户资料 VO，如果用户资料不存在则返回空VO
      */
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public Result<UserProfileVO> getCurrentUserProfile() {
         Long userId = authService.getCurrentUserId();
-        return this.getUserProfileByUserId(userId);
+        UserProfile profile = userProfileService.getUserProfileByUserIdOrEmpty(userId);
+        SysUser user = userService.getUserById(userId);
+        return Result.success(UserConverter.toUserProfileVO(user, profile));
     }
 
     /**
