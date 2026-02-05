@@ -1,6 +1,7 @@
 ### Custom ###
-.model/
+.agent/
 .claude/
+.codex/
 .gemini/
 .qwen/
 .qoder/

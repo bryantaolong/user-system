@@ -1,5 +1,4 @@
 export interface UserUpdateRequest {
-  username?: string;
   phone?: string;
   email?: string;
   realName?: string;

@@ -196,15 +196,6 @@ public class UserService {
     public SysUser updateUser(Long userId, UserUpdateDTO dto) {
         SysUser user = this.getUserById(userId);
 
-        // 用户名不能重复
-        if (dto.getUsername() != null &&
-                !dto.getUsername().equals(user.getUsername())) {
-            SysUser sameName = userMapper.selectByUsername(dto.getUsername());
-            if (sameName != null && !sameName.getId().equals(userId)) {
-                throw new BusinessException("用户名已存在");
-            }
-            user.setUsername(dto.getUsername());
-        }
         if (dto.getPhone() != null) user.setPhone(dto.getPhone());
         if (dto.getEmail() != null) user.setEmail(dto.getEmail());
 

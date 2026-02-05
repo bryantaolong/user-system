@@ -1,36 +1,36 @@
 <template>
   <el-dialog
-    v-model="visible"
-    :title="dialogTitle"
-    width="600px"
-    @close="handleClose"
+      v-model="visible"
+      :title="dialogTitle"
+      width="600px"
+      @close="handleClose"
   >
     <el-form
-      ref="userFormRef"
-      :model="localUserForm"
-      :rules="userRules"
-      label-width="100px"
-      class="user-form"
+        ref="userFormRef"
+        :model="localUserForm"
+        :rules="userRules"
+        label-width="100px"
+        class="user-form"
     >
       <el-form-item label="用户名" prop="username">
-        <el-input v-model="localUserForm.username" />
+        <el-input v-model="localUserForm.username" :disabled="dialogType === 'edit'"/>
       </el-form-item>
       <el-form-item label="手机号" prop="phone">
-        <el-input v-model="localUserForm.phone" />
+        <el-input v-model="localUserForm.phone"/>
       </el-form-item>
       <el-form-item label="邮箱" prop="email">
-        <el-input v-model="localUserForm.email" />
+        <el-input v-model="localUserForm.email"/>
       </el-form-item>
       <el-form-item v-if="dialogType === 'add'" label="密码" prop="password">
-        <el-input v-model="localUserForm.password" type="password" show-password />
+        <el-input v-model="localUserForm.password" type="password" show-password/>
       </el-form-item>
       <el-form-item label="角色" prop="roleIds">
         <el-select v-model="localUserForm.roleIds" multiple placeholder="请选择角色">
           <el-option
-            v-for="r in roleOptions"
-            :key="r.id"
-            :label="r.roleName"
-            :value="r.id"
+              v-for="r in roleOptions"
+              :key="r.id"
+              :label="r.roleName"
+              :value="r.id"
           />
         </el-select>
       </el-form-item>
@@ -45,13 +45,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, nextTick } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
-import type { UserUpdateRequest } from '@/models/request/user/UserUpdateRequest.ts'
+import {ref, computed, watch, nextTick} from 'vue'
+import type {FormInstance, FormRules} from 'element-plus'
+import type {UserUpdateRequest} from '@/models/request/user/UserUpdateRequest.ts'
 import * as userRoleApi from '@/api/userRole'
-import type { UserRoleOptionVO } from '@/models/vo/UserRoleOptionVO'
+import type {UserRoleOptionVO} from '@/models/vo/UserRoleOptionVO.ts'
 
 export interface UserFormData extends UserUpdateRequest {
+  username?: string
   password?: string
   roleIds?: number[]
 }
@@ -76,7 +77,7 @@ const visible = computed({
 })
 
 const dialogTitle = computed(() =>
-  props.dialogType === 'add' ? '新增用户' : '编辑用户'
+    props.dialogType === 'add' ? '新增用户' : '编辑用户'
 )
 
 const userFormRef = ref<FormInstance>()
@@ -116,24 +117,24 @@ watch(visible, async (isVisible) => {
     await nextTick()
     userFormRef.value?.clearValidate()
   }
-}, { immediate: true })
+}, {immediate: true})
 
 // 动态验证规则
 const userRules = computed<FormRules>(() => {
   const rules: FormRules = {
-    username: [
-      { required: true, message: '请输入用户名', trigger: 'blur' },
-      { min: 2, max: 20, message: '用户名长度应在2-20个字符之间', trigger: 'blur' }
-    ],
-    phone: [{ pattern: /^1[3-9]\d{9}$/, message: '电话号码格式不正确', trigger: 'blur' }],
-    email: [{ type: 'email', message: '邮箱格式不正确', trigger: 'blur' }],
-    roleIds: [{ required: true, message: '请选择角色', trigger: 'change' }]
+    phone: [{pattern: /^1[3-9]\d{9}$/, message: '电话号码格式不正确', trigger: 'blur'}],
+    email: [{type: 'email', message: '邮箱格式不正确', trigger: 'blur'}],
+    roleIds: [{required: true, message: '请选择角色', trigger: 'change'}]
   }
 
   if (props.dialogType === 'add') {
+    rules.username = [
+      {required: true, message: '请输入用户名', trigger: 'blur'},
+      {min: 2, max: 20, message: '用户名长度应在2-20个字符之间', trigger: 'blur'}
+    ]
     rules.password = [
-      { required: true, message: '请输入密码', trigger: 'blur' },
-      { min: 6, message: '密码至少6位', trigger: 'blur' }
+      {required: true, message: '请输入密码', trigger: 'blur'},
+      {min: 6, message: '密码至少6位', trigger: 'blur'}
     ]
   }
 
@@ -150,7 +151,7 @@ const handleSubmit = async () => {
 
   await userFormRef.value.validate(async (valid: boolean) => {
     if (!valid) return
-    emit('submit', { ...localUserForm.value })
+    emit('submit', {...localUserForm.value})
   })
 }
 
