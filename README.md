@@ -12,6 +12,7 @@ This project is a user management system based on Spring Boot 3, supporting user
 * Spring Boot 3.5.4
 * MyBatis
 * PostgreSQL 17.x
+* MySQL 8.0.x
 * Redis
 * Spring Security
 * EasyExcel (Alibaba Excel export)
@@ -37,6 +38,7 @@ src/
     resources/
       application.yaml
       application-dev.yaml
+      application-mysql.yaml
       mapper/         # MyBatis mapper xmls
   test/
     java/com/bryan/system/
@@ -47,7 +49,7 @@ src/
 
 * JDK 17+
 * Maven 3.9.9+
-* PostgreSQL 17.x
+* PostgreSQL 17.x/MySQL 8.0.x
 * Redis 6.x or above
 
 ## Configuration
@@ -57,6 +59,8 @@ src/
 * Database schema scripts are in [`sql/create_table.sql`](sql/create_table.sql).
 
 ## Getting Started
+
+> Using PostgreSQL as example
 
 1. Initialize the PostgreSQL database by running the schema script:
 

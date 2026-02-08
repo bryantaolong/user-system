@@ -12,6 +12,7 @@
 * Spring Boot 3.5.4
 * MyBatis
 * PostgreSQL 17.x
+* MySQL 8.0.x
 * Redis
 * Spring Security
 * EasyExcel (阿里巴巴 Excel 导出)
@@ -37,6 +38,7 @@ src/
     resources/
       application.yaml
       application-dev.yaml
+      application-mysql.yaml
       mapper/         # MyBatis Mapper XML 文件
   test/
     java/com/bryan/system/
@@ -47,7 +49,7 @@ src/
 
 * JDK 17+
 * Maven 3.9.9+
-* PostgreSQL 17.x
+* PostgreSQL 17.x/MySQL 8.0.x
 * Redis 6.x 或更高
 
 ## 配置说明
@@ -57,6 +59,8 @@ src/
 * 数据库建表脚本见 [`sql/create_table.sql`](sql/create_table.sql)。
 
 ## 启动方式
+
+> 以 PostgreSQL 为例
 
 1. 初始化数据库（PostgreSQL），执行建表脚本：
 
