@@ -1,9 +1,6 @@
 ### Custom ###
 .agent/
 .claude/
-.codex/
-.gemini/
-.qwen/
 .qoder/
 
 ### Java ###
