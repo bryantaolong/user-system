@@ -1,9 +1,10 @@
 ### Custom ###
-.agent/
 .claude/
+.cursor/
 .qoder/
 
 CLAUDE.md
+AGENTS.md
 
 ### Java ###
 HELP.md
