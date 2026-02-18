@@ -1,5 +1,9 @@
 ### Custom ###
+.agents/
 .claude/
+.codex/
+.gemini/
+.qwen/
 .cursor/
 .qoder/
 
