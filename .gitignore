@@ -1,9 +1,13 @@
 ### Custom ###
-.agent/
+.agents/
 .claude/
-.qoder/
+.codex/
 
 CLAUDE.md
+AGENTS.md
+
+logs/
+uploads/
 
 ### Java ###
 HELP.md
@@ -11,8 +15,6 @@ target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-logs/
-uploads/
 
 ### Vue ###
 ui-vue/node_modules/

@@ -199,6 +199,9 @@ public class UserService {
         if (dto.getPhone() != null) user.setPhone(dto.getPhone());
         if (dto.getEmail() != null) user.setEmail(dto.getEmail());
 
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setUpdatedBy(String.valueOf(JwtUtils.getCurrentUserId()));
+        user.setVersion(user.getVersion() + 1);
         userMapper.update(user);
         log.info("用户ID: {} 的信息更新成功", userId);
         return user;
@@ -229,6 +232,9 @@ public class UserService {
                 .collect(Collectors.joining(","));
         SysUser user = this.getUserById(userId);
         user.setRoles(roleNames);
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setUpdatedBy(String.valueOf(JwtUtils.getCurrentUserId()));
+        user.setVersion(user.getVersion() + 1);
         userMapper.update(user);
         return user;
     }
@@ -246,6 +252,9 @@ public class UserService {
         SysUser user = this.getUserById(userId);
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setPasswordResetAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setUpdatedBy(String.valueOf(JwtUtils.getCurrentUserId()));
+        user.setVersion(user.getVersion() + 1);
         userMapper.update(user);
         log.info("用户ID: {} 的密码强制修改成功", userId);
         return user;
@@ -261,6 +270,9 @@ public class UserService {
     public SysUser blockUser(Long userId) {
         SysUser user = this.getUserById(userId);
         user.setStatus(UserStatusEnum.BANNED);
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setUpdatedBy(String.valueOf(JwtUtils.getCurrentUserId()));
+        user.setVersion(user.getVersion() + 1);
         userMapper.update(user);
         log.info("用户ID: {} 封禁成功", userId);
         return user;
@@ -276,6 +288,9 @@ public class UserService {
     public SysUser unblockUser(Long userId) {
         SysUser user = this.getUserById(userId);
         user.setStatus(UserStatusEnum.NORMAL);
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setUpdatedBy(String.valueOf(JwtUtils.getCurrentUserId()));
+        user.setVersion(user.getVersion() + 1);
         userMapper.update(user);
         log.info("用户ID: {} 解封成功", userId);
         return user;

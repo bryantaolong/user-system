@@ -63,6 +63,7 @@ public class AuthService implements UserDetailsService {
         }
 
         // 3. 构建用户实体，密码加密
+        LocalDateTime now = LocalDateTime.now();
         SysUser sysUser = SysUser.builder()
                 .username(registerRequest.getUsername())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
@@ -70,7 +71,13 @@ public class AuthService implements UserDetailsService {
                 .email(registerRequest.getEmail())
                 .roles(defaultRole.getRoleName())
                 .status(UserStatusEnum.NORMAL)
-                .passwordResetAt(LocalDateTime.now())
+                .passwordResetAt(now)
+                .createdAt(now)
+                .updatedAt(now)
+                .createdBy("SYSTEM")
+                .updatedBy("SYSTEM")
+                .deleted(0)
+                .version(0)
                 .build();
 
         // 4. 插入用户数据
@@ -111,10 +118,16 @@ public class AuthService implements UserDetailsService {
             if(sysUser.getLoginFailCount() >= securityProperties.getLoginFailLimit()) {
                 sysUser.setStatus(UserStatusEnum.LOCKED);
                 sysUser.setLockedAt(LocalDateTime.now());
+                sysUser.setUpdatedAt(LocalDateTime.now());
+                sysUser.setUpdatedBy(String.valueOf(sysUser.getId()));
+                sysUser.setVersion(sysUser.getVersion() + 1);
                 userMapper.update(sysUser);
                 log.warn("用户登录失败次数过多，已锁定: {}", sysUser.getUsername());
                 throw new BusinessException("输入密码错误次数过多，账号锁定");
             }
+            sysUser.setUpdatedAt(LocalDateTime.now());
+            sysUser.setUpdatedBy(String.valueOf(sysUser.getId()));
+            sysUser.setVersion(sysUser.getVersion() + 1);
             userMapper.update(sysUser);
             log.warn("用户登录密码错误: {}, 失败次数: {}", sysUser.getUsername(), sysUser.getLoginFailCount());
             throw new BusinessException("用户名或密码错误");
@@ -133,6 +146,9 @@ public class AuthService implements UserDetailsService {
         sysUser.setLastLoginIp(HttpUtils.getClientIp());
         sysUser.setLastLoginDevice(HttpUtils.getClientOS() + " / " + HttpUtils.getClientBrowser());
         sysUser.setLoginFailCount(0); // 重置密码输入错误次数
+        sysUser.setUpdatedAt(LocalDateTime.now());
+        sysUser.setUpdatedBy(String.valueOf(sysUser.getId()));
+        sysUser.setVersion(sysUser.getVersion() + 1);
         userMapper.update(sysUser);
 
 
@@ -289,6 +305,9 @@ public class AuthService implements UserDetailsService {
         // 更新密码
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setPasswordResetAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setUpdatedBy(String.valueOf(user.getId()));
+        user.setVersion(user.getVersion() + 1);
         userMapper.update(user);
         
         // 清除 Redis 中的旧 Token，强制用户重新登录
