@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 /**
  * 用户资料业务服务
@@ -35,6 +36,13 @@ public class UserProfileService {
      * @throws BusinessException 数据库插入失败
      */
     public UserProfile createUserProfile(UserProfile record) {
+        LocalDateTime now = LocalDateTime.now();
+        record.setCreatedAt(now);
+        record.setUpdatedAt(now);
+        record.setCreatedBy(String.valueOf(record.getUserId()));
+        record.setUpdatedBy(String.valueOf(record.getUserId()));
+        record.setDeleted(0);
+        record.setVersion(0);
         int inserted = userProfileMapper.insert(record);
         if (inserted <= 0) {
             throw new BusinessException("创建用户信息失败");
@@ -112,6 +120,9 @@ public class UserProfileService {
             profile.setAvatar(dto.getAvatar());
         }
 
+        profile.setUpdatedAt(LocalDateTime.now());
+        profile.setUpdatedBy(String.valueOf(userId));
+        profile.setVersion(profile.getVersion() + 1);
         int updated = userProfileMapper.update(profile);
         if (updated == 0) {
             throw new BusinessException("用户信息更新失败");
@@ -142,6 +153,9 @@ public class UserProfileService {
 
             // 3. 更新数据库
             profile.setAvatar(avatarPath);
+            profile.setUpdatedAt(LocalDateTime.now());
+            profile.setUpdatedBy(String.valueOf(userId));
+            profile.setVersion(profile.getVersion() + 1);
             int updated = userProfileMapper.update(profile);
             if (updated == 0) {
                 throw new BusinessException("头像更新失败");
