@@ -7,6 +7,7 @@ import com.bryan.system.domain.request.user.UserSearchRequest;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -40,5 +41,7 @@ public interface UserMapper {
 
     int update(SysUser user);
 
-    int deleteById(@Param("id") Long id);
+    int deleteById(@Param("id") Long id,
+                   @Param("updatedAt") LocalDateTime updatedAt,
+                   @Param("updatedBy") String updatedBy);
 }
