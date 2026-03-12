@@ -107,9 +107,10 @@ public class AuthService implements UserDetailsService {
 
         if(!passwordEncoder.matches(loginRequest.getPassword(), sysUser.getPassword())){
             LocalDateTime now = LocalDateTime.now();
-            sysUser.setLoginFailCount(sysUser.getLoginFailCount() + 1);
+            Integer currentFailCount = sysUser.getLoginFailCount() == null ? 0 : sysUser.getLoginFailCount();
+            sysUser.setLoginFailCount(currentFailCount + 1);
             // 手动设置审计字段（更新时）- 登录失败时使用用户自己的ID
-            this.fillUpdate(sysUser);
+            this.fillUpdate(sysUser, sysUser.getId() == null ? "SYSTEM" : sysUser.getId().toString());
 
             // 如果输入密码错误次数达到限额，则锁定账号
             if(sysUser.getLoginFailCount() >= securityProperties.getLoginFailLimit()) {
@@ -139,7 +140,7 @@ public class AuthService implements UserDetailsService {
         sysUser.setLastLoginDevice(HttpUtils.getClientOS() + " / " + HttpUtils.getClientBrowser());
         sysUser.setLoginFailCount(0); // 重置密码输入错误次数
         // 登录成功时使用用户自己的ID作为updatedBy
-        this.fillUpdate(sysUser);
+        this.fillUpdate(sysUser, sysUser.getId() == null ? "SYSTEM" : sysUser.getId().toString());
         userMapper.update(sysUser);
 
 
@@ -362,8 +363,18 @@ public class AuthService implements UserDetailsService {
         LocalDateTime now = LocalDateTime.now();
         Long operator = JwtUtils.getCurrentUserId();
 
-        user.setVersion(user.getVersion() + 1);
+        Integer currentVersion = user.getVersion();
+        user.setVersion(currentVersion == null ? 1 : currentVersion + 1);
         user.setUpdatedAt(now);
         user.setUpdatedBy(operator.toString());
+    }
+
+    private void fillUpdate(SysUser user, String operator) {
+        LocalDateTime now = LocalDateTime.now();
+
+        Integer currentVersion = user.getVersion();
+        user.setVersion(currentVersion == null ? 1 : currentVersion + 1);
+        user.setUpdatedAt(now);
+        user.setUpdatedBy(operator == null ? "SYSTEM" : operator);
     }
 }
