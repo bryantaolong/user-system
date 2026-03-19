@@ -59,11 +59,11 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
-import * as userApi from '@/api/user'
-import * as userExportApi from '@/api/userExport'
-import * as userRoleApi from '@/api/userRole'
-import * as userProfileApi from '@/api/userProfile'
-import type { SysUser } from '@/models/entity/SysUser'
+import * as userApi from '@/api/user/user'
+import * as userExportApi from '@/api/user/userExport'
+import * as userRoleApi from '@/api/user/userRole'
+import * as userProfileApi from '@/api/user/userProfile'
+import type { SysUser } from '@/models/entity'
 import UserSearchForm from '@/components/admin/UserSearchForm.vue'
 import UserTable from '@/components/admin/UserTable.vue'
 import UserFormDialog from '@/components/admin/UserFormDialog.vue'
@@ -71,8 +71,8 @@ import UserDetailDialog from '@/components/admin/UserDetailDialog.vue'
 
 import type { UserFormData } from '@/components/admin/UserFormDialog.vue'
 import type { UserSearchFormData } from '@/components/admin/UserSearchForm.vue'
-import type { UserCreateRequest } from '@/models/request/user/UserCreateRequest'
-import type { UserRoleOptionVO } from '@/models/vo/UserRoleOptionVO.ts'
+import type { UserCreateRequest } from '@/models/request/user'
+import type { UserRoleOptionVO } from '@/models/vo'
 
 const loading = ref(false)
 const submitting = ref(false)

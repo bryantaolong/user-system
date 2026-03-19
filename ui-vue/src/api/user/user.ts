@@ -1,11 +1,11 @@
 import request from '@/utils/request'
-import type { Result } from '@/models/response/Result'
-import type { PageResult } from '@/models/response/PageResult'
-import type { SysUser } from '@/models/entity/user/SysUser.ts'
-import type { UserCreateRequest } from '@/models/request/user/UserCreateRequest'
-import type { UserUpdateRequest } from '@/models/request/user/UserUpdateRequest.ts'
-import type { ChangePasswordRequest } from '@/models/request/user/ChangePasswordRequest.ts'
-import type { UserSearchRequest } from '@/models/request/user/UserSearchRequest.ts'
+import type { Result } from '@/models/response'
+import type { PageResult } from '@/models/response'
+import type { SysUser } from '@/models/entity'
+import type { UserCreateRequest } from '@/models/request/user'
+import type { UserUpdateRequest } from '@/models/request/user'
+import type { ChangePasswordRequest } from '@/models/request/user'
+import type { UserSearchRequest } from '@/models/request/user'
 
 /**
  * 用户管理API

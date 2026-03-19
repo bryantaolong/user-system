@@ -1,7 +1,6 @@
 ### Custom ###
 .agents/
 .claude/
-.codex/
 
 CLAUDE.md
 AGENTS.md

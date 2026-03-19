@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import type { Result } from '@/models/response/Result'
+import type { Result } from '@/models/response'
 
 /**
  * 系统日志监控 API

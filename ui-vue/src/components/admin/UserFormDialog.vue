@@ -47,9 +47,9 @@
 <script setup lang="ts">
 import {ref, computed, watch, nextTick} from 'vue'
 import type {FormInstance, FormRules} from 'element-plus'
-import type {UserUpdateRequest} from '@/models/request/user/UserUpdateRequest.ts'
-import * as userRoleApi from '@/api/userRole'
-import type {UserRoleOptionVO} from '@/models/vo/UserRoleOptionVO.ts'
+import type {UserUpdateRequest} from '@/models/request/user'
+import * as userRoleApi from '@/api/user/userRole'
+import type {UserRoleOptionVO} from '@/models/vo'
 
 export interface UserFormData extends UserUpdateRequest {
   username?: string

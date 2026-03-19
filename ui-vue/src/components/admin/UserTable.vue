@@ -93,7 +93,7 @@ import {
   Delete,
   ArrowDown
 } from '@element-plus/icons-vue'
-import type { SysUser } from '@/models/entity/SysUser.ts'
+import type { SysUser } from '@/models/entity'
 
 const props = defineProps<{
   loading: boolean
