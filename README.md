@@ -1,7 +1,5 @@
 # User System
 
-[中文说明请见这里 (Chinese README here)](./README_zh.md)
-
 ## Project Overview
 
 This project is a user management system based on Spring Boot 3, supporting user registration, login, information management, role-based access control, and data export. The backend uses PostgreSQL as the main database and Redis for caching and distributed scenarios. JWT is used for stateless authentication and role-based authorization.

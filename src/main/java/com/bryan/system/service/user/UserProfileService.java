@@ -6,6 +6,7 @@ import com.bryan.system.exception.BusinessException;
 import com.bryan.system.exception.ResourceNotFoundException;
 import com.bryan.system.mapper.UserProfileMapper;
 import com.bryan.system.service.file.LocalFileService;
+import com.bryan.system.util.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

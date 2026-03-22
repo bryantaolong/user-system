@@ -1,7 +1,5 @@
 # 用户系统
 
-[English README here (英文版说明)](./README.md)
-
 ## 项目简介
 
 本项目为基于 Spring Boot 3 的用户管理系统，支持用户注册、登录、信息管理、权限控制、数据导出等功能。后端采用 PostgreSQL 作为主数据库，Redis 用于缓存和分布式场景，支持 JWT 无状态认证和基于角色的权限控制。
