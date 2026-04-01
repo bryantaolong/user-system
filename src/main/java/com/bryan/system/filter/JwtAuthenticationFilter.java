@@ -69,7 +69,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String redisToken = redisStringService.get(username);
 
             if (redisToken == null || !redisToken.equals(token)) {
-                writeUnauthorized(response, "Token已失效，请重新登录");
+                this.writeUnauthorized(response, "Token已失效，请重新登录");
                 return;
             }
 
@@ -87,7 +87,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // 这里我们仍然从数据库加载用户，以确保用户是存在的且状态正常。
             SysUser sysUser = authService.getCurrentUser();
             if (sysUser == null || !sysUser.isEnabled() || !sysUser.isAccountNonLocked()) {
-                writeUnauthorized(response, "用户状态异常或不存在");
+                this.writeUnauthorized(response, "用户状态异常或不存在");
                 return;
             }
 
@@ -100,7 +100,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // 处理 Token 无效或过期的情况
             // 不返回具体异常信息，防止信息泄露
             log.warn("Token验证失败: {}", e.getClass().getSimpleName());
-            writeUnauthorized(response, "Token无效或已过期");
+            this.writeUnauthorized(response, "Token无效或已过期");
             return;
         }
 

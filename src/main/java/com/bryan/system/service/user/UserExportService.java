@@ -48,14 +48,14 @@ public class UserExportService {
                                int pageNum, int pageSize) throws IOException {
         try {
             String fileName = Optional.ofNullable(exportRequest.getFileName()).orElse("用户数据全量导出");
-            setupResponse(response, fileName);
+            this.setupResponse(response, fileName);
 
             ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream())
                     .head(UserExportVO.class)
                     .registerWriteHandler(new CustomCellWriteHandler())
                     .build();
 
-            executeBatchExport(excelWriter,
+            this.executeBatchExport(excelWriter,
                     EasyExcel.writerSheet("用户列表").build(),
                     exportRequest, pageNum, pageSize);
         } catch (IOException e) {

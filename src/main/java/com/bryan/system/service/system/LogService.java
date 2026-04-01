@@ -54,7 +54,7 @@ public class LogService {
      */
     public List<String> listLatestLogs(String fileName, int maxLines) {
         int limit = Math.max(1, Math.min(maxLines, 2000));
-        Path path = resolveLogPath(fileName);
+        Path path = this.resolveLogPath(fileName);
 
         if (!Files.exists(path)) {
             log.warn("日志文件不存在：{}", path.toAbsolutePath());
@@ -62,7 +62,7 @@ public class LogService {
         }
 
         try {
-            List<String> allLines = readAllLines(path);
+            List<String> allLines = this.readAllLines(path);
             if (allLines.isEmpty()) {
                 return Collections.emptyList();
             }
@@ -80,8 +80,8 @@ public class LogService {
      * @return 文件名列表（仅文件名，不含路径）
      */
     public List<String> listLogFiles() {
-        Path defaultLogPath = resolveDefaultLogPath();
-        Path logDir = getLogsDirectory();
+        Path defaultLogPath = this.resolveDefaultLogPath();
+        Path logDir = this.getLogsDirectory();
 
         if (!Files.exists(logDir) || !Files.isDirectory(logDir)) {
             return List.of(defaultLogPath.getFileName().toString());
@@ -109,9 +109,9 @@ public class LogService {
      */
     private Path resolveLogPath(String fileName) {
         if (fileName == null || fileName.isBlank()) {
-            return resolveDefaultLogPath();
+            return this.resolveDefaultLogPath();
         }
-        Path logDir = getLogsDirectory();
+        Path logDir = this.getLogsDirectory();
         Path path = logDir.resolve(fileName).normalize();
         if (!path.startsWith(logDir)) {
             throw new BusinessException("非法的日志文件路径");
@@ -135,7 +135,7 @@ public class LogService {
      * 获取日志目录（默认日志文件的父目录）
      */
     private Path getLogsDirectory() {
-        Path defaultLogPath = resolveDefaultLogPath();
+        Path defaultLogPath = this.resolveDefaultLogPath();
         Path parent = defaultLogPath.getParent();
         return parent == null ? Paths.get(System.getProperty("user.dir")) : parent;
     }

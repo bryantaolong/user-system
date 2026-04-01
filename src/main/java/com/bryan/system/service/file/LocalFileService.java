@@ -106,12 +106,12 @@ public class LocalFileService {
         }
 
         // 检测PNG
-        if (bytesRead >= 8 && isMagicMatch(header, PNG_MAGIC)) {
+        if (bytesRead >= 8 && this.isMagicMatch(header, PNG_MAGIC)) {
             return "image/png";
         }
 
         // 检测JPEG
-        if (bytesRead >= 2 && isMagicMatch(header, JPEG_MAGIC)) {
+        if (bytesRead >= 2 && this.isMagicMatch(header, JPEG_MAGIC)) {
             return "image/jpeg";
         }
 
